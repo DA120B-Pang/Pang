@@ -1,0 +1,19 @@
+
+sprites.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Player All2
+  rotate: false
+  xy: 1, 1
+  size: 397, 211
+  orig: 397, 211
+  offset: 0, 0
+  index: -1
+Balloons
+  rotate: false
+  xy: 400, 52
+  size: 387, 160
+  orig: 387, 160
+  offset: 0, 0
+  index: -1

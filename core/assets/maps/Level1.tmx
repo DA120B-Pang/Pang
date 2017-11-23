@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="16" tileheight="16" nextobjectid="37">
+ <tileset firstgid="1" source="Backgrounds.tsx"/>
+ <layer name="BG" width="24" height="16">
+  <data encoding="base64" compression="zlib">
+   eJzt1NVZEAAAhVFAEAS7H+xCDJQSE7se7MKgBBQJuzewCzDAbt3ATkRFsXsDO1Gxjgs4gf93zwo3MCAgIIgaBBNCTUIJoxbhRFCbOtSlHvVpQEMa0ZgmNKUZzYkljngS6EUivelDX/rRnwEkMZBBDGYIQxnGcEYwklGMJpMsspnDXHKYRy555FPAfBawkEUsZglLWcZyVrCSVaymkCKK2c4OdrKLEkrZzR72so/9HOAghzjMEY5yjOOc4CRXKeMa5VznBjep4Ba3qeQOd7nHfR7wkEc85glPecZzXvCFKr7yje9U84Of/OI3AYFGEDUIJoSahBJGLcKJoDZ1iKQzUXShK93oTjQ96EkMscQRTwK9SKQ3fehLP/ozgCSSmc4MZjKLFFJJI50MZpNJFtnMYS45zCOXPPIpYD4LWMNa1rGeDWxkE5vZwla2UUgRxWxnBzvZRQml7GYPe9nHKU5zhrOc4zwXuMglLnOFq5RxjXKuc4ObVHCL21Ryh7u85BWvecNb3vGeD3zkE5/5QhVf+cZ3qvnBT37xm7+HEEgQLWhJK1rThra0oz0d6EgnIulMFF3oSje6E00PehJDLHGMYSzjGM8EJjKJyUxhKtNIZjozmMksUkgljXQymE0mWX+P7X//7A9yZY12
+  </data>
+ </layer>
+ <objectgroup name="Walls">
+  <object id="32" name="roof" type="roof" x="0.333333" y="0" width="383.333" height="7.33333"/>
+  <object id="33" name="right" x="376.667" y="0.333333" width="7" height="207"/>
+  <object id="34" name="floor" x="0" y="200.333" width="382.333" height="6.66667"/>
+  <object id="36" name="left" x="0.333333" y="0.666667" width="6.66667" height="206.333"/>
+ </objectgroup>
+ <objectgroup name="Ball">
+  <object id="2" x="48.3333" y="32" width="15.6667" height="16"/>
+ </objectgroup>
+</map>
