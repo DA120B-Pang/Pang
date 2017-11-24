@@ -3,14 +3,14 @@ package com.pang.game.Sprites;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 
 import static com.pang.game.Constants.Constants.*;
+import static com.pang.game.Sprites.Bubble.BubbleState.*;
 
 
 public class Bubble extends Sprite {
@@ -25,6 +25,12 @@ public class Bubble extends Sprite {
     private boolean spawnRight;
     private boolean spawnSpdIsSet;
     private boolean stopUpdatingSprite;
+    private Animation explode;
+    private boolean setToDestroy;
+    private boolean destroyed;
+    private float explosionTimer;
+    private boolean explosionSoundDone;
+    private AssetManager assetManager;
 
 
 
@@ -35,22 +41,31 @@ public class Bubble extends Sprite {
         BLUE,RED,GREEN
     }
     public Bubble(World world, BubbleState state, BubbleColor color, Vector2 position, AssetManager assetManager,boolean spawnRight){
+        this.assetManager = assetManager;
         this.size = state;
         this.color = color;
         this.world = world;
         int colorPosX = 0;
         int colorPosY = 0;
         this.spawnRight = spawnRight;
-        this.bubbleLinearSpd = 0.0f;
-        this.bubbleBounceForce = new Vector2(0,0);
+        bubbleLinearSpd = 0.0f;
+        bubbleBounceForce = new Vector2(0,0);
         //Sätter horisontell hastighet
         bubbleLinearSpd = 0.65f;
         //Sätter hopp kraft i x alltid 0
         bubbleBounceForce.x = 0f;
+        explosionTimer = 0f;
         stopUpdatingSprite = false;
+        destroyed = false;
+        setToDestroy = false;
+        explosionSoundDone = false;
+
         switch (state) {
             case XLARGE:
 
+                //Sätter tid på animation i sekunder samt anger en Array av frames
+                explode = new Animation(0.04f,getExplosionAnimation(XLARGE,assetManager) );
+                //Raderar frame Array
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.000409f;
 
@@ -73,6 +88,7 @@ public class Bubble extends Sprite {
                 setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, 45, 45));
                 break;
             case LARGE:
+                explode = new Animation(0.04f,getExplosionAnimation(LARGE,assetManager) );
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.00023f;
                 switch (color){
@@ -94,6 +110,7 @@ public class Bubble extends Sprite {
                 setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, 35, 35));
                 break;
             case MEDIUM:
+                explode = new Animation(0.04f,getExplosionAnimation(MEDIUM,assetManager) );
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.00009f;
                 switch (color){
@@ -110,13 +127,14 @@ public class Bubble extends Sprite {
                         colorPosY = 110;
                         break;
                 }
-                setBounds(0, 0, 22 / PPM, 22 / PPM);
+                setBounds(0, 0, 23 / PPM, 23 / PPM);
                 radius = 11;
-                setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, 22, 22));
+                setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, 23, 23));
                 break;
             case SMALL:
+                explode = new Animation(0.04f,getExplosionAnimation(SMALL,assetManager) );
                 //Sätter hopp kraft i y uppåt
-                bubbleBounceForce.y = 0.000015f;
+                bubbleBounceForce.y = 0.000016f;
                 switch (color){
                     case RED://Röd positioner på atlas
                         colorPosX = 104;
@@ -131,13 +149,14 @@ public class Bubble extends Sprite {
                         colorPosY = 115;
                         break;
                 }
-                setBounds(0, 0, 11 / PPM, 11 / PPM);
-                radius = 5;
-                setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, 11, 11));
+                setBounds(0, 0, 12 / PPM, 12 / PPM);
+                radius = 6;
+                setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, 12, 12));
                 break;
-            case XSMALL:
+            default:
+                explode = new Animation(0.04f,getExplosionAnimation(XSMALL,assetManager) );
                 //Sätter hopp kraft i y uppåt
-                bubbleBounceForce.y = 0.000003f;
+                bubbleBounceForce.y = 0.000004f;
                 switch (color){
                     case RED://Röd positioner på atlas
                         colorPosX = 116;
@@ -153,8 +172,8 @@ public class Bubble extends Sprite {
                         break;
                 }
                 setBounds(0, 0, 6 / PPM, 6 / PPM);
-                radius = 2.5f;
-                setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, 5, 5));
+                radius = 3f;
+                setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, 6, 6));
                 break;
         }
         this.world = world;
@@ -209,16 +228,31 @@ public class Bubble extends Sprite {
             bumpRightWall();
         }
     }
-    public void stopUpdate(){
-        stopUpdatingSprite = true;
-    }
-
 
     public void update(float dt) {
+
+            if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 )&& size==XSMALL
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2 )&& size==SMALL
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3 )&& size==MEDIUM
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_4 )&& size==LARGE
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_5 )&& size==XLARGE){
+                //setToSleep();
+                setToDestroy();
+            }
+
         float offset = 2/PPM; //Offset för att korrigera position av sprite vid gång
-        if(!stopUpdatingSprite) {//Slutar updatera position när spelare dör
+        if(!stopUpdatingSprite && !setToDestroy) {//Slutar updatera position när spelare dör
             //Sätter Texture region till sprite
             setPosition(bubbleBody.getPosition().x - getWidth() / 2, bubbleBody.getPosition().y - getHeight() / 2);
+        }
+        else if(setToDestroy){
+            if(!explosionSoundDone) {
+                setExplodeSound(size, assetManager);
+                explosionSoundDone = true;
+            }
+            if(animateExplosion(dt)){
+                destroyed = true;
+            }
         }
 
         if (!spawnSpdIsSet){//Sätt hastighet när bubble bildats
@@ -236,7 +270,149 @@ public class Bubble extends Sprite {
         getTexture().dispose();
     }
     public void draw(SpriteBatch batch) {
-        super.draw(batch);
+        if(!destroyed) {
+            super.draw(batch);
+        }
+    }
+
+    private boolean animateExplosion(float dt){
+        explosionTimer += dt;
+        setRegion((TextureRegion)explode.getKeyFrame(explosionTimer, false));
+        return explode.isAnimationFinished(explosionTimer)? true:false;
+    }
+
+    public void setToSleep(){
+        bubbleBody.setActive(false);
+    }
+
+    public void destroy(){
+        world.destroyBody(bubbleBody);
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+    public void setToDestroy(){
+        bubbleBody.setActive(false);
+        Filter spareDude = new Filter();
+        spareDude.maskBits = FLOOR_WALL_ROOF;
+        bubbleBody.getFixtureList().get(0).setFilterData(spareDude);
+        setToDestroy = true;
+    }
+
+    private Array<TextureRegion> getExplosionAnimation(BubbleState size, AssetManager assetManager){
+        //Skapa explotions animering
+        //Array för animationer
+        String fileName;
+        Array<TextureRegion> frames = new Array<>();
+        int sizeImage, nbr2, nbr3, nbr4, nbr5, nbr6;
+
+        switch(size){
+            case XLARGE:
+                fileName = "explosionXL";
+                sizeImage = 45;
+                nbr2 = 45;
+                nbr3 = 90;
+                nbr4 = 135;
+                nbr5 = 180;
+                nbr6 = 225;
+                break;
+            case LARGE:
+                fileName = "explosionL";
+                sizeImage = 35;
+                nbr2 = 35;
+                nbr3 = 70;
+                nbr4 = 105;
+                nbr5 = 140;
+                nbr6 = 175;
+                break;
+            case MEDIUM:
+                fileName = "explosionM";
+                sizeImage = 23;
+                nbr2 = 23;
+                nbr3 = 46;
+                nbr4 = 69;
+                nbr5 = 92;
+                nbr6 = 115;
+                break;
+            case SMALL:
+                fileName = "explosionS";
+                sizeImage = 12;
+                nbr2 = 12;
+                nbr3 = 24;
+                nbr4 = 36;
+                nbr5 = 48;
+                nbr6 = 60;
+                break;
+            default:
+                fileName = "explosionXS";
+                sizeImage = 6;
+                nbr2 = 6;
+                nbr3 = 12;
+                nbr4 = 18;
+                nbr5 = 24;
+                nbr6 = 30;
+        }
+
+
+                //Explodera
+                //Väljer bild Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), 0, 0, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr2, 0, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr3, 0, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr4, 0, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr5, 0, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr6, 0, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), 0, nbr2, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr2, nbr2, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr3, nbr2, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr4, nbr2, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr5, nbr2, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr6, nbr2, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), 0, nbr3, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr2, nbr3, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr3, nbr3, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr4, nbr3, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr5, nbr3, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr6, nbr3, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), 0, nbr4, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr2, nbr4, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr3, nbr4, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr4, nbr4, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr5, nbr4, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr6, nbr4, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), 0, nbr5, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr2, nbr5, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr3, nbr5, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr4, nbr5, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr5, nbr5, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr6, nbr5, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), 0, nbr6, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr2, nbr6, sizeImage, sizeImage));
+                frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion(fileName), nbr3, nbr6, sizeImage, sizeImage));
+
+
+        return frames;
+    }
+    private void setExplodeSound(BubbleState size, AssetManager assetManager){
+        switch(size){
+            case XLARGE:
+                assetManager.get("audio/sound/boomXlarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomXlarge.wav", Sound.class).play(), 1.2f);
+                break;
+            case LARGE:
+                assetManager.get("audio/sound/boomLarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomLarge.wav", Sound.class).play(), 1.0f);
+                break;
+            case MEDIUM:
+                assetManager.get("audio/sound/boomMedium.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomMedium.wav", Sound.class).play(), 0.9f);
+                break;
+            case SMALL:
+                assetManager.get("audio/sound/boomSmall.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomSmall.wav", Sound.class).play(), 0.8f);
+                break;
+            default:
+                assetManager.get("audio/sound/boomSmall.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomSmall.wav", Sound.class).play(), 0.7f);
+
+        }
     }
 
 }

@@ -5,15 +5,50 @@ filter: Nearest,Nearest
 repeat: none
 Player All2
   rotate: false
-  xy: 1, 1
+  xy: 1, 237
   size: 397, 211
   orig: 397, 211
   offset: 0, 0
   index: -1
 Balloons
   rotate: false
-  xy: 400, 52
+  xy: 1, 75
   size: 387, 160
   orig: 387, 160
+  offset: 0, 0
+  index: -1
+explosionXL
+  rotate: false
+  xy: 400, 178
+  size: 270, 270
+  orig: 270, 270
+  offset: 0, 0
+  index: -1
+explosionL
+  rotate: false
+  xy: 672, 238
+  size: 210, 210
+  orig: 210, 210
+  offset: 0, 0
+  index: -1
+explosionM
+  rotate: false
+  xy: 884, 310
+  size: 138, 138
+  orig: 138, 138
+  offset: 0, 0
+  index: -1
+explosionS
+  rotate: false
+  xy: 1, 1
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+explosionXS
+  rotate: false
+  xy: 672, 200
+  size: 36, 36
+  orig: 36, 36
   offset: 0, 0
   index: -1

@@ -1,6 +1,6 @@
 package com.pang.game.Screens;
 
-import com.badlogic.gdx.Game;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -43,6 +43,7 @@ public class Level1 implements Screen {
     private Dude dude;
     private boolean endMusicStarted;
     private ArrayList<Bubble> myBubbles = new ArrayList<>();
+    private ArrayList<Bubble> myDestoyedBubbles = new ArrayList<>();
     private float gameOverTimer;
 
     public Level1(Pang game){
@@ -55,7 +56,7 @@ public class Level1 implements Screen {
         game.assetManager.load("audio/music/nighttideWaltz.ogg", Music.class);
         game.assetManager.finishLoading();
         game.assetManager.get("audio/music/overworld.ogg",Music.class).setLooping(true);
-        game.assetManager.get("audio/music/overworld.ogg",Music.class).setVolume(0.1f);
+        game.assetManager.get("audio/music/overworld.ogg",Music.class).setVolume(0.7f);
         game.assetManager.get("audio/music/overworld.ogg",Music.class).play();
 
         box2DDebugRenderer = new Box2DDebugRenderer();
@@ -93,7 +94,7 @@ public class Level1 implements Screen {
         myBubbles.add(new Bubble(world, LARGE, BLUE, new Vector2(250,200), game.assetManager,false));
         myBubbles.add(new Bubble(world, MEDIUM, RED, new Vector2(250,200), game.assetManager,true));
         myBubbles.add(new Bubble(world, SMALL, GREEN, new Vector2(250,200), game.assetManager,false));
-        myBubbles.add(new Bubble(world, XSMALL, BLUE, new Vector2(250,200), game.assetManager,true));
+        myBubbles.add(new Bubble(world, XSMALL, GREEN, new Vector2(250,200), game.assetManager,true));
 }
 
     @Override
@@ -105,31 +106,13 @@ public class Level1 implements Screen {
 
     }
     private void musicEnd(){
-        game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).setVolume(0.1f);
+        game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).setVolume(0.8f);
         game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).play();
         game.assetManager.get("audio/music/overworld.ogg",Music.class).stop();
         endMusicStarted = true;
     }
 
     private void update(float dt){
-        game.aspectRatio = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-        //Uppdatera bubble
-        if(dude.isDudeDead()){
-            gameOverTimer += dt;
-            if(!endMusicStarted){
-                musicEnd();
-            }
-            for (Bubble b : myBubbles) {
-                //b.stopUpdate();
-            }
-        }
-        else {
-            for (Bubble b : myBubbles) {
-                b.update(dt);
-        }
-        }
-        //Uppdatera dude
-        dude.update(dt);
         //Kolla input
         handleInput(dt);
         //uppdatera kameran
@@ -137,6 +120,28 @@ public class Level1 implements Screen {
         //Bara det som visas ska renderas
         orthogonalTiledMapRenderer.setView(orthographicCamera);
         world.step(1/60f, 6,2);
+        if(dude.isDudeDead()){
+            gameOverTimer += dt;
+            if(!endMusicStarted){
+                musicEnd();
+            }
+            for (Bubble b : myBubbles) {
+                b.setToSleep();
+            }
+        }
+
+        int destroyedBubble = -1;
+        for (int i = 0; i <myBubbles.size() ; i++) {
+            myBubbles.get(i).update(dt);
+            if(myBubbles.get(i).isDestroyed()){
+                destroyedBubble = i;
+            }
+        }
+        if(destroyedBubble>-1)
+            myBubbles.remove(destroyedBubble);
+
+        //Uppdatera dude
+        dude.update(dt);
     }
     @Override
     public void render(float dt) {
@@ -163,7 +168,10 @@ public class Level1 implements Screen {
         if(gameOverTimer>4){
             game.setScreen(new GameOverScreen(game));
             dispose();
-
+        }
+        if(myBubbles.size()==0){
+            game.setScreen(new GameOverScreen(game));
+            dispose();
         }
 
 

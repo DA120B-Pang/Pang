@@ -25,6 +25,10 @@ public class Pang extends Game {
 		assetManager = new AssetManager();
 		assetManager.load("sprites/sprites.pack", TextureAtlas.class);
 		assetManager.load("audio/sound/shoot.wav", Sound.class);
+		assetManager.load("audio/sound/boomSmall.wav", Sound.class);
+		assetManager.load("audio/sound/boomMedium.wav", Sound.class);
+		assetManager.load("audio/sound/boomLarge.wav", Sound.class);
+		assetManager.load("audio/sound/boomXlarge.wav", Sound.class);
 		assetManager.finishLoading();
 		batch = new SpriteBatch();
 		aspectRatio = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
