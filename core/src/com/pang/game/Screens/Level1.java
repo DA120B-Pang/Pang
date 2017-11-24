@@ -14,9 +14,11 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.ContactHandling.ContactHandler;
+import com.pang.game.Creators.BubbleHandler;
 import com.pang.game.Creators.ConstructLevel;
 import com.pang.game.Pang;
 import com.pang.game.Sprites.Bubble;
+import com.pang.game.Sprites.DoubleBoubble;
 import com.pang.game.Sprites.Dude;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import static com.pang.game.Sprites.Bubble.BubbleState.*;
 
 
 public class Level1 implements Screen {
-
+    private BubbleHandler bubbleHandler;
     private Pang game;
     private OrthographicCamera orthographicCamera;
 
@@ -47,6 +49,7 @@ public class Level1 implements Screen {
     private float gameOverTimer;
 
     public Level1(Pang game){
+        bubbleHandler = new BubbleHandler();
         this.game = game;
         game.batch.flush();
         gameOverTimer = 0;
@@ -89,12 +92,12 @@ public class Level1 implements Screen {
         }
         //Skapa dude
         dude = new Dude(world,game.assetManager,new Vector2(150f,70f));
-        //Boll
-        myBubbles.add(new Bubble(world, XLARGE, GREEN, new Vector2(250,200), game.assetManager,true));
-        myBubbles.add(new Bubble(world, LARGE, BLUE, new Vector2(250,200), game.assetManager,false));
-        myBubbles.add(new Bubble(world, MEDIUM, RED, new Vector2(250,200), game.assetManager,true));
-        myBubbles.add(new Bubble(world, SMALL, GREEN, new Vector2(250,200), game.assetManager,false));
-        myBubbles.add(new Bubble(world, XSMALL, GREEN, new Vector2(250,200), game.assetManager,true));
+        //Bollar till start
+        bubbleHandler.addBubble(new Bubble(world, XLARGE, GREEN, new Vector2(250,200), game.assetManager,true));
+        bubbleHandler.addBubble(new Bubble(world, LARGE, BLUE, new Vector2(250,200), game.assetManager,false));
+        bubbleHandler.addBubble(new Bubble(world, MEDIUM, RED, new Vector2(250,200), game.assetManager,true));
+        bubbleHandler.addBubble(new Bubble(world, SMALL, GREEN, new Vector2(250,200), game.assetManager,false));
+        bubbleHandler.addBubble(new Bubble(world, XSMALL, GREEN, new Vector2(250,200), game.assetManager,true));
 }
 
     @Override
@@ -102,19 +105,15 @@ public class Level1 implements Screen {
 
     }
 
-    public void handleInput(float dt){
-
-    }
-    private void musicEnd(){
+    private void musicEnd(){//Musik till död dude
         game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).setVolume(0.8f);
+        game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).setLooping(true);
         game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).play();
         game.assetManager.get("audio/music/overworld.ogg",Music.class).stop();
-        endMusicStarted = true;
+        endMusicStarted = true;//Kvittera att musik är startad
     }
 
     private void update(float dt){
-        //Kolla input
-        handleInput(dt);
         //uppdatera kameran
         orthographicCamera.update();
         //Bara det som visas ska renderas
@@ -125,20 +124,10 @@ public class Level1 implements Screen {
             if(!endMusicStarted){
                 musicEnd();
             }
-            for (Bubble b : myBubbles) {
-                b.setToSleep();
-            }
+            bubbleHandler.setToSleep();//Stoppa bubblor
         }
-
-        int destroyedBubble = -1;
-        for (int i = 0; i <myBubbles.size() ; i++) {
-            myBubbles.get(i).update(dt);
-            if(myBubbles.get(i).isDestroyed()){
-                destroyedBubble = i;
-            }
-        }
-        if(destroyedBubble>-1)
-            myBubbles.remove(destroyedBubble);
+        //Updatera bubblor
+        bubbleHandler.update(dt);
 
         //Uppdatera dude
         dude.update(dt);
@@ -161,15 +150,16 @@ public class Level1 implements Screen {
         //Rita dude
         dude.draw(game.batch);
         //Rita bubbla
-        for(Bubble b: myBubbles){
-            b.draw(game.batch);
-        }
+        bubbleHandler.renderer(game.batch);
+
         game.batch.end();
-        if(gameOverTimer>4){
+
+
+        if(gameOverTimer>4){//Tillfällig lösning för att byta skärm
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
-        if(myBubbles.size()==0){
+        if(bubbleHandler.getBubbles()==0){//Tillfällig lösning för att byta skärm
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
@@ -179,7 +169,7 @@ public class Level1 implements Screen {
     }
 
      @Override
-   public void resize(int width, int height) {
+   public void resize(int width, int height) {//Vid ändring av Storlek på fönster ska Viewport och kamera uppdateras
         viewPort.update(width,height);
          orthographicCamera.position.set((viewPort.getWorldWidth()/2), (viewPort.getWorldHeight()/2), 0);
     }
@@ -200,7 +190,7 @@ public class Level1 implements Screen {
     }
 
     @Override
-    public void dispose() {
+    public void dispose() {//Kasta resurser vid skärmbyte
         box2DDebugRenderer.dispose();
         world.dispose();
         tiledMap.dispose();
