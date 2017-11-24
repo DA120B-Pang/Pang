@@ -14,7 +14,6 @@ public class Pang extends Game {
 
 	public AssetManager assetManager;
 	public TextureAtlas test;
-	public float aspectRatio;
 
 
 	public SpriteBatch batch;
@@ -31,8 +30,7 @@ public class Pang extends Game {
 		assetManager.load("audio/sound/boomXlarge.wav", Sound.class);
 		assetManager.finishLoading();
 		batch = new SpriteBatch();
-		aspectRatio = Gdx.graphics.getWidth()/Gdx.graphics.getHeight();
-		System.out.println(aspectRatio);
+
 
 
 		setScreen(new StartingScreen(this));//Starta med Meny

@@ -68,7 +68,6 @@ public class Level1 implements Screen {
         //Sätt storlek på viewport  och skalera  då box2d har enheten meter så delar vi med pixels per meter
         viewPort = new FitViewport(((WORLD_WIDTH))/PPM,(WORLD_HEIGHT)/PPM, orthographicCamera);
         viewPort.apply();
-        System.out.println(viewPort.getWorldWidth()+" "+viewPort.getWorldHeight());
         //Kamera för att visa spelyta
         orthographicCamera.position.set(((viewPort.getWorldWidth())/2), ((viewPort.getWorldHeight()+300)/2), 0);
 

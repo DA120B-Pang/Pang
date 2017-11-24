@@ -62,10 +62,10 @@ public class Bubble extends Sprite {
 
         switch (state) {
             case XLARGE:
-                //Sätter hopp kraft i y uppåt
-                bubbleBounceForce.y = 0.000409f;
-                pictureWidth = 45;
-                pictureHeight = 45;
+                bubbleBounceForce.y = 0.000409f;//Sätter hopp kraft i y uppåt
+                pictureWidth = 45;//Bredd på bild i atlas
+                pictureHeight = 45;//Höjd på bild i atlas
+                radius = 22;//Radie på bubbla
 
                 switch (color){
                     case RED://Röd positioner på atlas
@@ -81,13 +81,13 @@ public class Bubble extends Sprite {
                         colorPosY = 99;
                         break;
                 }
-                radius = 22;
                 break;
             case LARGE:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.00023f;
                 pictureWidth = 35;
                 pictureHeight = 35;
+                radius = 17;
                 switch (color){
                     case RED://Röd positioner på atlas
                         colorPosX = 46;
@@ -102,13 +102,13 @@ public class Bubble extends Sprite {
                         colorPosY = 104;
                         break;
                 }
-                radius = 17;
                 break;
             case MEDIUM:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.00008f;
                 pictureWidth = 23;
                 pictureHeight = 23;
+                radius = 11;
                 switch (color){
                     case RED://Röd positioner på atlas
                         colorPosX = 81;
@@ -123,13 +123,13 @@ public class Bubble extends Sprite {
                         colorPosY = 110;
                         break;
                 }
-                radius = 11;
                 break;
             case SMALL:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.000017f;
                 pictureWidth = 12;
                 pictureHeight = 12;
+                radius = 6;
                 switch (color){
                     case RED://Röd positioner på atlas
                         colorPosX = 104;
@@ -144,13 +144,13 @@ public class Bubble extends Sprite {
                         colorPosY = 115;
                         break;
                 }
-                radius = 6;
                 break;
             default:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.000004f;
                 pictureWidth = 6;
                 pictureHeight = 6;
+                radius = 3f;
                 switch (color){
                     case RED://Röd positioner på atlas
                         colorPosX = 116;
@@ -165,7 +165,6 @@ public class Bubble extends Sprite {
                         colorPosY = 118;
                         break;
                 }
-                radius = 3f;
                 break;
         }
         //Sätter storlek på sprite
