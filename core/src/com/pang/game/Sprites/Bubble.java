@@ -106,7 +106,7 @@ public class Bubble extends Sprite {
                 break;
             case MEDIUM:
                 //Sätter hopp kraft i y uppåt
-                bubbleBounceForce.y = 0.00009f;
+                bubbleBounceForce.y = 0.00008f;
                 pictureWidth = 23;
                 pictureHeight = 23;
                 switch (color){
@@ -127,7 +127,7 @@ public class Bubble extends Sprite {
                 break;
             case SMALL:
                 //Sätter hopp kraft i y uppåt
-                bubbleBounceForce.y = 0.000016f;
+                bubbleBounceForce.y = 0.000017f;
                 pictureWidth = 12;
                 pictureHeight = 12;
                 switch (color){
@@ -209,18 +209,19 @@ public class Bubble extends Sprite {
         bubbleBody.setFixedRotation(true);
         //Position och storlek för (super)sprite när den ska ritas
     }
-    public final void bumpLeftWall(){
+
+    public final void bumpLeftWall(){//Action för contact listenern när bubbla träffar vänster vägg
         bubbleBody.setLinearVelocity(bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
         goingRight = true;
     }
-    public final void bumpRightWall(){
+    public final void bumpRightWall(){//Action för contact listenern när bubbla träffar höger vägg
         bubbleBody.setLinearVelocity(-bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
         goingRight = false;
     }
-    public final void bumpFloor() {
-        bubbleBody.setLinearVelocity(0f, 0f);
+    public final void bumpFloor() {////Action för contact listenern när bubbla träffar marken
+        bubbleBody.setLinearVelocity(0f, 0f);//Boll måste först stanna(för att vi alltid ska uppnå samma höjd)
         bubbleBody.applyLinearImpulse(bubbleBounceForce, bubbleBody.getWorldCenter(), true);
-        if(goingRight){
+        if(goingRight){//kolla vilket håll bollen färdades på och fortsätt på samma håll
             bumpLeftWall();
         }
         else{
@@ -244,13 +245,14 @@ public class Bubble extends Sprite {
             //Sätter Texture region till sprite
             setPosition(bubbleBody.getPosition().x - getWidth() / 2, bubbleBody.getPosition().y - getHeight() / 2);
         }
-        else if(setToDestroy){//
+        else if(setToDestroy && !destroyed){//
             if(!explosionSoundDone) {
                 setExplodeSound(size, assetManager);
                 explosionSoundDone = true;
             }
             if(animateExplosion(dt)){
                 destroyed = true;
+                destroy();
             }
         }
 
@@ -294,6 +296,7 @@ public class Bubble extends Sprite {
 
     public void setToDestroy(){//Sätter att bubblan ska förstöras.. denna ska anropas i contact handlern. När bubblan blir skjuten
         bubbleBody.setActive(false);
+        bubbleBody.setUserData(null);
         Filter spareDude = new Filter();// Bubblan ska inte kunna skada dude mer
         spareDude.maskBits = FLOOR_WALL_ROOF;// Bubblan ska inte kunna skada dude mer
         bubbleBody.getFixtureList().get(0).setFilterData(spareDude);// Bubblan ska inte kunna skada dude mer
@@ -441,5 +444,7 @@ public class Bubble extends Sprite {
 
         return myBoubbles;
     }
+
+
 
 }
