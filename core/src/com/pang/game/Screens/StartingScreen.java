@@ -27,6 +27,7 @@ public class StartingScreen implements Screen {
         orthographicCamera = new OrthographicCamera();
         //Sätt storlek på viewport  och skalera
         viewPort = new FitViewport(WORLD_WIDTH,WORLD_HEIGHT, orthographicCamera);
+        System.out.println(sprite.getWidth()+"  "+ sprite.getHeight());
         orthographicCamera.position.set((viewPort.getWorldWidth()/2 ), (viewPort.getWorldHeight()/2), 0);
     }
     @Override
