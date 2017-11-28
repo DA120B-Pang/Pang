@@ -119,6 +119,7 @@ public class Dude extends Sprite {
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.Z) || isShooting){//dude skjuter
             if(!isShooting) {
+
                 dudeBody.setLinearVelocity((0f), 0);
                 assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f);
                 isShooting = true;
@@ -243,3 +244,4 @@ public class Dude extends Sprite {
         super.draw(batch);
     }
 }
+

@@ -2,6 +2,7 @@ package com.pang.game.Screens;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,6 +21,8 @@ import com.pang.game.Pang;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.DoubleBoubble;
 import com.pang.game.Sprites.Dude;
+import com.pang.game.Sprites.Shot;
+
 
 import java.util.ArrayList;
 
@@ -29,6 +32,7 @@ import static com.pang.game.Sprites.Bubble.BubbleState.*;
 
 
 public class Level1 implements Screen {
+
     private BubbleHandler bubbleHandler;
     private Pang game;
     private OrthographicCamera orthographicCamera;
@@ -42,13 +46,16 @@ public class Level1 implements Screen {
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
 
+
+    private Shot shot;
     private Dude dude;
     private boolean endMusicStarted;
     private ArrayList<Bubble> myBubbles = new ArrayList<>();
     private ArrayList<Bubble> myDestoyedBubbles = new ArrayList<>();
     private float gameOverTimer;
-
     public Level1(Pang game){
+
+
         bubbleHandler = new BubbleHandler();
         this.game = game;
         game.batch.flush();
@@ -146,10 +153,16 @@ public class Level1 implements Screen {
         game.batch.setProjectionMatrix(orthographicCamera.combined);
 
         game.batch.begin();
+
         //Rita dude
         dude.draw(game.batch);
+
+        //Rita shot
+        //shot.draw(game.batch);
+
         //Rita bubbla
         bubbleHandler.renderer(game.batch);
+
 
         game.batch.end();
 
