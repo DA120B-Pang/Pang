@@ -3,52 +3,59 @@ sprites.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Player All2
+explosionXS
   rotate: false
-  xy: 1, 237
-  size: 397, 211
-  orig: 397, 211
-  offset: 0, 0
-  index: -1
-Balloons
-  rotate: false
-  xy: 1, 75
-  size: 387, 160
-  orig: 387, 160
-  offset: 0, 0
-  index: -1
-explosionXL
-  rotate: false
-  xy: 400, 178
-  size: 270, 270
-  orig: 270, 270
-  offset: 0, 0
-  index: -1
-explosionL
-  rotate: false
-  xy: 672, 238
-  size: 210, 210
-  orig: 210, 210
-  offset: 0, 0
-  index: -1
-explosionM
-  rotate: false
-  xy: 884, 310
-  size: 138, 138
-  orig: 138, 138
+  xy: 1, 447
+  size: 36, 36
+  orig: 36, 36
   offset: 0, 0
   index: -1
 explosionS
   rotate: false
-  xy: 1, 1
+  xy: 39, 411
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
-explosionXS
+explosionM
   rotate: false
-  xy: 672, 200
-  size: 36, 36
-  orig: 36, 36
+  xy: 113, 345
+  size: 138, 138
+  orig: 138, 138
+  offset: 0, 0
+  index: -1
+Balloons
+  rotate: false
+  xy: 253, 323
+  size: 387, 160
+  orig: 387, 160
+  offset: 0, 0
+  index: -1
+explosionL
+  rotate: false
+  xy: 642, 273
+  size: 210, 210
+  orig: 210, 210
+  offset: 0, 0
+  index: -1
+Player All2
+  rotate: false
+  xy: 1, 110
+  size: 397, 211
+  orig: 397, 211
+  offset: 0, 0
+  index: -1
+shot
+  rotate: false
+  xy: 854, 101
+  size: 34, 382
+  orig: 34, 382
+  offset: 0, 0
+  index: -1
+explosionXL
+  rotate: false
+  xy: 400, 1
+  size: 270, 270
+  orig: 270, 270
   offset: 0, 0
   index: -1

@@ -59,7 +59,6 @@ public class StartingScreen implements Screen {
     public void resize(int width, int height) {
         viewPort.update(width,height);
         orthographicCamera.position.set((viewPort.getWorldWidth()/2 ), (viewPort.getWorldHeight()/2), 0);
-        System.out.println(width+" "+height);
     }
 
     @Override

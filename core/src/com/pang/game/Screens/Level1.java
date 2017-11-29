@@ -175,7 +175,7 @@ public class Level1 implements Screen {
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
-
+        game.hud.stage.draw();
 
 
     }
