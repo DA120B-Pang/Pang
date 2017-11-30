@@ -27,6 +27,7 @@ public class StartingScreen implements Screen {
         orthographicCamera = new OrthographicCamera();
         //Sätt storlek på viewport  och skalera
         viewPort = new FitViewport(WORLD_WIDTH,WORLD_HEIGHT, orthographicCamera);
+        System.out.println(sprite.getWidth()+"  "+ sprite.getHeight());
         orthographicCamera.position.set((viewPort.getWorldWidth()/2 ), (viewPort.getWorldHeight()/2), 0);
     }
     @Override
@@ -48,9 +49,9 @@ public class StartingScreen implements Screen {
         game.batch.begin();
         sprite.draw(game.batch);
         game.batch.end();
-        if(screenTimer>5){
+        if(screenTimer>2){
             dispose();
-            game.setScreen(new Level1(game));
+            game.setScreen(new MainMenu(game));
 
         }
     }
