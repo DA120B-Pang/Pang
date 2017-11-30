@@ -6,39 +6,48 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
+import com.pang.game.Pang;
 
 
-import static com.pang.game.Constants.Constants.PPM;
+import java.util.ArrayList;
+
+import static com.pang.game.Constants.Constants.*;
 
 public class Shot extends Sprite {
 
     private Body shot;
+    private Texture shot1;
+    private World world;
     private boolean setToDestroyShot;
 
 
-    public static void shot(World world, Body dudeBody) {
-        Texture shot1;
+
+    public Shot(World world, Body dudeBody) {
+        this.world = world;
+
         BodyDef shotdef = new BodyDef();
         PolygonShape polygonshape = new PolygonShape();
         FixtureDef fixtureDef = new FixtureDef();
-        Body shot;
 
 
-        shotdef.type = BodyDef.BodyType.DynamicBody;
-        shotdef.position.set((dudeBody.getPosition().x), dudeBody.getPosition().y);
-
+        shotdef.type = BodyDef.BodyType.KinematicBody;
+        shotdef.position.set((dudeBody.getPosition().x), dudeBody.getPosition().y - 70/PPM);
 
         shot = world.createBody(shotdef);
 
         polygonshape.setAsBox(4 / PPM, 70 / PPM);
         fixtureDef.shape = polygonshape;
-        // fixtureDef.filter.categoryBits = BUBBLE;
+        fixtureDef.filter.categoryBits = SHOT;
+        fixtureDef.filter.maskBits = BUBBLE | ROOF;
 
         shot.createFixture(fixtureDef);
-        shot.setUserData("shot");
-        shot.setLinearVelocity(0, 3);
+        shot.setUserData(this);
+        shot.setLinearVelocity(0, 2);
         shot1 = new Texture("sprites/shot.png");
 
+
+    }
+    public void update(float dt){
 
     }
 
@@ -57,4 +66,10 @@ public class Shot extends Sprite {
 
     }
 
+    public void shotRemove(){
+        Filter filter = new Filter();
+        filter = shot.getFixtureList().get(0).getFilterData();
+        filter.maskBits = FLOOR_WALL_ROOF;
+        shot.getFixtureList().get(0).setFilterData(filter);
+    }
 }

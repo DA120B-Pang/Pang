@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.ContactHandling.ContactHandler;
 import com.pang.game.Creators.BubbleHandler;
 import com.pang.game.Creators.ConstructLevel;
+import com.pang.game.Creators.ShotHandler;
 import com.pang.game.Pang;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.DoubleBoubble;
@@ -34,6 +35,7 @@ import static com.pang.game.Sprites.Bubble.BubbleState.*;
 public class Level1 implements Screen {
 
     private BubbleHandler bubbleHandler;
+    private ShotHandler shotHandler;
     private Pang game;
     private OrthographicCamera orthographicCamera;
 
@@ -47,7 +49,6 @@ public class Level1 implements Screen {
     private Box2DDebugRenderer box2DDebugRenderer;
 
 
-    private Shot shot;
     private Dude dude;
     private boolean endMusicStarted;
     private ArrayList<Bubble> myBubbles = new ArrayList<>();
@@ -105,6 +106,8 @@ public class Level1 implements Screen {
         bubbleHandler.addBubble(new Bubble(world, MEDIUM, RED, new Vector2(250,200), game.assetManager,true));
         bubbleHandler.addBubble(new Bubble(world, SMALL, GREEN, new Vector2(250,200), game.assetManager,false));
         bubbleHandler.addBubble(new Bubble(world, XSMALL, GREEN, new Vector2(250,200), game.assetManager,true));
+
+        shotHandler = new ShotHandler(world, dude.dudeBody);
 }
 
     @Override
@@ -137,6 +140,7 @@ public class Level1 implements Screen {
         }
         //Updatera bubblor
         bubbleHandler.update(dt);
+        shotHandler.update(dt);
 
         //Uppdatera dude
         dude.update(dt);
@@ -153,7 +157,7 @@ public class Level1 implements Screen {
         //render map
         orthogonalTiledMapRenderer.render();
         //Debug linjer för box2d
-        //box2DDebugRenderer.render(world,orthographicCamera.combined);
+        box2DDebugRenderer.render(world,orthographicCamera.combined);
         game.batch.setProjectionMatrix(orthographicCamera.combined);
 
         game.batch.begin();

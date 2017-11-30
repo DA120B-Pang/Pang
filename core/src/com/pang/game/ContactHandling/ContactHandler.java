@@ -1,11 +1,14 @@
 package com.pang.game.ContactHandling;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.pang.game.Constants.Constants;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.Dude;
+import com.pang.game.Sprites.Shot;
 
 import static com.pang.game.Constants.Constants.*;
 import static com.pang.game.Constants.Constants.FLOOR_OR_WHOT.*;
+import static com.pang.game.Constants.Constants.ROOF;
 
 public class ContactHandler implements ContactListener {
     @Override
@@ -56,6 +59,9 @@ public class ContactHandler implements ContactListener {
                 //Userdata i dudes body är referensen till dude därför kan vi kalla på metoder via den
                 ((Dude)main.getBody().getUserData()).dudeDie();//Sätt att dude ska dö
                 break;
+            case SHOT | ROOF:
+                main = A.getBody().getUserData() instanceof Shot ? A:B;
+                ((Shot)main.getBody().getUserData()).shotRemove();
             default:
         }
 

@@ -110,6 +110,7 @@ public class Dude extends Sprite {
         //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
         dudeDie = new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 84, 69, 38, 32);
 
+
     }
 
     public void handleInput(float dt){
@@ -119,6 +120,7 @@ public class Dude extends Sprite {
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.Z) || isShooting){//dude skjuter
             if(!isShooting) {
+
 
                 dudeBody.setLinearVelocity((0f), 0);
                 assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f);
