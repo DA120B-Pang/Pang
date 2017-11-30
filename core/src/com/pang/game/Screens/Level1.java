@@ -2,6 +2,7 @@ package com.pang.game.Screens;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,6 +21,8 @@ import com.pang.game.Pang;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.DoubleBoubble;
 import com.pang.game.Sprites.Dude;
+import com.pang.game.Sprites.Shot;
+
 
 import java.util.ArrayList;
 
@@ -29,6 +32,7 @@ import static com.pang.game.Sprites.Bubble.BubbleState.*;
 
 
 public class Level1 implements Screen {
+
     private BubbleHandler bubbleHandler;
     private Pang game;
     private OrthographicCamera orthographicCamera;
@@ -42,16 +46,20 @@ public class Level1 implements Screen {
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
 
+
+    private Shot shot;
     private Dude dude;
     private boolean endMusicStarted;
     private ArrayList<Bubble> myBubbles = new ArrayList<>();
     private ArrayList<Bubble> myDestoyedBubbles = new ArrayList<>();
     private float gameOverTimer;
-
     public Level1(Pang game){
+
+
         bubbleHandler = new BubbleHandler();
         this.game = game;
-        game.batch.flush();
+
+        game.hud.startTimer();
         gameOverTimer = 0;
         endMusicStarted = false;
         //Ladda musik till assetmanagern
@@ -122,7 +130,9 @@ public class Level1 implements Screen {
             gameOverTimer += dt;
             if(!endMusicStarted){
                 musicEnd();
+                game.hud.takeLife();
             }
+            game.hud.stopTimer();
             bubbleHandler.setToSleep();//Stoppa bubblor
         }
         //Updatera bubblor
@@ -130,6 +140,7 @@ public class Level1 implements Screen {
 
         //Uppdatera dude
         dude.update(dt);
+        game.hud.update(dt);
     }
     @Override
     public void render(float dt) {
@@ -142,27 +153,41 @@ public class Level1 implements Screen {
         //render map
         orthogonalTiledMapRenderer.render();
         //Debug linjer för box2d
-        box2DDebugRenderer.render(world,orthographicCamera.combined);
+        //box2DDebugRenderer.render(world,orthographicCamera.combined);
         game.batch.setProjectionMatrix(orthographicCamera.combined);
 
         game.batch.begin();
+
         //Rita dude
         dude.draw(game.batch);
+
+        //Rita shot
+        //shot.draw(game.batch);
+
         //Rita bubbla
         bubbleHandler.renderer(game.batch);
 
+
         game.batch.end();
 
+        if(gameOverTimer>4) {
+            if (game.hud.getLives() == 0) {//Tillfällig lösning för att byta skärm
+                game.setScreen(new GameOverScreen(game));
+                dispose();
+            }
+            else{
 
-        if(gameOverTimer>4){//Tillfällig lösning för att byta skärm
-            game.setScreen(new GameOverScreen(game));
-            dispose();
+                game.hud.newLevel(100);
+                game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).stop();
+                dispose();
+                game.setScreen(new Level1(game));
+            }
         }
         if(bubbleHandler.getBubbles()==0){//Tillfällig lösning för att byta skärm
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
-
+        game.hud.stage.draw();
 
 
     }
