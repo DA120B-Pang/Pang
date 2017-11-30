@@ -5,9 +5,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.pang.game.HUD.HUD;
 import com.pang.game.Screens.Level1;
 import com.pang.game.Screens.StartingScreen;
@@ -21,6 +24,7 @@ public class Pang extends Game {
 	public ArrayList<Sprite> dudeLives;
 	public HUD hud;
 	public SpriteBatch batch;
+	public BitmapFont font;
 
 
 	@Override
@@ -36,6 +40,8 @@ public class Pang extends Game {
 		assetManager.finishLoading();
 		batch = new SpriteBatch();
 
+		initFonts();
+
 		dudeLives = new ArrayList<>();
 		for (int i = 0; i <5 ; i++) {
 			Sprite sprite = new Sprite();
@@ -48,6 +54,15 @@ public class Pang extends Game {
 		hud = new HUD(this);
 		setScreen(new StartingScreen(this));//Starta med Meny
 
+	}
+
+	private void initFonts() {
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/Arcon.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+		parameter.size = 10;
+		parameter.color = Color.BLACK;
+		font = generator.generateFont(parameter);
 	}
 
 	@Override
