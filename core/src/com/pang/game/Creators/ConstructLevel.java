@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import static com.pang.game.Constants.Constants.FLOOR_OR_WHOT.*;
 import static com.pang.game.Constants.Constants.*;
+import static com.pang.game.Constants.Constants.FLOOR_OR_WHOT.ID_ROOF;
 
 public class ConstructLevel {
     public final static void createWallFloorRoof(World world, TiledMap tiledMap, int layer) throws Exception{
@@ -15,7 +16,7 @@ public class ConstructLevel {
         FixtureDef fixtureDef = new FixtureDef();
         Body body;
         int test;
-        FLOOR_OR_WHOT type = FLOOR;
+        FLOOR_OR_WHOT type = ID_FLOOR;
 
         for (MapObject o: tiledMap.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rectangle = ((RectangleMapObject) o).getRectangle();
@@ -26,18 +27,22 @@ public class ConstructLevel {
 
             polygonshape.setAsBox((rectangle.getWidth()/2)/PPM, (rectangle.getHeight()/2)/PPM);
             fixtureDef.shape = polygonshape;
-            fixtureDef.filter.categoryBits = FLOOR_WALL_ROOF;
+            fixtureDef.filter.categoryBits = FLOOR_WALL;
+            fixtureDef.filter.maskBits = -1;
             switch(o.getName()){
                 case "floor":
-                    type = FLOOR;
+                    type = ID_FLOOR;
                     break;
                 case "roof":
-                    type = ROOF;
+                    type = ID_ROOF;
+                    fixtureDef.filter.categoryBits = ROOF;
+                    fixtureDef.filter.maskBits = BUBBLE | SHOT;
+                    break;
                 case "left":
-                    type = LEFT_WALL;
+                    type = ID_LEFT_WALL;
                     break;
                 case "right":
-                    type = RIGHT_WALL;
+                    type = ID_RIGHT_WALL;
                     break;
                     default:
                         throw new Exception("Kunde inte hitta namn på tak,golv eller väggar. Kolla i map editorn så namnen är rätt. \n Tak = roof, Golv = floor, Vänster vägg = left & Höger vägg = right  ");

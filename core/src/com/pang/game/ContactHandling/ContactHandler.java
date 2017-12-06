@@ -1,13 +1,11 @@
 package com.pang.game.ContactHandling;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.pang.game.Constants.Constants;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.Dude;
 import com.pang.game.Sprites.Shot;
 
 import static com.pang.game.Constants.Constants.*;
-import static com.pang.game.Constants.Constants.FLOOR_OR_WHOT.*;
 import static com.pang.game.Constants.Constants.ROOF;
 
 public class ContactHandler implements ContactListener {
@@ -21,7 +19,7 @@ public class ContactHandler implements ContactListener {
         Fixture other;
 
         switch (category) {
-            case BUBBLE | FLOOR_WALL_ROOF://Bubbla och golv,väggar eller tak har kolliderat
+            case BUBBLE | FLOOR_WALL://Bubbla och golv,väggar eller tak har kolliderat
 
                 if (A.getBody().getUserData() instanceof Bubble) {//Kolla om A är en bubbla om inte så är B bubblan
                     main = A;
@@ -31,20 +29,20 @@ public class ContactHandler implements ContactListener {
                     other = A;
                 }
                 switch (((FLOOR_OR_WHOT)other.getBody().getUserData())) {//Userdata i väggar,golv och tak är enum på vilken typ det är.
-                    case FLOOR:
+                    case ID_FLOOR:
                         //UserData i body är bubblans referens därför kan vi kalla på metoder från bubblan
                         ((Bubble) main.getBody().getUserData()).bumpFloor();//Om bubbla kolliderat med golv ska den studsa, bumfloor i bubbleobject kallas på
                         break;
-                    case LEFT_WALL:
+                    case ID_LEFT_WALL:
                         ((Bubble) main.getBody().getUserData()).bumpLeftWall();//Om bubbla kolliderar med vänster vägg ska den ändra färdriktning åt höger.
                         break;
-                    case RIGHT_WALL:
+                    case ID_RIGHT_WALL:
                         ((Bubble) main.getBody().getUserData()).bumpRightWall();//Om bubbla kolliderar med höger vägg ska den ändra färdriktning åt vänster.
                         break;
                     default:
                 }
                 break;
-            case FLOOR_WALL_ROOF | DUDE: //Dude kolliderar med golv vägg eller tak... denna är till för dudes dödsryck när han studsar ut ur bild
+            case FLOOR_WALL | DUDE: //Dude kolliderar med golv vägg eller tak... denna är till för dudes dödsryck när han studsar ut ur bild
                 main = A.getBody().getUserData() instanceof Dude? A:B;//Kolla om Fixture A eller B är Dude
                 //Userdata i dudes body är referensen till dude därför kan vi kalla på metoder via den
                 if(((Dude)main.getBody().getUserData()).isDudeDead()){//Kolla om dude är död
@@ -61,7 +59,20 @@ public class ContactHandler implements ContactListener {
                 break;
             case SHOT | ROOF:
                 main = A.getBody().getUserData() instanceof Shot ? A:B;
-                ((Shot)main.getBody().getUserData()).shotRemove();
+                ((Shot)main.getBody().getUserData()).destroyNextUpdate();
+                break;
+            case SHOT | BUBBLE:
+                if( A.getBody().getUserData() instanceof Shot){
+                    main = A;
+                    other = B;
+                }
+                else{
+                    main = B;
+                    other = A;
+                }
+                ((Shot)main.getBody().getUserData()).destroyNextUpdate();
+                ((Bubble)other.getBody().getUserData()).destroyNextUpdate();
+
             default:
         }
 

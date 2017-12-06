@@ -1,6 +1,7 @@
 package com.pang.game.Creators;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.pang.game.HUD.HUD;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.DoubleBoubble;
 
@@ -36,11 +37,13 @@ public class BubbleHandler {
         }
     }
 
-    public void update(float dt) {//Kollar om bubblor ska skapas och förstöras
+    public void update(float dt, HUD hud) {//Kollar om bubblor ska skapas och förstöras
+
         for(Bubble b:myBubbles){
             b.update(dt);
             if (!b.isBubblesCreated() && b.isSetToDestroy()) {//Varje bubbla ska producera två nya bubblor om den inte har minsta storleken
                 myCreatedDoubles.add(b.createNewBubbles());
+                hud.addScore(b.getPoints());
             }
             if (b.isDestroyed()) {//Kollar vilka bubblor som ska bort
                 myBubblesToDestroy.add(b);
