@@ -5,17 +5,17 @@ public class Constants {
     public static final int WORLD_HEIGHT = 256;//510;
     public static final float PPM = 100;
     public enum FLOOR_OR_WHOT{
-        FLOOR,ROOF,LEFT_WALL,RIGHT_WALL
+        ID_FLOOR, ID_ROOF, ID_LEFT_WALL, ID_RIGHT_WALL
     }
 
 
     //Kategoribitar till box 2d ( för kollisioner ) finns totalt 16 kategorier i box2d
     public static final short FREEFALL = 0;
-    public static final short FLOOR_WALL_ROOF = 1;
+    public static final short FLOOR_WALL = 1;
     public static final short DUDE = 2;
     public static final short BUBBLE = 4;
     public static final short SHOT = 8;
-    public static final short UNDEFINED_5 = 16;
+    public static final short ROOF = 16;
     public static final short UNDEFINED_6 = 32;
     public static final short UNDEFINED_7 = 64;
     public static final short UNDEFINED_8 = 128;

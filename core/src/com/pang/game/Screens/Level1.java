@@ -7,6 +7,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.ContactHandling.ContactHandler;
 import com.pang.game.Creators.BubbleHandler;
 import com.pang.game.Creators.ConstructLevel;
+import com.pang.game.Creators.ShotHandler;
 import com.pang.game.Pang;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.DoubleBoubble;
@@ -36,8 +39,10 @@ public class Level1 implements Screen {
     private BubbleHandler bubbleHandler;
     private Pang game;
     private OrthographicCamera orthographicCamera;
+    private OrthographicCamera shotsOrthographicCamera;
 
     private Viewport viewPort;
+    private Viewport shotsViewPort;
 
     private TmxMapLoader tmxMapLoader;
     private TiledMap tiledMap;
@@ -45,9 +50,9 @@ public class Level1 implements Screen {
 
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
+    private Sprite mapBottom;
 
 
-    private Shot shot;
     private Dude dude;
     private boolean endMusicStarted;
     private ArrayList<Bubble> myBubbles = new ArrayList<>();
@@ -70,14 +75,22 @@ public class Level1 implements Screen {
         game.assetManager.get("audio/music/overworld.ogg",Music.class).setVolume(0.7f);
         game.assetManager.get("audio/music/overworld.ogg",Music.class).play();
 
+        mapBottom = new Sprite();
+        mapBottom.setRegion(new Texture(Gdx.files.internal("maps/Level1Bottom.png")));
+        mapBottom.setBounds(0,0,384/PPM,56/PPM);
+
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         orthographicCamera = new OrthographicCamera();
+        shotsOrthographicCamera = new OrthographicCamera();
+
         //Sätt storlek på viewport  och skalera  då box2d har enheten meter så delar vi med pixels per meter
         viewPort = new FitViewport(((WORLD_WIDTH))/PPM,(WORLD_HEIGHT)/PPM, orthographicCamera);
         viewPort.apply();
+        shotsViewPort = new FitViewport(viewPort.getWorldWidth(),viewPort.getWorldHeight()-(viewPort.getWorldHeight()*0.21875f), shotsOrthographicCamera);
         //Kamera för att visa spelyta
-        orthographicCamera.position.set(((viewPort.getWorldWidth())/2), ((viewPort.getWorldHeight()+300)/2), 0);
+        orthographicCamera.position.set(((viewPort.getWorldWidth())/2), ((viewPort.getWorldHeight())/2), 0);
+        shotsOrthographicCamera.position.set(((shotsViewPort.getWorldWidth())/2), ((shotsViewPort.getWorldHeight())/2), 0);
 
         tmxMapLoader = new TmxMapLoader();
         tiledMap = tmxMapLoader.load("maps/level1.tmx");
@@ -102,9 +115,9 @@ public class Level1 implements Screen {
         //Bollar till start
         bubbleHandler.addBubble(new Bubble(world, XLARGE, GREEN, new Vector2(250,200), game.assetManager,true));
         bubbleHandler.addBubble(new Bubble(world, LARGE, BLUE, new Vector2(250,200), game.assetManager,false));
-        bubbleHandler.addBubble(new Bubble(world, MEDIUM, RED, new Vector2(250,200), game.assetManager,true));
-        bubbleHandler.addBubble(new Bubble(world, SMALL, GREEN, new Vector2(250,200), game.assetManager,false));
-        bubbleHandler.addBubble(new Bubble(world, XSMALL, GREEN, new Vector2(250,200), game.assetManager,true));
+        //bubbleHandler.addBubble(new Bubble(world, MEDIUM, RED, new Vector2(250,200), game.assetManager,true));
+       // bubbleHandler.addBubble(new Bubble(world, SMALL, GREEN, new Vector2(250,200), game.assetManager,false));
+       // bubbleHandler.addBubble(new Bubble(world, XSMALL, GREEN, new Vector2(250,200), game.assetManager,true));
 }
 
     @Override
@@ -136,7 +149,7 @@ public class Level1 implements Screen {
             bubbleHandler.setToSleep();//Stoppa bubblor
         }
         //Updatera bubblor
-        bubbleHandler.update(dt);
+        bubbleHandler.update(dt, game.hud);
 
         //Uppdatera dude
         dude.update(dt);
@@ -153,22 +166,24 @@ public class Level1 implements Screen {
         //render map
         orthogonalTiledMapRenderer.render();
         //Debug linjer för box2d
-        //box2DDebugRenderer.render(world,orthographicCamera.combined);
-        game.batch.setProjectionMatrix(orthographicCamera.combined);
+        box2DDebugRenderer.render(world,orthographicCamera.combined);
+        game.batch.setProjectionMatrix(orthographicCamera.combined);//.combined);
 
         game.batch.begin();
 
-        //Rita dude
-        dude.draw(game.batch);
+        dude.drawShot(game.batch);
+
 
         //Rita shot
         //shot.draw(game.batch);
 
         //Rita bubbla
         bubbleHandler.renderer(game.batch);
-
-
+        mapBottom.draw(game.batch);
+        //Rita dude
+        dude.draw(game.batch);
         game.batch.end();
+
 
         if(gameOverTimer>4) {
             if (game.hud.getLives() == 0) {//Tillfällig lösning för att byta skärm
@@ -187,6 +202,7 @@ public class Level1 implements Screen {
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
+
         game.hud.stage.draw();
 
 
@@ -196,6 +212,8 @@ public class Level1 implements Screen {
    public void resize(int width, int height) {//Vid ändring av Storlek på fönster ska Viewport och kamera uppdateras
         viewPort.update(width,height);
          orthographicCamera.position.set((viewPort.getWorldWidth()/2), (viewPort.getWorldHeight()/2), 0);
+         //shotsViewPort = new FitViewport(viewPort.getWorldWidth(),viewPort.getWorldHeight()-(viewPort.getWorldHeight()*0.21875f), shotsOrthographicCamera);
+         //shotsOrthographicCamera.position.set((shotsViewPort.getWorldWidth()/2), (shotsViewPort.getWorldHeight()/2), 0);
     }
 
     @Override

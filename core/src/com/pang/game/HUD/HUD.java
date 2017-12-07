@@ -146,11 +146,15 @@ public class HUD {
             lives--;
         }
     }
-
+    public void addScore(int score){
+        this.score += score;
+    }
 
     public void update(float dt){
         groupAddLife(lives);
         setTimeLeft(dt);
+        scoreLbl.setText(String.format("Score: %06d", score));
+
 
 
     }

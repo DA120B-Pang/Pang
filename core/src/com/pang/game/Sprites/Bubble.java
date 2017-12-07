@@ -25,16 +25,22 @@ public class Bubble extends Sprite {
     private boolean spawnSpdIsSet;
     private Animation explode;
     private boolean setToDestroy;
+    private boolean destroyNextUpdate;
     private boolean destroyed;
     private float explosionTimer;
     private boolean explosionSoundDone;
     private AssetManager assetManager;
     private boolean newBubblesCreated;
+    private boolean pointsCollected;
 
 
 
     public enum BubbleState {//Visar vilken storlek bubblan har
-        XLARGE,LARGE,MEDIUM,SMALL,XSMALL
+        XLARGE(100),LARGE(90),MEDIUM(80),SMALL(70),XSMALL(60);
+        private final int value;
+        BubbleState(int value){
+            this.value = value ;
+        }
     }
     public enum BubbleColor {//Visar vilken färg bubblan har
         BLUE,RED,GREEN
@@ -57,8 +63,10 @@ public class Bubble extends Sprite {
         explosionTimer = 0f;
         destroyed = false;
         setToDestroy = false;
+        destroyNextUpdate = false;
         explosionSoundDone = false;
         newBubblesCreated = false;
+        pointsCollected = false;
 
         switch (state) {
             case XLARGE:
@@ -194,7 +202,7 @@ public class Bubble extends Sprite {
 
         bubbleFixDef.filter.categoryBits = BUBBLE;
         //Dude ska kollidera med boll och
-        bubbleFixDef.filter.maskBits = DUDE | FLOOR_WALL_ROOF;//
+        bubbleFixDef.filter.maskBits =  DUDE | FLOOR_WALL | ROOF | SHOT;//
 
         //Fäster en form till kroppen
         bubbleBody.createFixture(bubbleFixDef);
@@ -230,11 +238,12 @@ public class Bubble extends Sprite {
 
     public void update(float dt) {
 
-            if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 )&& size==XSMALL
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2 )&& size==SMALL
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3 )&& size==MEDIUM
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_4 )&& size==LARGE
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_5 )&& size==XLARGE){
+            if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 )&& size==XSMALL//Bara för test ska tas bort
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2 )&& size==SMALL//Bara för test ska tas bort
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3 )&& size==MEDIUM//Bara för test ska tas bort
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_4 )&& size==LARGE//Bara för test ska tas bort
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_5 )&& size==XLARGE//Bara för test ska tas bort
+                    || destroyNextUpdate){
                 //setToSleep();
                 setToDestroy();
             }
@@ -292,13 +301,23 @@ public class Bubble extends Sprite {
     public boolean isDestroyed() {//Visar om bubblan är förstörd denna status får bubblan när explosions animationen är klar.
         return destroyed;
     }
-
+    public int getPoints(){
+        if (destroyNextUpdate && !pointsCollected){
+            return size.value;
+        }
+        else{
+            return 0;
+        }
+    }
+    public void destroyNextUpdate(){
+        destroyNextUpdate = true;
+        Filter spareDude = new Filter();// Bubblan ska inte kunna skada dude mer
+        spareDude.maskBits = FLOOR_WALL;// Bubblan ska inte kunna skada dude mer
+        bubbleBody.getFixtureList().get(0).setFilterData(spareDude);// Bubblan ska inte kunna skada dude mer
+    }
     public void setToDestroy(){//Sätter att bubblan ska förstöras.. denna ska anropas i contact handlern. När bubblan blir skjuten
         bubbleBody.setActive(false);
         bubbleBody.setUserData(null);
-        Filter spareDude = new Filter();// Bubblan ska inte kunna skada dude mer
-        spareDude.maskBits = FLOOR_WALL_ROOF;// Bubblan ska inte kunna skada dude mer
-        bubbleBody.getFixtureList().get(0).setFilterData(spareDude);// Bubblan ska inte kunna skada dude mer
         setToDestroy = true;
     }
 
