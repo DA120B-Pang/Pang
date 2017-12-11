@@ -26,14 +26,22 @@ public class BubbleHandler {
         return myBubbles.size();
     }
     public void renderer(Batch batch){//För att rita alla bubblor
-        for (Bubble b: myBubbles){
-            b.draw(batch);
+        for (int i = myBubbles.size()-1; i >=0 ; i--) {
+
+         //(Bubble b: myBubbles){
+            myBubbles.get(i).draw(batch);
         }
     }
 
     public void setToSleep(){//Stoppar alla bubblor
         for (Bubble b:myBubbles){
             b.setToSleep();
+        }
+    }
+
+    public void setToAwake(){
+        for (Bubble b:myBubbles){
+            b.setToAwake();
         }
     }
 

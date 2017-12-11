@@ -65,6 +65,7 @@ public class MainMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new Level1(game));
+                dispose();
             }
                                });
 
@@ -134,6 +135,7 @@ public class MainMenu implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
 
     }
 

@@ -58,22 +58,20 @@ public class Level1 implements Screen {
     private ArrayList<Bubble> myBubbles = new ArrayList<>();
     private ArrayList<Bubble> myDestoyedBubbles = new ArrayList<>();
     private float gameOverTimer;
+    private boolean startUpIsDone;
+
     public Level1(Pang game){
 
 
         bubbleHandler = new BubbleHandler();
         this.game = game;
 
-        game.hud.startTimer();
         gameOverTimer = 0;
         endMusicStarted = false;
         //Ladda musik till assetmanagern
         game.assetManager.load("audio/music/overworld.ogg", Music.class);
         game.assetManager.load("audio/music/nighttideWaltz.ogg", Music.class);
         game.assetManager.finishLoading();
-        game.assetManager.get("audio/music/overworld.ogg",Music.class).setLooping(true);
-        game.assetManager.get("audio/music/overworld.ogg",Music.class).setVolume(0.7f);
-        game.assetManager.get("audio/music/overworld.ogg",Music.class).play();
 
         mapBottom = new Sprite();
         mapBottom.setRegion(new Texture(Gdx.files.internal("maps/Level1Bottom.png")));
@@ -113,11 +111,17 @@ public class Level1 implements Screen {
         //Skapa dude
         dude = new Dude(world,game.assetManager,new Vector2(150f,70f));
         //Bollar till start
-        bubbleHandler.addBubble(new Bubble(world, XLARGE, GREEN, new Vector2(250,200), game.assetManager,true));
-        bubbleHandler.addBubble(new Bubble(world, LARGE, BLUE, new Vector2(250,200), game.assetManager,false));
+        bubbleHandler.addBubble(new Bubble(world, XLARGE, GREEN, new Vector2(250,200), game.assetManager,true, LARGE));
+        bubbleHandler.addBubble(new Bubble(world, LARGE, BLUE, new Vector2(250,200), game.assetManager,false, MEDIUM));
         //bubbleHandler.addBubble(new Bubble(world, MEDIUM, RED, new Vector2(250,200), game.assetManager,true));
        // bubbleHandler.addBubble(new Bubble(world, SMALL, GREEN, new Vector2(250,200), game.assetManager,false));
        // bubbleHandler.addBubble(new Bubble(world, XSMALL, GREEN, new Vector2(250,200), game.assetManager,true));
+
+        dude.setToSleep();
+        bubbleHandler.setToSleep();
+        startUpIsDone = false;
+        game.hud.newLevel(100);
+        game.hud.startTimer();
 }
 
     @Override
@@ -131,6 +135,15 @@ public class Level1 implements Screen {
         game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).play();
         game.assetManager.get("audio/music/overworld.ogg",Music.class).stop();
         endMusicStarted = true;//Kvittera att musik är startad
+    }
+    private void musicStart(){
+        game.assetManager.get("audio/music/overworld.ogg",Music.class).setLooping(true);
+        game.assetManager.get("audio/music/overworld.ogg",Music.class).setVolume(0.7f);
+        game.assetManager.get("audio/music/overworld.ogg",Music.class).play();
+
+    }
+    private void musicStop(){
+        game.assetManager.get("audio/music/overworld.ogg",Music.class).stop();
     }
 
     private void update(float dt){
@@ -153,7 +166,16 @@ public class Level1 implements Screen {
 
         //Uppdatera dude
         dude.update(dt);
+
         game.hud.update(dt);
+
+        if(game.hud.startGame()){
+            dude.setToAwake();
+            bubbleHandler.setToAwake();
+            game.hud.gameIsStarted();
+            musicStart();
+            startUpIsDone = true;
+        }
     }
     @Override
     public void render(float dt) {
@@ -173,10 +195,6 @@ public class Level1 implements Screen {
 
         dude.drawShot(game.batch);
 
-
-        //Rita shot
-        //shot.draw(game.batch);
-
         //Rita bubbla
         bubbleHandler.renderer(game.batch);
         mapBottom.draw(game.batch);
@@ -187,33 +205,27 @@ public class Level1 implements Screen {
 
         if(gameOverTimer>4) {
             if (game.hud.getLives() == 0) {//Tillfällig lösning för att byta skärm
-                game.setScreen(new GameOverScreen(game));
                 dispose();
+                game.setScreen(new GameOverScreen(game));
             }
             else{
-
                 game.hud.newLevel(100);
-                game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).stop();
                 dispose();
-                game.setScreen(new Level1(game));
+                game.setScreen(new DeadScreen(game));
             }
         }
         if(bubbleHandler.getBubbles()==0){//Tillfällig lösning för att byta skärm
-            game.setScreen(new GameOverScreen(game));
+            musicStop();
+            game.setScreen(new LevelCompleteScreen(game));
             dispose();
         }
-
         game.hud.stage.draw();
-
-
     }
 
      @Override
    public void resize(int width, int height) {//Vid ändring av Storlek på fönster ska Viewport och kamera uppdateras
         viewPort.update(width,height);
          orthographicCamera.position.set((viewPort.getWorldWidth()/2), (viewPort.getWorldHeight()/2), 0);
-         //shotsViewPort = new FitViewport(viewPort.getWorldWidth(),viewPort.getWorldHeight()-(viewPort.getWorldHeight()*0.21875f), shotsOrthographicCamera);
-         //shotsOrthographicCamera.position.set((shotsViewPort.getWorldWidth()/2), (shotsViewPort.getWorldHeight()/2), 0);
     }
 
     @Override

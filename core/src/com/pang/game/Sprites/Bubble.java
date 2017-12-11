@@ -15,7 +15,8 @@ import static com.pang.game.Sprites.Bubble.BubbleState.*;
 
 public class Bubble extends Sprite {
     private World world;
-    private BubbleState size;
+    private BubbleState startSize;
+    private BubbleState minSize;
     private BubbleColor color;
     private Body bubbleBody;
     private float bubbleLinearSpd;
@@ -45,9 +46,15 @@ public class Bubble extends Sprite {
     public enum BubbleColor {//Visar vilken färg bubblan har
         BLUE,RED,GREEN
     }
-    public Bubble(World world, BubbleState state, BubbleColor color, Vector2 position, AssetManager assetManager,boolean spawnRight){
+    public Bubble(World world, BubbleState startSize, BubbleColor color, Vector2 position, AssetManager assetManager,boolean spawnRight, BubbleState minSize){
         this.assetManager = assetManager;
-        this.size = state;
+        this.startSize = startSize;
+        if (minSize.ordinal()<startSize.ordinal()){
+            this.minSize = startSize;
+        }
+        else{
+            this.minSize = minSize;
+        }
         this.color = color;
         this.world = world;
         int colorPosX = 0;
@@ -68,7 +75,7 @@ public class Bubble extends Sprite {
         newBubblesCreated = false;
         pointsCollected = false;
 
-        switch (state) {
+        switch (startSize) {
             case XLARGE:
                 bubbleBounceForce.y = 0.000409f;//Sätter hopp kraft i y uppåt
                 pictureWidth = 45;//Bredd på bild i atlas
@@ -178,7 +185,7 @@ public class Bubble extends Sprite {
         //Sätter storlek på sprite
         setBounds(0, 0, pictureWidth / PPM, pictureHeight / PPM);
         //Laddar explosions animation
-        explode = new Animation(0.04f,getExplosionAnimation(size,assetManager) );
+        explode = new Animation(0.04f,getExplosionAnimation(this.startSize,assetManager) );
         //Sätter grafik på boll
         setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, pictureWidth, pictureHeight));
 
@@ -238,11 +245,11 @@ public class Bubble extends Sprite {
 
     public void update(float dt) {
 
-            if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 )&& size==XSMALL//Bara för test ska tas bort
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2 )&& size==SMALL//Bara för test ska tas bort
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3 )&& size==MEDIUM//Bara för test ska tas bort
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_4 )&& size==LARGE//Bara för test ska tas bort
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_5 )&& size==XLARGE//Bara för test ska tas bort
+            if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 )&& startSize ==XSMALL//Bara för test ska tas bort
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2 )&& startSize ==SMALL//Bara för test ska tas bort
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3 )&& startSize ==MEDIUM//Bara för test ska tas bort
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_4 )&& startSize ==LARGE//Bara för test ska tas bort
+                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_5 )&& startSize ==XLARGE//Bara för test ska tas bort
                     || destroyNextUpdate){
                 //setToSleep();
                 setToDestroy();
@@ -255,7 +262,7 @@ public class Bubble extends Sprite {
         }
         else if(setToDestroy && !destroyed){//
             if(!explosionSoundDone) {
-                setExplodeSound(size, assetManager);
+                setExplodeSound(startSize, assetManager);
                 explosionSoundDone = true;
             }
             if(animateExplosion(dt)){
@@ -278,7 +285,7 @@ public class Bubble extends Sprite {
     public void dispose(){
         getTexture().dispose();
     }
-    public void draw(SpriteBatch batch) {//ritar bubbla om den inte är förstörd
+    public void draw(Batch batch) {//ritar bubbla om den inte är förstörd
         if(!destroyed) {
             super.draw(batch);
         }
@@ -294,6 +301,10 @@ public class Bubble extends Sprite {
         bubbleBody.setActive(false);
     }
 
+    public void setToAwake(){
+        bubbleBody.setActive(true);
+    }
+
     public void destroy(){//Raderar kropp från värld
         world.destroyBody(bubbleBody);
     }
@@ -303,7 +314,7 @@ public class Bubble extends Sprite {
     }
     public int getPoints(){
         if (destroyNextUpdate && !pointsCollected){
-            return size.value;
+            return startSize.value;
         }
         else{
             return 0;
@@ -441,21 +452,26 @@ public class Bubble extends Sprite {
     }
     public DoubleBoubble createNewBubbles(){//Skapar två nya bubblor om bubblan inte är av minsta sorten XSMALL.
         DoubleBoubble myBoubbles;
-        switch (size){
-            case XLARGE:
-                myBoubbles = new DoubleBoubble( world, LARGE, color, new Vector2(bubbleBody.getPosition().x*PPM,bubbleBody.getPosition().y*PPM), assetManager, 24f);
-                break;
-            case LARGE:
-                myBoubbles = new DoubleBoubble( world, MEDIUM, color, new Vector2(bubbleBody.getPosition().x*PPM,bubbleBody.getPosition().y*PPM), assetManager, 18f);
-                break;
-            case MEDIUM:
-                myBoubbles = new DoubleBoubble( world, SMALL, color, new Vector2(bubbleBody.getPosition().x*PPM,bubbleBody.getPosition().y*PPM), assetManager, 13f);
-                break;
-            case SMALL:
-                myBoubbles = new DoubleBoubble( world, XSMALL, color, new Vector2(bubbleBody.getPosition().x*PPM,bubbleBody.getPosition().y*PPM), assetManager, 7f);
-                break;
-            default:
-                myBoubbles = null;
+        if(startSize!=minSize) {
+            switch (startSize) {
+                case XLARGE:
+                    myBoubbles = new DoubleBoubble(world, LARGE, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 24f, minSize);
+                    break;
+                case LARGE:
+                    myBoubbles = new DoubleBoubble(world, MEDIUM, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 18f, minSize);
+                    break;
+                case MEDIUM:
+                    myBoubbles = new DoubleBoubble(world, SMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 13f, minSize);
+                    break;
+                case SMALL:
+                    myBoubbles = new DoubleBoubble(world, XSMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 7f, minSize);
+                    break;
+                default:
+                    myBoubbles = null;
+            }
+        }
+        else{
+            myBoubbles = null;
         }
         newBubblesCreated = true;
 

@@ -116,7 +116,7 @@ public class Dude extends Sprite {
 
     public void handleInput(float dt){
         float vel = 0;
-        if(isDudeDead()){
+        if(isDudeDead() || !dudeBody.isActive()){
             //Inget händer här
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.Z) || isShooting){//dude skjuter
@@ -145,6 +145,15 @@ public class Dude extends Sprite {
             }
         }
     }
+
+    public void setToSleep(){
+        dudeBody.setActive(false);
+    }
+
+    public void setToAwake(){
+        dudeBody.setActive(true);
+    }
+
     public TextureRegion getAnimation(float dt){
         //Kolla vilket state dude har
         currentState = getState();
