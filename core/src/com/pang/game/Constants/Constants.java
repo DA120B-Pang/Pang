@@ -1,8 +1,8 @@
 package com.pang.game.Constants;
 
 public class Constants {
-    public static final int WORLD_WIDTH = 384;//765;
-    public static final int WORLD_HEIGHT = 256;//510;
+    public static final int WORLD_WIDTH = 384;//768;
+    public static final int WORLD_HEIGHT = 256;//512;
     public static final float PPM = 100;
     public enum FLOOR_OR_WHOT{
         ID_FLOOR, ID_ROOF, ID_LEFT_WALL, ID_RIGHT_WALL

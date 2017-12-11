@@ -244,8 +244,7 @@ public class Bubble extends Sprite {
     }
 
     public void update(float dt) {
-
-            if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 )&& startSize ==XSMALL//Bara för test ska tas bort
+                    if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 )&& startSize ==XSMALL//Bara för test ska tas bort
                     || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2 )&& startSize ==SMALL//Bara för test ska tas bort
                     || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3 )&& startSize ==MEDIUM//Bara för test ska tas bort
                     || Gdx.input.isKeyJustPressed(Input.Keys.NUM_4 )&& startSize ==LARGE//Bara för test ska tas bort

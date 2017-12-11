@@ -13,10 +13,16 @@ import java.util.ArrayList;
 
 public class ShotHandler {
 
-    public ArrayList<Shot> myShots;
-    public ArrayList<Shot> myDestroyedShots;
+    private ArrayList<Shot> myShots;
+    private ArrayList<Shot> myDestroyedShots;
+    private ShotTypeHandler type;
+
+    public enum ShotTypeHandler{
+        SINGLE,DOUBLE, BARB;
+    }
 
     public ShotHandler() {
+        type = ShotTypeHandler.SINGLE;
         myShots = new ArrayList<>();
         myDestroyedShots = new ArrayList<>();
 }
@@ -27,7 +33,22 @@ public class ShotHandler {
     public int getShotsFired(){
         return myShots.size();
     }
-
+    public boolean isReadyForShot(){
+        boolean ready = false;
+        switch (type){
+            case SINGLE:
+                if(myShots.size()<1){
+                    ready = true;
+                }
+                break;
+            case DOUBLE:
+                if(myShots.size()<2){
+                    ready = true;
+                }
+                break;
+        }
+        return ready;
+    }
     public void update(float dt){
 
         for(Shot s: myShots){
@@ -41,7 +62,7 @@ public class ShotHandler {
         }
         myDestroyedShots.clear();
     }
-    public void renderer(Batch batch){//För att rita alla bubblor
+    public void renderer(Batch batch){//För att rita alla skott
         for (Shot s: myShots){
             s.draws(batch);
         }

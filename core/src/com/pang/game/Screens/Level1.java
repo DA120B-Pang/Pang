@@ -2,7 +2,6 @@ package com.pang.game.Screens;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,12 +18,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.ContactHandling.ContactHandler;
 import com.pang.game.Creators.BubbleHandler;
 import com.pang.game.Creators.ConstructLevel;
-import com.pang.game.Creators.ShotHandler;
 import com.pang.game.Pang;
 import com.pang.game.Sprites.Bubble;
-import com.pang.game.Sprites.DoubleBoubble;
 import com.pang.game.Sprites.Dude;
-import com.pang.game.Sprites.Shot;
 
 
 import java.util.ArrayList;
@@ -39,10 +35,8 @@ public class Level1 implements Screen {
     private BubbleHandler bubbleHandler;
     private Pang game;
     private OrthographicCamera orthographicCamera;
-    private OrthographicCamera shotsOrthographicCamera;
 
     private Viewport viewPort;
-    private Viewport shotsViewPort;
 
     private TmxMapLoader tmxMapLoader;
     private TiledMap tiledMap;
@@ -80,15 +74,12 @@ public class Level1 implements Screen {
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         orthographicCamera = new OrthographicCamera();
-        shotsOrthographicCamera = new OrthographicCamera();
 
         //Sätt storlek på viewport  och skalera  då box2d har enheten meter så delar vi med pixels per meter
         viewPort = new FitViewport(((WORLD_WIDTH))/PPM,(WORLD_HEIGHT)/PPM, orthographicCamera);
         viewPort.apply();
-        shotsViewPort = new FitViewport(viewPort.getWorldWidth(),viewPort.getWorldHeight()-(viewPort.getWorldHeight()*0.21875f), shotsOrthographicCamera);
         //Kamera för att visa spelyta
         orthographicCamera.position.set(((viewPort.getWorldWidth())/2), ((viewPort.getWorldHeight())/2), 0);
-        shotsOrthographicCamera.position.set(((shotsViewPort.getWorldWidth())/2), ((shotsViewPort.getWorldHeight())/2), 0);
 
         tmxMapLoader = new TmxMapLoader();
         tiledMap = tmxMapLoader.load("maps/level1.tmx");

@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
@@ -30,17 +31,13 @@ public class LevelCompleteScreen implements Screen {
     private Label scoreTotal;
     private Stage stage;
     private float timer;
-    private Viewport viewport;
     private int timeBonusScore;
     private Animation animation;
     private Sprite sprite;
     private Label levelComplete;
-
-
-
-
-
+    private OrthographicCamera camera;
     private Viewport viewPort;
+
     public LevelCompleteScreen(Pang game){
         game.assetManager.load("audio/music/theEmpire.ogg", Music.class);
         game.assetManager.finishLoading();
@@ -53,9 +50,10 @@ public class LevelCompleteScreen implements Screen {
         frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 70, 105, 64, 64));
         animation = new Animation(0.2f, frames);
 
-
-        viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, game.batch);
+        camera = new OrthographicCamera();
+        viewPort = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        camera.position.set(((viewPort.getWorldWidth())/2), ((viewPort.getWorldHeight())/2), 0);
+        stage = new Stage(viewPort, game.batch);
         this.game = game;
         restartGame = false;
         game.hud.levelComplete();
@@ -71,11 +69,13 @@ public class LevelCompleteScreen implements Screen {
 
         levelComplete = new Label("Level complete", new Label.LabelStyle(scoreFont,scoreColor));
         levelComplete.setFontScale(0.7f);
-
+        //((viewPort.getWorldWidth()/2) - (sprite.getWidth()/2))
         timer = 0f;
         sprite = new Sprite();
-        sprite.setBounds(viewport.getWorldWidth()/2-32,viewport.getScreenHeight()/4,64,64);
-        System.out.println(viewport.getWorldWidth()/5+" "+sprite.getOriginX());
+
+        sprite.setBounds(0 ,0,64,64);
+        sprite.setPosition((viewPort.getWorldWidth()/2f - sprite.getWidth()/2),(viewPort.getWorldHeight()/1.7f - sprite.getHeight()/2));
+        System.out.println(viewPort.getWorldWidth()+" "+viewPort.getWorldHeight()+" "+sprite.getWidth()+" "+sprite.getHeight()+ " ");
         Table tableTop = new Table();
         tableTop.setFillParent(true);
         tableTop.top().padTop(5);
@@ -128,6 +128,7 @@ public class LevelCompleteScreen implements Screen {
         //Sätt skärmen svart
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        game.batch.setProjectionMatrix(camera.combined);//.combined);
         game.batch.begin();
         sprite.draw(game.batch);
         game.batch.end();
@@ -151,7 +152,8 @@ public class LevelCompleteScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        viewPort.update(width,height);
+        camera.position.set(((viewPort.getWorldWidth())/2), ((viewPort.getWorldHeight())/2), 0);
     }
 
     @Override

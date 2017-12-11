@@ -119,7 +119,7 @@ public class Dude extends Sprite {
         if(isDudeDead() || !dudeBody.isActive()){
             //Inget händer här
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.Z) || isShooting){//dude skjuter
+        else if((Gdx.input.isKeyJustPressed(Input.Keys.Z) && shotHandler.isReadyForShot()) || isShooting){//dude skjuter
             if(!isShooting) {
                 dudeBody.setLinearVelocity((0f), 0);
                 assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f);

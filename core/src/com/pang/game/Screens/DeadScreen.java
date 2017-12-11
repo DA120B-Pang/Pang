@@ -56,7 +56,7 @@ public class DeadScreen implements Screen {
         stage.addActor(table);
 
         Table tablebottom = new Table();
-        tablebottom.bottom();
+        tablebottom.bottom().padBottom(10f);
         tablebottom.setFillParent(true);
         tablebottom.add(pressToRestart);
 
