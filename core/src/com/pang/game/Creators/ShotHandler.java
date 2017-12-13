@@ -36,7 +36,7 @@ public class ShotHandler {
     public boolean isReadyForShot(){
         boolean ready = false;
         switch (type){
-            case SINGLE:
+            case SINGLE: case BARB:
                 if(myShots.size()<1){
                     ready = true;
                 }

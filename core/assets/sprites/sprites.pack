@@ -17,30 +17,37 @@ Balloons
   orig: 387, 160
   offset: 0, 0
   index: -1
+pangStuff
+  rotate: false
+  xy: 400, 248
+  size: 320, 200
+  orig: 320, 200
+  offset: 0, 0
+  index: -1
 explosionXL
   rotate: false
-  xy: 400, 178
+  xy: 722, 178
   size: 270, 270
   orig: 270, 270
   offset: 0, 0
   index: -1
 explosionL
   rotate: false
-  xy: 672, 238
+  xy: 400, 36
   size: 210, 210
   orig: 210, 210
   offset: 0, 0
   index: -1
 shots
   rotate: false
-  xy: 884, 245
+  xy: 612, 43
   size: 105, 203
   orig: 105, 203
   offset: 0, 0
   index: -1
 explosionM
   rotate: false
-  xy: 390, 38
+  xy: 719, 38
   size: 138, 138
   orig: 138, 138
   offset: 0, 0
@@ -54,7 +61,7 @@ explosionS
   index: -1
 explosionXS
   rotate: false
-  xy: 672, 200
+  xy: 859, 140
   size: 36, 36
   orig: 36, 36
   offset: 0, 0

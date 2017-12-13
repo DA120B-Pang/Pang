@@ -59,7 +59,7 @@ public class Shot extends Sprite {
         fixtureDef.shape = polygonshape;
         fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = SHOT;
-        fixtureDef.filter.maskBits = BUBBLE | ROOF;
+        fixtureDef.filter.maskBits = BUBBLE | ROOF | OBSTACLE;
 
 
         shot.createFixture(fixtureDef);

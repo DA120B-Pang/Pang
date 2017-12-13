@@ -16,9 +16,9 @@ public class Constants {
     public static final short BUBBLE = 4;
     public static final short SHOT = 8;
     public static final short ROOF = 16;
-    public static final short UNDEFINED_6 = 32;
-    public static final short UNDEFINED_7 = 64;
-    public static final short UNDEFINED_8 = 128;
+    public static final short OBSTACLE = 32;
+    public static final short OBSTACLE_TOP = 64;
+    public static final short OBSTACLE_SIDE = 128;
     public static final short UNDEFINED_9 = 256;
     public static final short UNDEFINED_10 = 512;
     public static final short UNDEFINED_11 = 1024;

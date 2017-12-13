@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.ContactHandling.ContactHandler;
 import com.pang.game.Creators.BubbleHandler;
 import com.pang.game.Creators.ConstructLevel;
+import com.pang.game.Creators.ObstacleHandler;
 import com.pang.game.Pang;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.Dude;
@@ -33,6 +34,7 @@ import static com.pang.game.Sprites.Bubble.BubbleState.*;
 public class Level1 implements Screen {
 
     private BubbleHandler bubbleHandler;
+    private ObstacleHandler obstacleHandler;
     private Pang game;
     private OrthographicCamera orthographicCamera;
 
@@ -49,14 +51,11 @@ public class Level1 implements Screen {
 
     private Dude dude;
     private boolean endMusicStarted;
-    private ArrayList<Bubble> myBubbles = new ArrayList<>();
-    private ArrayList<Bubble> myDestoyedBubbles = new ArrayList<>();
     private float gameOverTimer;
-    private boolean startUpIsDone;
 
     public Level1(Pang game){
 
-
+        obstacleHandler = new ObstacleHandler();
         bubbleHandler = new BubbleHandler();
         this.game = game;
 
@@ -93,24 +92,32 @@ public class Level1 implements Screen {
         world.setContactListener(new ContactHandler());
         //Debug renderer så vi kan se våra kroppars linjer. (dessa syns inte annars) ska bara användas under utveckling
         box2DDebugRenderer = new Box2DDebugRenderer();
-        //Läs in väggar golv och tak från "Tiled" karta
-        try{
+
+        try{//Läs in väggar golv och tak från "Tiled" karta
             ConstructLevel.createWallFloorRoof(world, tiledMap, 1);
-        }catch (Exception e){
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+        try {//Bollar till start från "Tiled" karta
+            ConstructLevel.createBubbles(game, bubbleHandler, world, tiledMap, 2);
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+
+        try{
+            ConstructLevel.createObstacles(game,obstacleHandler,world,tiledMap,3);
+        }
+        catch (Exception e){
             System.out.println(e);
         }
         //Skapa dude
         dude = new Dude(world,game.assetManager,new Vector2(150f,70f));
-        //Bollar till start
-        bubbleHandler.addBubble(new Bubble(world, XLARGE, GREEN, new Vector2(250,200), game.assetManager,true, LARGE));
-        bubbleHandler.addBubble(new Bubble(world, LARGE, BLUE, new Vector2(250,200), game.assetManager,false, MEDIUM));
-        //bubbleHandler.addBubble(new Bubble(world, MEDIUM, RED, new Vector2(250,200), game.assetManager,true));
-       // bubbleHandler.addBubble(new Bubble(world, SMALL, GREEN, new Vector2(250,200), game.assetManager,false));
-       // bubbleHandler.addBubble(new Bubble(world, XSMALL, GREEN, new Vector2(250,200), game.assetManager,true));
 
         dude.setToSleep();
         bubbleHandler.setToSleep();
-        startUpIsDone = false;
         game.hud.newLevel(100);
         game.hud.startTimer();
 }
@@ -152,6 +159,7 @@ public class Level1 implements Screen {
             game.hud.stopTimer();
             bubbleHandler.setToSleep();//Stoppa bubblor
         }
+        obstacleHandler.update(dt);
         //Updatera bubblor
         bubbleHandler.update(dt, game.hud);
 
@@ -165,7 +173,6 @@ public class Level1 implements Screen {
             bubbleHandler.setToAwake();
             game.hud.gameIsStarted();
             musicStart();
-            startUpIsDone = true;
         }
     }
     @Override
@@ -186,6 +193,7 @@ public class Level1 implements Screen {
 
         dude.drawShot(game.batch);
 
+        obstacleHandler.renderer(game.batch);
         //Rita bubbla
         bubbleHandler.renderer(game.batch);
         mapBottom.draw(game.batch);
@@ -195,7 +203,7 @@ public class Level1 implements Screen {
 
 
         if(gameOverTimer>4) {
-            if (game.hud.getLives() == 0) {//Tillfällig lösning för att byta skärm
+            if (game.hud.getLives() == 0) {//Dude är helt död
                 dispose();
                 game.setScreen(new GameOverScreen(game));
             }
@@ -205,7 +213,7 @@ public class Level1 implements Screen {
                 game.setScreen(new DeadScreen(game));
             }
         }
-        if(bubbleHandler.getBubbles()==0){//Tillfällig lösning för att byta skärm
+        if(bubbleHandler.getBubbles()==0){//Bana klar
             musicStop();
             game.setScreen(new LevelCompleteScreen(game));
             dispose();
