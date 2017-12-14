@@ -17,8 +17,8 @@ public class ObstacleHandler {
         myDestroyedObstacles = new ArrayList<>();
     }
 
-    public void addObstacle(Pang game, Rectangle rectangle, World world, Boolean colorYellow){
-        myObstacles.add(new Obstacle(game, rectangle, world, colorYellow));
+    public void addObstacle(Pang game, Rectangle rectangle, World world, boolean colorYellow, boolean isBreakable){
+        myObstacles.add(new Obstacle(game, rectangle, world, colorYellow, isBreakable));
     }
 
     public void update(float dt){

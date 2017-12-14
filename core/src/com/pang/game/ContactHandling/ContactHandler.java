@@ -3,6 +3,7 @@ package com.pang.game.ContactHandling;
 import com.badlogic.gdx.physics.box2d.*;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.Dude;
+import com.pang.game.Sprites.Obstacle;
 import com.pang.game.Sprites.Shot;
 
 import static com.pang.game.Constants.Constants.*;
@@ -91,6 +92,7 @@ public class ContactHandler implements ContactListener {
                     other = A;
                 }
                 ((Shot)main.getBody().getUserData()).destroyNextUpdate();
+                ((Obstacle)other.getBody().getUserData()).destroyNextUpdate();
                 break;
 
             default:

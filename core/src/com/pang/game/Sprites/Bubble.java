@@ -232,11 +232,11 @@ public class Bubble extends Sprite {
         //Position och storlek för (super)sprite när den ska ritas
     }
     private void checkSpd(){
-        if(bubbleBody.getLinearVelocity().x>bubbleLinearSpd || goingRight && bubbleBody.getLinearVelocity().x<bubbleLinearSpd ){
-            bubbleBody.setLinearVelocity(bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
+        if(bubbleBody.getLinearVelocity().x>bubbleLinearSpd || goingRight && bubbleBody.getLinearVelocity().x<bubbleLinearSpd-0.10f ){
+            bubbleBody.setLinearVelocity(bubbleLinearSpd-0.10f, bubbleBody.getLinearVelocity().y);
         }
-        else if(bubbleBody.getLinearVelocity().x<(-bubbleLinearSpd) || !goingRight && bubbleBody.getLinearVelocity().x>(-bubbleLinearSpd)){
-            bubbleBody.setLinearVelocity(-bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
+        else if(bubbleBody.getLinearVelocity().x<(-bubbleLinearSpd) || !goingRight && bubbleBody.getLinearVelocity().x>(-bubbleLinearSpd+0.10f)){
+            bubbleBody.setLinearVelocity(-bubbleLinearSpd+0.10f, bubbleBody.getLinearVelocity().y);
         }
     }
     public final void bumpLeftWall(){//Action för contact listenern när bubbla träffar vänster vägg
@@ -278,10 +278,6 @@ public class Bubble extends Sprite {
         float factor = (maxOut-minOut)/(maxIn-minIn);
         float offset = minOut - (minIn*factor);
         float force = (valueIn*factor)+offset;
-        if(color==BubbleColor.BLUE){
-            System.out.println("F"+(force));
-            System.out.println("H"+bubbleBody.getPosition().y);
-        }
         return force;
 
     }
@@ -302,17 +298,10 @@ public class Bubble extends Sprite {
         checkSpd();
         scaleForce();
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 )&& startSize ==XSMALL//Bara för test ska tas bort
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2 )&& startSize ==SMALL//Bara för test ska tas bort
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3 )&& startSize ==MEDIUM//Bara för test ska tas bort
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_4 )&& startSize ==LARGE//Bara för test ska tas bort
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_5 )&& startSize ==XLARGE//Bara för test ska tas bort
-                    || destroyNextUpdate){
-                //setToSleep();
-                setToDestroy();
-            }
+        if(destroyNextUpdate){
+            setToDestroy();
+        }
 
-        float offset = 2/PPM; //Offset för att korrigera position av sprite vid gång
         if(!setToDestroy) {//Slutar updatera position när spelare dör
             //Sätter Texture region till sprite
             setPosition(bubbleBody.getPosition().x - getWidth() / 2, bubbleBody.getPosition().y - getHeight() / 2);
@@ -337,7 +326,6 @@ public class Bubble extends Sprite {
             }
             spawnSpdIsSet = true;
         }
-
     }
     public void dispose(){
         getTexture().dispose();

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="16" tileheight="16" nextobjectid="43">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="16" tileheight="16" nextobjectid="45">
  <tileset firstgid="1" source="Backgrounds.tsx"/>
  <layer name="BG" width="24" height="16">
   <data encoding="base64" compression="zlib">
@@ -17,7 +17,9 @@
   <object id="38" name="B,XL,M,R," x="295" y="54"/>
  </objectgroup>
  <objectgroup name="Obstacles">
-  <object id="40" x="64" y="96" width="32" height="7"/>
-  <object id="42" x="266" y="118.5" width="32" height="7"/>
+  <object id="40" name="p,t," x="64" y="96" width="32" height="7"/>
+  <object id="42" name="y,f," x="266" y="118.5" width="32" height="7"/>
+  <object id="43" name="p,f," x="168" y="112.5" width="32" height="7"/>
+  <object id="44" name="y,t," x="58" y="139.5" width="32" height="7"/>
  </objectgroup>
 </map>

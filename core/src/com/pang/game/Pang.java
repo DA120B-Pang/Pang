@@ -34,6 +34,8 @@ public class Pang extends Game {
 		assetManager.load("audio/sound/boomLarge.wav", Sound.class);
 		assetManager.load("audio/sound/boomXlarge.wav", Sound.class);
 		assetManager.load("audio/sound/countDown.wav", Sound.class);
+		assetManager.load("audio/sound/tileBreak.wav", Sound.class);
+		assetManager.load("audio/sound/tileNonBreak.wav", Sound.class);
 		assetManager.finishLoading();
 		batch = new SpriteBatch();
 

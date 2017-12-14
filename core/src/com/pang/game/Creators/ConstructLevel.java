@@ -168,9 +168,64 @@ public class ConstructLevel {
 
     }
     public final static void createObstacles(Pang game, ObstacleHandler obstacleHandler, World world, TiledMap tiledMap, int layer) throws Exception {
-        for (MapObject o: tiledMap.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject o : tiledMap.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
+            String item[] = new String[2];//Färg en bokstav, startstorlek, stoppstorlek, spawn färdriktning;
+            String items;
+            int index = 0;
+            items = o.getName();
+            boolean colorYellow = false;
+            boolean isBreakable = false;
+            for (int i = 0; i < item.length; i++) {
+                do {
+                    String sub = items.substring(index, index + 1);
+                    index++;
+                    if (sub.equalsIgnoreCase(",")) {
+                        if (item[i] == null) {
+                            throw new Exception("Fel på index: " + i + " när hinder ska skapas");
+                        }
+
+                        break;
+                    } else {
+                        if (item[i] == null) {
+                            item[i] = sub;
+                        } else {
+                            item[i] += sub;
+                        }
+                    }
+                } while (true);
+            }
+            for (int i = 0; i < item.length; i++) {
+                switch (i) {
+                    case 0://Färg
+                        switch (item[i].toUpperCase()) {
+                            case "Y":
+                                colorYellow = true;
+                                break;
+                            case "P":
+                                colorYellow = false;
+                                break;
+                            default:
+                                throw new Exception("Fel ingen färg när hinder ska skapas");
+                        }
+                        break;
+                    case 1://Start storlek
+                        switch (item[i].toUpperCase()) {
+                            case "T":
+                                isBreakable = true;
+                                break;
+                            case "F":
+                                isBreakable = false;
+                                break;
+                            default:
+                                throw new Exception("Fel ingen status på isBreakable  när hinder ska skapas");
+                        }
+                        break;
+                    default:
+                        throw new Exception("Fel vid skapande av hinder");
+                }
+            }
             Rectangle rectangle = ((RectangleMapObject) o).getRectangle();
-            obstacleHandler.addObstacle(game,rectangle,world, true);
+            obstacleHandler.addObstacle(game, rectangle, world, colorYellow, isBreakable);
         }
     }
 }
