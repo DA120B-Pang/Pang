@@ -18,8 +18,8 @@
  </objectgroup>
  <objectgroup name="Obstacles">
   <object id="40" name="p,t," x="64" y="96" width="32" height="7"/>
-  <object id="42" name="y,f," x="266" y="118.5" width="32" height="7"/>
-  <object id="43" name="p,f," x="168" y="112.5" width="32" height="7"/>
-  <object id="44" name="y,t," x="58" y="139.5" width="32" height="7"/>
+  <object id="42" name="y,f," x="292.5" y="139.5" width="32" height="7"/>
+  <object id="43" name="p,f," x="185" y="99" width="32" height="7"/>
+  <object id="44" name="y,t," x="80" y="135.5" width="32" height="7"/>
  </objectgroup>
 </map>

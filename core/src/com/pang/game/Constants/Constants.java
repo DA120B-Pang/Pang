@@ -7,6 +7,9 @@ public class Constants {
     public enum FLOOR_OR_WHOT{
         ID_FLOOR, ID_ROOF, ID_LEFT_WALL, ID_RIGHT_WALL
     }
+    public enum PowerUp {
+        DOUBLESHOT, BARBSHOT, SHEILD, LIFE, STOPTIME
+    }
 
 
     //Kategoribitar till box 2d ( för kollisioner ) finns totalt 16 kategorier i box2d

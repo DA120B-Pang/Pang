@@ -85,7 +85,6 @@ public class Bubble extends Sprite {
                 pictureWidth = 45;//Bredd på bild i atlas
                 pictureHeight = 45;//Höjd på bild i atlas
                 radius = 22;//Radie på bubbla
-
                 switch (color){
                     case RED://Röd positioner på atlas
                         colorPosX = 1;
@@ -293,6 +292,7 @@ public class Bubble extends Sprite {
             bumpRightWall();
         }
     }
+
 
     public void update(float dt) {
         checkSpd();

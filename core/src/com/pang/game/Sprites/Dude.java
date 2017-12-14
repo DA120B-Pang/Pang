@@ -18,7 +18,7 @@ public class Dude extends Sprite {
     public Body dudeBody;
     private Animation goRight;
     private Animation goLeft;
-    public enum State { RUNLEFT, RUNRIGHT, STANDING, SHOOTING, DIE };
+    private enum State { RUNLEFT, RUNRIGHT, STANDING, SHOOTING, DIE };
     private State previousState;
     private State currentState;
     private AssetManager assetManager;

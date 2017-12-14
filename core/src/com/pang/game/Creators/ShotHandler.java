@@ -1,12 +1,10 @@
 package com.pang.game.Creators;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.pang.game.Constants.Constants.*;
 import com.pang.game.Sprites.Shot;
 
 import java.util.ArrayList;
@@ -29,7 +27,12 @@ public class ShotHandler {
     public void addShot(World world, Vector2 position, AssetManager assetManager){
         myShots.add(new Shot(world, position, assetManager, Shot.ShotType.STANDARD));
     }
+    public void powerUp(PowerUp powerUp){
+        switch (powerUp){
+            case DOUBLESHOT:
 
+        }
+    }
     public int getShotsFired(){
         return myShots.size();
     }

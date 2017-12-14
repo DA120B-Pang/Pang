@@ -20,15 +20,10 @@ import com.pang.game.Creators.BubbleHandler;
 import com.pang.game.Creators.ConstructLevel;
 import com.pang.game.Creators.ObstacleHandler;
 import com.pang.game.Pang;
-import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.Dude;
-
-
-import java.util.ArrayList;
-
 import static com.pang.game.Constants.Constants.*;
-import static com.pang.game.Sprites.Bubble.BubbleColor.*;
-import static com.pang.game.Sprites.Bubble.BubbleState.*;
+
+
 
 
 public class Level1 implements Screen {
