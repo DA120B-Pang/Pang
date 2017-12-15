@@ -45,6 +45,14 @@ public class BubbleHandler {
         }
     }
 
+    public int getDestroyables(){
+        int destroyables = 0;
+        for(Bubble b:myBubbles){
+            destroyables += b.getDestroyables();
+        }
+        return destroyables;
+    }
+
     public void update(float dt, HUD hud) {//Kollar om bubblor ska skapas och förstöras
 
         for(Bubble b:myBubbles){

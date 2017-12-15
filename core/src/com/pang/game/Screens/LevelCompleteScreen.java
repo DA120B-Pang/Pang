@@ -7,16 +7,12 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
 
@@ -33,10 +29,13 @@ public class LevelCompleteScreen implements Screen {
     private float timer;
     private int timeBonusScore;
     private Animation animation;
-    private Sprite sprite;
+    private Sprite spriteDude;
+    private Sprite spriteBubbleDude;
     private Label levelComplete;
     private OrthographicCamera camera;
     private Viewport viewPort;
+    private int loopTalk;
+    private boolean isTalking;
 
     public LevelCompleteScreen(Pang game){
         game.assetManager.load("audio/music/theEmpire.ogg", Music.class);
@@ -56,10 +55,12 @@ public class LevelCompleteScreen implements Screen {
         stage = new Stage(viewPort, game.batch);
         this.game = game;
         restartGame = false;
-        game.hud.levelComplete();
+        loopTalk = 0;
+        isTalking =false;
+
         timeBonusScore = game.hud.getTimeLeft()*10;
 
-        scoreFont = new BitmapFont(Gdx.files.internal("font/robot/size72.fnt"));
+        scoreFont = new BitmapFont(Gdx.files.internal("font/robot/size72getReady.fnt"));
         Color scoreColor = new Color(Color.WHITE);
         timeBonus = new Label(String.format("TimeBonus: %06d", timeBonusScore), new Label.LabelStyle(scoreFont,scoreColor));
         timeBonus.setFontScale(0.5f);
@@ -67,15 +68,19 @@ public class LevelCompleteScreen implements Screen {
         scoreTotal = new Label(String.format("Total score: %06d", game.hud.getScore()), new Label.LabelStyle(scoreFont,scoreColor));
         scoreTotal.setFontScale(0.5f);
 
-        levelComplete = new Label("Level complete", new Label.LabelStyle(scoreFont,scoreColor));
+        levelComplete = new Label("Level "+game.hud.getLevel()+" complete", new Label.LabelStyle(scoreFont,scoreColor));
         levelComplete.setFontScale(0.7f);
-        //((viewPort.getWorldWidth()/2) - (sprite.getWidth()/2))
-        timer = 0f;
-        sprite = new Sprite();
 
-        sprite.setBounds(0 ,0,64,64);
-        sprite.setPosition((viewPort.getWorldWidth()/2f - sprite.getWidth()/2),(viewPort.getWorldHeight()/1.7f - sprite.getHeight()/2));
-        System.out.println(viewPort.getWorldWidth()+" "+viewPort.getWorldHeight()+" "+sprite.getWidth()+" "+sprite.getHeight()+ " ");
+        timer = -5f;
+        game.hud.levelComplete();
+        spriteDude = new Sprite();
+        spriteDude.setBounds(0 ,0,64,64);
+        spriteBubbleDude = new Sprite();
+        spriteBubbleDude.setBounds(0,0,150,98);
+
+        spriteBubbleDude.setRegion(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("talkBubble"), 0, 0, 299, 220));
+        spriteDude.setPosition((viewPort.getWorldWidth()/2f - spriteDude.getWidth()/2),(viewPort.getWorldHeight()/1.7f - spriteDude.getHeight()/2));
+        spriteBubbleDude.setPosition(spriteDude.getX()+40,spriteDude.getY()+15);
         Table tableTop = new Table();
         tableTop.setFillParent(true);
         tableTop.top().padTop(5);
@@ -97,8 +102,26 @@ public class LevelCompleteScreen implements Screen {
 
     }
     private TextureRegion getRegion(float dt){
+        TextureRegion textureRegion = new TextureRegion();
         timer += dt;
-        return (TextureRegion) animation.getKeyFrame(timer,true);
+        if(timer>0f) {
+            textureRegion = (TextureRegion) animation.getKeyFrame(timer, false);
+            isTalking = true;
+            if (animation.isAnimationFinished(timer)){
+                loopTalk++;
+                if(loopTalk>4){
+                    timer = -7;
+                    isTalking = false;
+                    loopTalk = 0;
+                }
+                else{
+                    timer = 0;
+                }
+            }
+        }else{
+            textureRegion = (TextureRegion) animation.getKeyFrame(0, false);
+        }
+        return textureRegion;
     }
 
     private void musicStart(){
@@ -117,7 +140,7 @@ public class LevelCompleteScreen implements Screen {
     }
     public void update(float dt){
 
-        sprite.setRegion(getRegion(dt));
+        spriteDude.setRegion(getRegion(dt));
         handleInput(dt);
 
     }
@@ -129,22 +152,20 @@ public class LevelCompleteScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.setProjectionMatrix(camera.combined);//.combined);
+        stage.draw();
         game.batch.begin();
-        sprite.draw(game.batch);
+        spriteDude.draw(game.batch);
+        if(isTalking) {
+            spriteBubbleDude.draw(game.batch);
+        }
         game.batch.end();
 
-        stage.draw();
+
 
         if(restartGame){
             musicStop();
-            switch(game.hud.getLevel()) {
-                case 1:
-                    game.setScreen(new Level1(game));
-                    break;
-                case 2:
+            game.setScreen(new Level(game));
 
-                    break;
-            }
             game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).stop();
             dispose();
         }

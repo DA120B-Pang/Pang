@@ -68,7 +68,12 @@ public class ContactHandler implements ContactListener {
                 break;
             case SHOT | ROOF:
                 main = A.getBody().getUserData() instanceof Shot ? A:B;
-                ((Shot)main.getBody().getUserData()).destroyNextUpdate();
+                if(((Shot)main.getBody().getUserData()).getShotType() == Shot.ShotType.STANDARD) {//Förstör skott
+                    ((Shot) main.getBody().getUserData()).destroyNextUpdate();
+                }
+                else{//Stoppa skott om Barbskott
+                    ((Shot) main.getBody().getUserData()).setBarbStop();
+                }
                 break;
             case SHOT | BUBBLE:
                 if( A.getBody().getUserData() instanceof Shot){
@@ -91,7 +96,12 @@ public class ContactHandler implements ContactListener {
                     main = B;
                     other = A;
                 }
-                ((Shot)main.getBody().getUserData()).destroyNextUpdate();
+                if(((Shot)main.getBody().getUserData()).getShotType() == Shot.ShotType.STANDARD || ((Obstacle)other.getBody().getUserData()).isBreakable()) {//Förstör skott
+                    ((Shot) main.getBody().getUserData()).destroyNextUpdate();
+                }
+                else{//Stoppa skott om Barbskott
+                    ((Shot) main.getBody().getUserData()).setBarbStop();
+                }
                 ((Obstacle)other.getBody().getUserData()).destroyNextUpdate();
                 break;
 

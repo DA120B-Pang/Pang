@@ -21,6 +21,14 @@ public class ObstacleHandler {
         myObstacles.add(new Obstacle(game, rectangle, world, colorYellow, isBreakable));
     }
 
+    public int getDestroyables(){
+        int destroyables = 0;
+        for(Obstacle o:myObstacles){
+            destroyables += o.getDestroyables();
+        }
+        return destroyables;
+    }
+
     public void update(float dt){
 
         for(Obstacle o: myObstacles){

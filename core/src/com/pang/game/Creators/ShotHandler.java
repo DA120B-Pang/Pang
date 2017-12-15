@@ -8,12 +8,15 @@ import com.pang.game.Constants.Constants.*;
 import com.pang.game.Sprites.Shot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 public class ShotHandler {
 
     private ArrayList<Shot> myShots;
     private ArrayList<Shot> myDestroyedShots;
     private ShotTypeHandler type;
+    private ArrayList<PowerUp> myPowerUps;
 
     public enum ShotTypeHandler{
         SINGLE,DOUBLE, BARB;
@@ -23,18 +26,16 @@ public class ShotHandler {
         type = ShotTypeHandler.SINGLE;
         myShots = new ArrayList<>();
         myDestroyedShots = new ArrayList<>();
+        myPowerUps = new ArrayList<>();
 }
     public void addShot(World world, Vector2 position, AssetManager assetManager){
-        myShots.add(new Shot(world, position, assetManager, Shot.ShotType.STANDARD));
+        myShots.add(new Shot(world, position, assetManager, Shot.ShotType.BARB,this));
     }
     public void powerUp(PowerUp powerUp){
         switch (powerUp){
             case DOUBLESHOT:
 
         }
-    }
-    public int getShotsFired(){
-        return myShots.size();
     }
     public boolean isReadyForShot(){
         boolean ready = false;
@@ -69,5 +70,26 @@ public class ShotHandler {
         for (Shot s: myShots){
             s.draws(batch);
         }
+    }
+    public void loadPowerUps(PowerUp[] powerUps, int destroyables){//denna metoden portionerar ut power ups när object skjuts isönder kollas index 0 och tas sedan bort.
+        Random myRandom = new Random();
+        int myRandomNbr = 0;
+        ArrayList<PowerUp> tmpList = new ArrayList<>(Arrays.asList(new PowerUp[destroyables]));
+
+        for (int i = 0; i <powerUps.length ; i++) {
+            if(tmpList.size()<=i){//Fler powerups än breakables
+                break;
+            }
+            tmpList.set(i,powerUps[i]);
+        }
+        int random = 0;
+        do{
+            myRandomNbr = myRandom.nextInt(tmpList.size());
+            myPowerUps.add(tmpList.get(myRandomNbr));
+            tmpList.remove(myRandomNbr);
+
+        }while (tmpList.size()>0);
+        myPowerUps.size();
+
     }
 }

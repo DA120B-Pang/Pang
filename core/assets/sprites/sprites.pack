@@ -5,63 +5,70 @@ filter: Nearest,Nearest
 repeat: none
 Player All2
   rotate: false
-  xy: 1, 237
+  xy: 1, 787
   size: 397, 211
   orig: 397, 211
   offset: 0, 0
   index: -1
 Balloons
   rotate: false
-  xy: 1, 75
+  xy: 1, 625
   size: 387, 160
   orig: 387, 160
   offset: 0, 0
   index: -1
-pangStuff
-  rotate: false
-  xy: 400, 248
-  size: 320, 200
-  orig: 320, 200
-  offset: 0, 0
-  index: -1
 explosionXL
   rotate: false
-  xy: 722, 178
+  xy: 1, 353
   size: 270, 270
   orig: 270, 270
   offset: 0, 0
   index: -1
+pangStuff
+  rotate: false
+  xy: 400, 798
+  size: 320, 200
+  orig: 320, 200
+  offset: 0, 0
+  index: -1
+talkBubble
+  rotate: false
+  xy: 722, 778
+  size: 299, 220
+  orig: 299, 220
+  offset: 0, 0
+  index: -1
 explosionL
   rotate: false
-  xy: 400, 36
+  xy: 1, 141
   size: 210, 210
   orig: 210, 210
   offset: 0, 0
   index: -1
 shots
   rotate: false
-  xy: 612, 43
+  xy: 273, 420
   size: 105, 203
   orig: 105, 203
   offset: 0, 0
   index: -1
 explosionM
   rotate: false
-  xy: 719, 38
+  xy: 1, 1
   size: 138, 138
   orig: 138, 138
   offset: 0, 0
   index: -1
 explosionS
   rotate: false
-  xy: 1, 1
+  xy: 141, 67
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
 explosionXS
   rotate: false
-  xy: 859, 140
+  xy: 273, 382
   size: 36, 36
   orig: 36, 36
   offset: 0, 0

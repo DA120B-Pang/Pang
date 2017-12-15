@@ -92,7 +92,7 @@ public class Bubble extends Sprite {
                         break;
                     case BLUE://Blå positioner på atlas
                         colorPosX = 1;
-                        colorPosY= 52;
+                        colorPosY= 53;
                         break;
                     case GREEN://Grön positioner på atlas
                         colorPosX = 1;
@@ -103,7 +103,7 @@ public class Bubble extends Sprite {
             case LARGE:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.00023f;
-                bubbleBounceForceObstacale.y = 0.00010f;
+                bubbleBounceForceObstacale.y = 0.00007f;
                 pictureWidth = 35;
                 pictureHeight = 35;
                 radius = 17;
@@ -113,11 +113,11 @@ public class Bubble extends Sprite {
                         colorPosY = 11;
                         break;
                     case BLUE://Blå positioner på atlas
-                        colorPosX = 47;
+                        colorPosX = 46;
                         colorPosY = 57;
                         break;
                     case GREEN://Grön positioner på atlas
-                        colorPosX = 47;
+                        colorPosX = 46;
                         colorPosY = 104;
                         break;
                 }
@@ -125,7 +125,7 @@ public class Bubble extends Sprite {
             case MEDIUM:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.00008f;
-                bubbleBounceForceObstacale.y = 0.00008f;
+                bubbleBounceForceObstacale.y = 0.00005f;
                 pictureWidth = 23;
                 pictureHeight = 23;
                 radius = 11;
@@ -147,7 +147,7 @@ public class Bubble extends Sprite {
             case SMALL:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.000017f;
-                bubbleBounceForceObstacale.y = 0.000017f;
+                bubbleBounceForceObstacale.y = 0.000015f;
                 pictureWidth = 12;
                 pictureHeight = 12;
                 radius = 6;
@@ -382,10 +382,8 @@ public class Bubble extends Sprite {
     }
 
     private Array<TextureRegion> getExplosionAnimation(BubbleState size, AssetManager assetManager){//Skapar animation för explosion
-        //Skapa explotions animering
-        //Array för animationer
         String fileName;
-        Array<TextureRegion> frames = new Array<>();
+        Array<TextureRegion> frames = new Array<>();//Array för animationer
         int sizeImage, nbr2, nbr3, nbr4, nbr5, nbr6;
 
         switch(size){
@@ -522,6 +520,10 @@ public class Bubble extends Sprite {
 
 
         return myBoubbles;
+    }
+    public int getDestroyables(){
+        int generations = minSize.ordinal()-startSize.ordinal()+1;
+        return ((int)Math.pow(2,(generations))) - 1;//Hur många bubblor en bubbla kommer att resultera i.
     }
 
 

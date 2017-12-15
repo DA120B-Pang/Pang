@@ -136,4 +136,12 @@ public class Obstacle extends Sprite{
     public boolean isDestroyed(){
         return isDestroyed;
     }
+    public int getDestroyables() {
+        if(isBreakable){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }
 }
