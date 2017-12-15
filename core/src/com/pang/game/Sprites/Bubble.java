@@ -15,33 +15,48 @@ import static com.pang.game.Sprites.Bubble.BubbleState.*;
 
 public class Bubble extends Sprite {
     private World world;
-    private BubbleState size;
+    private BubbleState startSize;
+    private BubbleState minSize;
     private BubbleColor color;
     private Body bubbleBody;
     private float bubbleLinearSpd;
     private Vector2 bubbleBounceForce;
+    private Vector2 bubbleBounceForceObstacale;
+    private Vector2 bubbleBounceForceCalc;
     private boolean goingRight;
     private boolean spawnRight;
     private boolean spawnSpdIsSet;
     private Animation explode;
     private boolean setToDestroy;
+    private boolean destroyNextUpdate;
     private boolean destroyed;
     private float explosionTimer;
     private boolean explosionSoundDone;
     private AssetManager assetManager;
     private boolean newBubblesCreated;
+    private boolean pointsCollected;
 
 
 
     public enum BubbleState {//Visar vilken storlek bubblan har
-        XLARGE,LARGE,MEDIUM,SMALL,XSMALL
+        XLARGE(100),LARGE(90),MEDIUM(80),SMALL(70),XSMALL(60);
+        private final int value;
+        BubbleState(int value){
+            this.value = value ;
+        }
     }
     public enum BubbleColor {//Visar vilken färg bubblan har
         BLUE,RED,GREEN
     }
-    public Bubble(World world, BubbleState state, BubbleColor color, Vector2 position, AssetManager assetManager,boolean spawnRight){
+    public Bubble(World world, BubbleState startSize, BubbleColor color, Vector2 position, AssetManager assetManager,boolean spawnRight, BubbleState minSize){
         this.assetManager = assetManager;
-        this.size = state;
+        this.startSize = startSize;
+        if (minSize.ordinal()<startSize.ordinal()){
+            this.minSize = startSize;
+        }
+        else{
+            this.minSize = minSize;
+        }
         this.color = color;
         this.world = world;
         int colorPosX = 0;
@@ -51,22 +66,25 @@ public class Bubble extends Sprite {
         float radius = 0;
         this.spawnRight = spawnRight;
         bubbleLinearSpd = 0.0f;
+        bubbleBounceForceObstacale = new Vector2(0,0);
         bubbleBounceForce = new Vector2(0,0);
+        bubbleBounceForceCalc = new Vector2(0,0);
         bubbleLinearSpd = 0.65f;//Sätter horisontell hastighet
-        bubbleBounceForce.x = 0f;//Sätter hopp kraft i x alltid 0
         explosionTimer = 0f;
         destroyed = false;
         setToDestroy = false;
+        destroyNextUpdate = false;
         explosionSoundDone = false;
         newBubblesCreated = false;
+        pointsCollected = false;
 
-        switch (state) {
+        switch (startSize) {
             case XLARGE:
-                bubbleBounceForce.y = 0.000409f;//Sätter hopp kraft i y uppåt
+                bubbleBounceForce.y = 0.000409f; //0.000109f; //0.000409f;//Sätter hopp kraft i y uppåt
+                bubbleBounceForceObstacale.y = 0.000100f;
                 pictureWidth = 45;//Bredd på bild i atlas
                 pictureHeight = 45;//Höjd på bild i atlas
                 radius = 22;//Radie på bubbla
-
                 switch (color){
                     case RED://Röd positioner på atlas
                         colorPosX = 1;
@@ -74,7 +92,7 @@ public class Bubble extends Sprite {
                         break;
                     case BLUE://Blå positioner på atlas
                         colorPosX = 1;
-                        colorPosY= 52;
+                        colorPosY= 53;
                         break;
                     case GREEN://Grön positioner på atlas
                         colorPosX = 1;
@@ -85,6 +103,7 @@ public class Bubble extends Sprite {
             case LARGE:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.00023f;
+                bubbleBounceForceObstacale.y = 0.00007f;
                 pictureWidth = 35;
                 pictureHeight = 35;
                 radius = 17;
@@ -94,11 +113,11 @@ public class Bubble extends Sprite {
                         colorPosY = 11;
                         break;
                     case BLUE://Blå positioner på atlas
-                        colorPosX = 47;
+                        colorPosX = 46;
                         colorPosY = 57;
                         break;
                     case GREEN://Grön positioner på atlas
-                        colorPosX = 47;
+                        colorPosX = 46;
                         colorPosY = 104;
                         break;
                 }
@@ -106,6 +125,7 @@ public class Bubble extends Sprite {
             case MEDIUM:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.00008f;
+                bubbleBounceForceObstacale.y = 0.00005f;
                 pictureWidth = 23;
                 pictureHeight = 23;
                 radius = 11;
@@ -127,6 +147,7 @@ public class Bubble extends Sprite {
             case SMALL:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.000017f;
+                bubbleBounceForceObstacale.y = 0.000015f;
                 pictureWidth = 12;
                 pictureHeight = 12;
                 radius = 6;
@@ -148,6 +169,7 @@ public class Bubble extends Sprite {
             default:
                 //Sätter hopp kraft i y uppåt
                 bubbleBounceForce.y = 0.000004f;
+                bubbleBounceForceObstacale.y = 0.000004f;
                 pictureWidth = 6;
                 pictureHeight = 6;
                 radius = 3f;
@@ -170,7 +192,7 @@ public class Bubble extends Sprite {
         //Sätter storlek på sprite
         setBounds(0, 0, pictureWidth / PPM, pictureHeight / PPM);
         //Laddar explosions animation
-        explode = new Animation(0.04f,getExplosionAnimation(size,assetManager) );
+        explode = new Animation(0.04f,getExplosionAnimation(this.startSize,assetManager) );
         //Sätter grafik på boll
         setRegion(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Balloons"), colorPosX, colorPosY, pictureWidth, pictureHeight));
 
@@ -194,7 +216,7 @@ public class Bubble extends Sprite {
 
         bubbleFixDef.filter.categoryBits = BUBBLE;
         //Dude ska kollidera med boll och
-        bubbleFixDef.filter.maskBits = DUDE | FLOOR_WALL_ROOF;//
+        bubbleFixDef.filter.maskBits =  DUDE | FLOOR_WALL | ROOF | SHOT | OBSTACLE | OBSTACLE_SIDE | OBSTACLE_TOP;//
 
         //Fäster en form till kroppen
         bubbleBody.createFixture(bubbleFixDef);
@@ -208,7 +230,14 @@ public class Bubble extends Sprite {
         bubbleBody.setFixedRotation(true);
         //Position och storlek för (super)sprite när den ska ritas
     }
-
+    private void checkSpd(){
+        if(bubbleBody.getLinearVelocity().x>bubbleLinearSpd || goingRight && bubbleBody.getLinearVelocity().x<bubbleLinearSpd-0.10f ){
+            bubbleBody.setLinearVelocity(bubbleLinearSpd-0.10f, bubbleBody.getLinearVelocity().y);
+        }
+        else if(bubbleBody.getLinearVelocity().x<(-bubbleLinearSpd) || !goingRight && bubbleBody.getLinearVelocity().x>(-bubbleLinearSpd+0.10f)){
+            bubbleBody.setLinearVelocity(-bubbleLinearSpd+0.10f, bubbleBody.getLinearVelocity().y);
+        }
+    }
     public final void bumpLeftWall(){//Action för contact listenern när bubbla träffar vänster vägg
         bubbleBody.setLinearVelocity(bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
         goingRight = true;
@@ -217,6 +246,16 @@ public class Bubble extends Sprite {
         bubbleBody.setLinearVelocity(-bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
         goingRight = false;
     }
+
+    public void bumpObstacale(){
+        if(goingRight){//kolla vilket håll bollen färdades på och fortsätt på motsatt håll
+            bumpRightWall();
+        }
+        else{
+            bumpLeftWall();
+        }
+    }
+
     public final void bumpFloor() {////Action för contact listenern när bubbla träffar marken
         bubbleBody.setLinearVelocity(0f, 0f);//Boll måste först stanna(för att vi alltid ska uppnå samma höjd)
         bubbleBody.applyLinearImpulse(bubbleBounceForce, bubbleBody.getWorldCenter(), true);
@@ -228,25 +267,48 @@ public class Bubble extends Sprite {
         }
     }
 
+    private float scaleForce(){
+        float valueIn = bubbleBody.getPosition().y;
+        float maxIn = (56)/PPM;
+        float minIn = WORLD_HEIGHT/PPM;//upp till 56 är HUD
+        float maxOut = bubbleBounceForce.y;
+        float minOut = bubbleBounceForceObstacale.y;
+
+        float factor = (maxOut-minOut)/(maxIn-minIn);
+        float offset = minOut - (minIn*factor);
+        float force = (valueIn*factor)+offset;
+        return force;
+
+    }
+
+    public final void bumpObstacaleTop() {////Action för contact listenern när bubbla träffar marken
+        bubbleBounceForceCalc.y = scaleForce();
+        bubbleBody.setLinearVelocity(0f, 0f);//Boll måste först stanna(för att vi alltid ska uppnå samma höjd)
+        bubbleBody.applyLinearImpulse(bubbleBounceForceCalc, bubbleBody.getWorldCenter(), true);
+        if(goingRight){//kolla vilket håll bollen färdades på och fortsätt på samma håll
+            bumpLeftWall();
+        }
+        else{
+            bumpRightWall();
+        }
+    }
+
+
     public void update(float dt) {
+        checkSpd();
+        scaleForce();
 
-            if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 )&& size==XSMALL
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2 )&& size==SMALL
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3 )&& size==MEDIUM
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_4 )&& size==LARGE
-                    || Gdx.input.isKeyJustPressed(Input.Keys.NUM_5 )&& size==XLARGE){
-                //setToSleep();
-                setToDestroy();
-            }
+        if(destroyNextUpdate){
+            setToDestroy();
+        }
 
-        float offset = 2/PPM; //Offset för att korrigera position av sprite vid gång
         if(!setToDestroy) {//Slutar updatera position när spelare dör
             //Sätter Texture region till sprite
             setPosition(bubbleBody.getPosition().x - getWidth() / 2, bubbleBody.getPosition().y - getHeight() / 2);
         }
         else if(setToDestroy && !destroyed){//
             if(!explosionSoundDone) {
-                setExplodeSound(size, assetManager);
+                setExplodeSound(startSize, assetManager);
                 explosionSoundDone = true;
             }
             if(animateExplosion(dt)){
@@ -264,12 +326,11 @@ public class Bubble extends Sprite {
             }
             spawnSpdIsSet = true;
         }
-
     }
     public void dispose(){
         getTexture().dispose();
     }
-    public void draw(SpriteBatch batch) {//ritar bubbla om den inte är förstörd
+    public void draw(Batch batch) {//ritar bubbla om den inte är förstörd
         if(!destroyed) {
             super.draw(batch);
         }
@@ -285,6 +346,10 @@ public class Bubble extends Sprite {
         bubbleBody.setActive(false);
     }
 
+    public void setToAwake(){
+        bubbleBody.setActive(true);
+    }
+
     public void destroy(){//Raderar kropp från värld
         world.destroyBody(bubbleBody);
     }
@@ -292,13 +357,23 @@ public class Bubble extends Sprite {
     public boolean isDestroyed() {//Visar om bubblan är förstörd denna status får bubblan när explosions animationen är klar.
         return destroyed;
     }
-
+    public int getPoints(){
+        if (destroyNextUpdate && !pointsCollected){
+            return startSize.value;
+        }
+        else{
+            return 0;
+        }
+    }
+    public void destroyNextUpdate(){
+        destroyNextUpdate = true;
+        Filter spareDude = new Filter();// Bubblan ska inte kunna skada dude mer
+        spareDude.maskBits = FLOOR_WALL;// Bubblan ska inte kunna skada dude mer
+        bubbleBody.getFixtureList().get(0).setFilterData(spareDude);// Bubblan ska inte kunna skada dude mer
+    }
     public void setToDestroy(){//Sätter att bubblan ska förstöras.. denna ska anropas i contact handlern. När bubblan blir skjuten
         bubbleBody.setActive(false);
         bubbleBody.setUserData(null);
-        Filter spareDude = new Filter();// Bubblan ska inte kunna skada dude mer
-        spareDude.maskBits = FLOOR_WALL_ROOF;// Bubblan ska inte kunna skada dude mer
-        bubbleBody.getFixtureList().get(0).setFilterData(spareDude);// Bubblan ska inte kunna skada dude mer
         setToDestroy = true;
     }
 
@@ -307,10 +382,8 @@ public class Bubble extends Sprite {
     }
 
     private Array<TextureRegion> getExplosionAnimation(BubbleState size, AssetManager assetManager){//Skapar animation för explosion
-        //Skapa explotions animering
-        //Array för animationer
         String fileName;
-        Array<TextureRegion> frames = new Array<>();
+        Array<TextureRegion> frames = new Array<>();//Array för animationer
         int sizeImage, nbr2, nbr3, nbr4, nbr5, nbr6;
 
         switch(size){
@@ -422,26 +495,35 @@ public class Bubble extends Sprite {
     }
     public DoubleBoubble createNewBubbles(){//Skapar två nya bubblor om bubblan inte är av minsta sorten XSMALL.
         DoubleBoubble myBoubbles;
-        switch (size){
-            case XLARGE:
-                myBoubbles = new DoubleBoubble( world, LARGE, color, new Vector2(bubbleBody.getPosition().x*PPM,bubbleBody.getPosition().y*PPM), assetManager, 24f);
-                break;
-            case LARGE:
-                myBoubbles = new DoubleBoubble( world, MEDIUM, color, new Vector2(bubbleBody.getPosition().x*PPM,bubbleBody.getPosition().y*PPM), assetManager, 18f);
-                break;
-            case MEDIUM:
-                myBoubbles = new DoubleBoubble( world, SMALL, color, new Vector2(bubbleBody.getPosition().x*PPM,bubbleBody.getPosition().y*PPM), assetManager, 13f);
-                break;
-            case SMALL:
-                myBoubbles = new DoubleBoubble( world, XSMALL, color, new Vector2(bubbleBody.getPosition().x*PPM,bubbleBody.getPosition().y*PPM), assetManager, 7f);
-                break;
-            default:
-                myBoubbles = null;
+        if(startSize!=minSize) {
+            switch (startSize) {
+                case XLARGE:
+                    myBoubbles = new DoubleBoubble(world, LARGE, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 24f, minSize);
+                    break;
+                case LARGE:
+                    myBoubbles = new DoubleBoubble(world, MEDIUM, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 18f, minSize);
+                    break;
+                case MEDIUM:
+                    myBoubbles = new DoubleBoubble(world, SMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 13f, minSize);
+                    break;
+                case SMALL:
+                    myBoubbles = new DoubleBoubble(world, XSMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 7f, minSize);
+                    break;
+                default:
+                    myBoubbles = null;
+            }
+        }
+        else{
+            myBoubbles = null;
         }
         newBubblesCreated = true;
 
 
         return myBoubbles;
+    }
+    public int getDestroyables(){
+        int generations = minSize.ordinal()-startSize.ordinal()+1;
+        return ((int)Math.pow(2,(generations))) - 1;//Hur många bubblor en bubbla kommer att resultera i.
     }
 
 

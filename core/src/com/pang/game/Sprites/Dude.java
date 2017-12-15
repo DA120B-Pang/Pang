@@ -3,21 +3,23 @@ package com.pang.game.Sprites;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.pang.game.Creators.ShotHandler;
+import com.pang.game.Pang;
 
 import static com.pang.game.Constants.Constants.*;
 
 public class Dude extends Sprite {
     private World world;
+    private ShotHandler shotHandler;
     public Body dudeBody;
     private Animation goRight;
     private Animation goLeft;
-    public enum State { RUNLEFT, RUNRIGHT, STANDING, SHOOTING, DIE };
+    private enum State { RUNLEFT, RUNRIGHT, STANDING, SHOOTING, DIE };
     private State previousState;
     private State currentState;
     private AssetManager assetManager;
@@ -31,8 +33,8 @@ public class Dude extends Sprite {
     private float stateTimer;
     private boolean booleanOfDeath;
 
-    public Dude(World world, AssetManager assetManager,Vector2 startPos){
-        this.assetManager = assetManager;
+    public Dude(World world, Pang game, Vector2 startPos, int destroyables){
+        this.assetManager = game.assetManager;
         this.world = world;
         //Initiera boolean of death
         booleanOfDeath = false;
@@ -61,7 +63,7 @@ public class Dude extends Sprite {
         //Sätter kategoribit DUDE för kollisioner
         dudeFixtureDef.filter.categoryBits = DUDE;
         //Dude ska kollidera med boll och
-        dudeFixtureDef.filter.maskBits = BUBBLE | FLOOR_WALL_ROOF;
+        dudeFixtureDef.filter.maskBits = BUBBLE | FLOOR_WALL;
 
         //Fäster en form till kroppen
         dudeBody.createFixture(dudeFixtureDef);
@@ -74,7 +76,6 @@ public class Dude extends Sprite {
         setBounds(0, 0, 32 / PPM, 32 / PPM);
 
         isShooting = false;
-
         //Array för animationer
         Array<TextureRegion> frames = new Array<>();
 
@@ -110,20 +111,24 @@ public class Dude extends Sprite {
         //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
         dudeDie = new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 84, 69, 38, 32);
 
+        shotHandler = new ShotHandler();
+
+        shotHandler.loadPowerUps(game.hud.getPowerUps(),destroyables);
+
     }
 
     public void handleInput(float dt){
         float vel = 0;
-        if(isDudeDead()){
+        if(isDudeDead() || !dudeBody.isActive()){
             //Inget händer här
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.Z) || isShooting){//dude skjuter
+        else if((Gdx.input.isKeyJustPressed(Input.Keys.Z) && shotHandler.isReadyForShot()) || isShooting){//dude skjuter
             if(!isShooting) {
-
                 dudeBody.setLinearVelocity((0f), 0);
                 assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f);
                 isShooting = true;
                 shooterTimer = 0f;
+                shotHandler.addShot(world,dudeBody.getPosition(),assetManager);
             }
             else if(shooterTimer>shooterTime){
                 isShooting = false;
@@ -143,6 +148,15 @@ public class Dude extends Sprite {
             }
         }
     }
+
+    public void setToSleep(){
+        dudeBody.setActive(false);
+    }
+
+    public void setToAwake(){
+        dudeBody.setActive(true);
+    }
+
     public TextureRegion getAnimation(float dt){
         //Kolla vilket state dude har
         currentState = getState();
@@ -215,6 +229,8 @@ public class Dude extends Sprite {
         else {
             setPosition(dudeBody.getPosition().x - getWidth() / 2, dudeBody.getPosition().y - getHeight() / 2);
         }
+
+        shotHandler.update(dt);
     }
 
     public  void dispose(){
@@ -235,13 +251,19 @@ public class Dude extends Sprite {
         booleanOfDeath = true;
         Filter filter = new Filter();
         filter = dudeBody.getFixtureList().get(0).getFilterData();
-        filter.maskBits = FLOOR_WALL_ROOF;
+        filter.maskBits = FLOOR_WALL;
         dudeBody.getFixtureList().get(0).setFilterData(filter);
         jumpOfDeath();
     }
 
-    public void draw(SpriteBatch batch) {
+    public void drawShot(Batch batch) {
+        shotHandler.renderer(batch);
+    }
+    @Override
+    public void draw(Batch batch) {
+
         super.draw(batch);
+
     }
 }
 
