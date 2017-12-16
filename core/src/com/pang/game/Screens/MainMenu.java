@@ -4,13 +4,17 @@ package com.pang.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -21,14 +25,17 @@ import com.pang.game.Pang;
 import static com.badlogic.gdx.Gdx.app;
 
 
-public class MainMenu implements Screen {
+public class   MainMenu implements Screen {
 
     private Pang game;
 
     private Stage stage;
     private Skin skin;
 
-    private TextButton buttonPlay, buttonExit, buttonHighScore, buttonCredits;
+    private BitmapFont menuFont;
+    private Label mainMenu;
+
+    private TextButton buttonPlay, buttonExit, buttonHighScore, buttonCredits, buttonInstruct;
 
     private ShapeRenderer shapeRenderer;
 
@@ -37,6 +44,17 @@ public class MainMenu implements Screen {
         this.game = game;
         this.stage = new Stage(new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, new OrthographicCamera()));
         this.shapeRenderer = new ShapeRenderer();
+
+        menuFont = new BitmapFont(Gdx.files.internal("font/robot/size72dead.fnt"));
+        Color menuFontColor = new Color(Color.WHITE);
+        mainMenu = new Label("Main Menu", new Label.LabelStyle(menuFont, menuFontColor));
+        mainMenu.setFontScale(0.4f);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.top();
+        table.add(mainMenu);
+        stage.addActor(table);
 
 
 
@@ -59,7 +77,7 @@ public class MainMenu implements Screen {
 
     private void initButtons() {
         buttonPlay = new TextButton("PLAY", skin, "default");
-        buttonPlay.setSize(70,20);
+        buttonPlay.setSize(90,30);
         buttonPlay.setPosition(Constants.WORLD_WIDTH / 2 - buttonPlay.getWidth() / 2,180);
         buttonPlay.addListener(new ClickListener() {
             @Override
@@ -67,12 +85,44 @@ public class MainMenu implements Screen {
                 game.setScreen(new Level1(game));
                 dispose();
             }
-                               });
+        });
+
+        buttonHighScore = new TextButton("HIGHSCORE", skin, "default");
+        buttonHighScore.setSize(90, 30);
+        buttonHighScore.setPosition(Constants.WORLD_WIDTH / 2 - buttonHighScore.getWidth() / 2, 140);
+        /*buttonPlay.addListener(new ClickListener() {
+            @Override
+        public void clicked(InputEvent event, float x, float y) {
+            game.setScreen(new (game));
+        }*/
+        //});
+
+        buttonInstruct = new TextButton("INSTRUCTIONS", skin, "default");
+        buttonInstruct.setSize(90, 30);
+        buttonInstruct.setPosition(Constants.WORLD_WIDTH / 2 - buttonInstruct.getWidth() / 2,100);
+        /*buttonInstruct.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new CreditScreen(game));
+                dispose();
+            }
+        });
+*/
+        buttonCredits = new TextButton("CREDITS", skin, "default");
+        buttonCredits.setSize(90, 30);
+        buttonCredits.setPosition(Constants.WORLD_WIDTH / 2 - buttonCredits.getWidth() / 2,60);
+        buttonCredits.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new CreditScreen(game));
+                dispose();
+            }
+        });
 
 
         buttonExit = new TextButton("EXIT", skin, "default");
-        buttonExit.setSize(70,20);
-        buttonExit.setPosition(Constants.WORLD_WIDTH / 2 - buttonExit.getWidth() / 2,50);
+        buttonExit.setSize(90,30);
+        buttonExit.setPosition(Constants.WORLD_WIDTH / 2 - buttonExit.getWidth() / 2,20);
 
         buttonExit.addListener(new ClickListener() {
             @Override
@@ -81,26 +131,23 @@ public class MainMenu implements Screen {
             }
         });
 
-        buttonHighScore = new TextButton("HIGHSCORE", skin, "default");
-        buttonHighScore.setSize(70, 20);
-        buttonHighScore.setPosition(Constants.WORLD_WIDTH / 2 - buttonHighScore.getWidth() / 2, 130);
 
 
-        buttonCredits = new TextButton("CREDITS", skin, "default");
-        buttonCredits.setSize(70, 20);
-        buttonCredits.setPosition(Constants.WORLD_WIDTH / 2 - buttonCredits.getWidth() / 2,80);
+
+
 
 
         stage.addActor(buttonPlay);
         stage.addActor(buttonExit);
         stage.addActor(buttonCredits);
         stage.addActor(buttonHighScore);
+        stage.addActor(buttonInstruct);
 
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1f,1f,1f,1f);
+        Gdx.gl.glClearColor(0,0,0,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         update(delta);
@@ -115,6 +162,7 @@ public class MainMenu implements Screen {
 
     @Override
     public void resize(int width, int height) {
+
         stage.getViewport().update(width, height, true);
     }
 

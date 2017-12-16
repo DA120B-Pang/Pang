@@ -67,9 +67,9 @@ public class DeadScreen implements Screen {
 
     }
     public void handleInput(float dt){
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            restartGame = true;
-        }
+            if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+                restartGame = true;
+            }
     }
     public void update(float dt){
 
