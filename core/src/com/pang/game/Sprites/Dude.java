@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.pang.game.Creators.ShotHandler;
+import com.pang.game.Pang;
 
 import static com.pang.game.Constants.Constants.*;
 
@@ -18,7 +19,7 @@ public class Dude extends Sprite {
     public Body dudeBody;
     private Animation goRight;
     private Animation goLeft;
-    public enum State { RUNLEFT, RUNRIGHT, STANDING, SHOOTING, DIE };
+    private enum State { RUNLEFT, RUNRIGHT, STANDING, SHOOTING, DIE };
     private State previousState;
     private State currentState;
     private AssetManager assetManager;
@@ -32,8 +33,8 @@ public class Dude extends Sprite {
     private float stateTimer;
     private boolean booleanOfDeath;
 
-    public Dude(World world, AssetManager assetManager,Vector2 startPos){
-        this.assetManager = assetManager;
+    public Dude(World world, Pang game, Vector2 startPos, int destroyables){
+        this.assetManager = game.assetManager;
         this.world = world;
         //Initiera boolean of death
         booleanOfDeath = false;
@@ -112,6 +113,8 @@ public class Dude extends Sprite {
 
         shotHandler = new ShotHandler();
 
+        shotHandler.loadPowerUps(game.hud.getPowerUps(),destroyables);
+
     }
 
     public void handleInput(float dt){
@@ -119,7 +122,7 @@ public class Dude extends Sprite {
         if(isDudeDead() || !dudeBody.isActive()){
             //Inget händer här
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.Z) || isShooting){//dude skjuter
+        else if((Gdx.input.isKeyJustPressed(Input.Keys.Z) && shotHandler.isReadyForShot()) || isShooting){//dude skjuter
             if(!isShooting) {
                 dudeBody.setLinearVelocity((0f), 0);
                 assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f);

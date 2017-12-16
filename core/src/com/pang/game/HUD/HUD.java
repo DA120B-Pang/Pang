@@ -1,8 +1,7 @@
 package com.pang.game.HUD;
 
-import com.badlogic.gdx.Game;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -15,14 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
-
-import java.util.ArrayList;
-
 import static com.pang.game.Constants.Constants.*;
+import static com.pang.game.Constants.Constants.PowerUp.*;
 
 public class HUD {
     public Stage stage;
@@ -52,6 +48,8 @@ public class HUD {
     private Group group;
     private Pang game;
     private int startUpSoundMask;
+    PowerUp[][] powerUps;
+    String[] levelNames;
 
     public HUD(Pang game, AssetManager assetManager){
         this.assetManager = assetManager;
@@ -61,7 +59,9 @@ public class HUD {
         fontGetReady = new BitmapFont(Gdx.files.internal("font/robot/size72getReady.fnt"));
         Color colorGetReady = new Color(Color.WHITE);
         getReadyLbl = new Label("Get ready", new Label.LabelStyle(fontGetReady,colorGetReady));
-
+        levelNames = new String[]{  "Ballon Pooopern",
+                                    "Die hard Ballon",
+                                    "Full Ballon"};
         resetHud();
         stage = new Stage();
         fontTop = new BitmapFont(Gdx.files.internal("font/robot/size72.fnt"));
@@ -69,13 +69,13 @@ public class HUD {
         Color colorBottom = new Color(Color.WHITE);
         highScoreLbl = new Label(String.format("High score: %06d", highScore), new Label.LabelStyle(fontBottom, colorBottom));
         scoreLbl = new Label(String.format("Score: %06d", score), new Label.LabelStyle(fontBottom, colorBottom));
-
-        levelNameLbl = new Label("Ballon Pooopern", new Label.LabelStyle(fontBottom, colorBottom));
-        levelLbl = new Label("1 - 1", new Label.LabelStyle(fontBottom, colorBottom));
+        actLevel = 1;
+        levelNameLbl = new Label(levelNames[0], new Label.LabelStyle(fontBottom, colorBottom));
+        levelLbl = new Label("Level "+actLevel, new Label.LabelStyle(fontBottom, colorBottom));
 
         livesLbl = new Label("Lives:", new Label.LabelStyle(fontBottom, colorBottom));
 
-        actLevel = 1;
+
 
         Table table = new Table();//Ny tabell
         table.bottom().left();//Tabell mot botten
@@ -108,18 +108,16 @@ public class HUD {
         tableTop.top().right();
         tableTop.add(timeLbl).padRight(20f).width(270f);
         stage.addActor(tableTop);
+        //Lägg till powerUps här till varje bana
+        powerUps = new PowerUp[][]{{BARBSHOT,DOUBLESHOT},                                       //Level 1
+                                    {DOUBLESHOT,STOPTIME,STOPTIME,BARBSHOT},                                      //Level 2
+                                    {DOUBLESHOT, BARBSHOT, DOUBLESHOT, STOPTIME, LIFE, SHEILD}};//Level 3
     }
 
     public final void resetHud(){
         score = 0;
         lives = 5;
-        startUpTimer = 0;
-        timeLeft = 100;
-        startTimer = false;
         highScore = 0;// länka till highscore
-        startUpDone = false;
-        startGame = false;
-        startUpSoundMask = 0;
         actLevel = 1;
     }
 
@@ -132,6 +130,8 @@ public class HUD {
         startGame = false;
         startUpSoundMask = 0;
         startUpTimer = 0;
+        levelLbl.setText("Level "+actLevel);
+        levelNameLbl.setText(levelNames[actLevel-1]);
     }
 
     private final void groupAddLife(int lives){
@@ -254,6 +254,9 @@ public class HUD {
         groupAddLife(lives);
         setTimeLeft(dt);
         scoreLbl.setText(String.format("Score: %06d", score));
+    }
 
+    public PowerUp[] getPowerUps(){
+        return powerUps[actLevel-1];
     }
 }

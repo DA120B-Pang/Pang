@@ -3,6 +3,7 @@ package com.pang.game.ContactHandling;
 import com.badlogic.gdx.physics.box2d.*;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.Dude;
+import com.pang.game.Sprites.Obstacle;
 import com.pang.game.Sprites.Shot;
 
 import static com.pang.game.Constants.Constants.*;
@@ -42,6 +43,14 @@ public class ContactHandler implements ContactListener {
                     default:
                 }
                 break;
+            case BUBBLE | OBSTACLE_TOP:
+                main = A.getBody().getUserData() instanceof Shot ? A:B;
+                ((Bubble) main.getBody().getUserData()).bumpObstacaleTop();
+                break;
+            case BUBBLE | OBSTACLE_SIDE:
+                main = A.getBody().getUserData() instanceof Shot ? A:B;
+                ((Bubble) main.getBody().getUserData()).bumpObstacale();
+                break;
             case FLOOR_WALL | DUDE: //Dude kolliderar med golv vägg eller tak... denna är till för dudes dödsryck när han studsar ut ur bild
                 main = A.getBody().getUserData() instanceof Dude? A:B;//Kolla om Fixture A eller B är Dude
                 //Userdata i dudes body är referensen till dude därför kan vi kalla på metoder via den
@@ -59,7 +68,12 @@ public class ContactHandler implements ContactListener {
                 break;
             case SHOT | ROOF:
                 main = A.getBody().getUserData() instanceof Shot ? A:B;
-                ((Shot)main.getBody().getUserData()).destroyNextUpdate();
+                if(((Shot)main.getBody().getUserData()).getShotType() == Shot.ShotType.STANDARD) {//Förstör skott
+                    ((Shot) main.getBody().getUserData()).destroyNextUpdate();
+                }
+                else{//Stoppa skott om Barbskott
+                    ((Shot) main.getBody().getUserData()).setBarbStop();
+                }
                 break;
             case SHOT | BUBBLE:
                 if( A.getBody().getUserData() instanceof Shot){
@@ -72,6 +86,24 @@ public class ContactHandler implements ContactListener {
                 }
                 ((Shot)main.getBody().getUserData()).destroyNextUpdate();
                 ((Bubble)other.getBody().getUserData()).destroyNextUpdate();
+                break;
+            case SHOT | OBSTACLE:
+                if( A.getBody().getUserData() instanceof Shot){
+                    main = A;
+                    other = B;
+                }
+                else{
+                    main = B;
+                    other = A;
+                }
+                if(((Shot)main.getBody().getUserData()).getShotType() == Shot.ShotType.STANDARD || ((Obstacle)other.getBody().getUserData()).isBreakable()) {//Förstör skott
+                    ((Shot) main.getBody().getUserData()).destroyNextUpdate();
+                }
+                else{//Stoppa skott om Barbskott
+                    ((Shot) main.getBody().getUserData()).setBarbStop();
+                }
+                ((Obstacle)other.getBody().getUserData()).destroyNextUpdate();
+                break;
 
             default:
         }

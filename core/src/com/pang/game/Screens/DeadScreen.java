@@ -7,13 +7,10 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
@@ -56,7 +53,7 @@ public class DeadScreen implements Screen {
         stage.addActor(table);
 
         Table tablebottom = new Table();
-        tablebottom.bottom();
+        tablebottom.bottom().padBottom(10f);
         tablebottom.setFillParent(true);
         tablebottom.add(pressToRestart);
 
@@ -98,14 +95,7 @@ public class DeadScreen implements Screen {
         stage.draw();
 
         if(restartGame){
-            switch(game.hud.getLevel()) {
-                case 1:
-                    game.setScreen(new Level1(game));
-                    break;
-                case 2:
-
-                    break;
-            }
+            game.setScreen(new Level(game));
             game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).stop();
             dispose();
         }
