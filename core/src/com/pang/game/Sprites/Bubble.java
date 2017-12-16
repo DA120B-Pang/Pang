@@ -1,7 +1,5 @@
 package com.pang.game.Sprites;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -35,6 +33,13 @@ public class Bubble extends Sprite {
     private AssetManager assetManager;
     private boolean newBubblesCreated;
     private boolean pointsCollected;
+    private boolean isFrozen;
+    private boolean bumpObstacaleTopNextUpdate;
+    private boolean bumpObstacaleNextUpdate;
+    private boolean bumpFloorNextUpdate;
+    private boolean bumpLeftWallNextUpdate;
+    private boolean bumpRightWallNextUpdate;
+    private boolean upOnBirth;
 
 
 
@@ -48,9 +53,16 @@ public class Bubble extends Sprite {
     public enum BubbleColor {//Visar vilken färg bubblan har
         BLUE,RED,GREEN
     }
-    public Bubble(World world, BubbleState startSize, BubbleColor color, Vector2 position, AssetManager assetManager,boolean spawnRight, BubbleState minSize){
+    public Bubble(World world, BubbleState startSize, BubbleColor color, Vector2 position, AssetManager assetManager,boolean spawnRight, BubbleState minSize, boolean isFrozen, boolean upOnBirth){
         this.assetManager = assetManager;
         this.startSize = startSize;
+        this.isFrozen = isFrozen;
+        bumpObstacaleTopNextUpdate = false;
+        bumpObstacaleNextUpdate = false;
+        bumpFloorNextUpdate = false;
+        bumpLeftWallNextUpdate = false;
+        bumpRightWallNextUpdate = false;
+        this.upOnBirth = upOnBirth;
         if (minSize.ordinal()<startSize.ordinal()){
             this.minSize = startSize;
         }
@@ -229,22 +241,40 @@ public class Bubble extends Sprite {
         //Fixturen ska aldrig vridas
         bubbleBody.setFixedRotation(true);
         //Position och storlek för (super)sprite när den ska ritas
+
     }
     private void checkSpd(){
-        if(bubbleBody.getLinearVelocity().x>bubbleLinearSpd || goingRight && bubbleBody.getLinearVelocity().x<bubbleLinearSpd-0.10f ){
-            bubbleBody.setLinearVelocity(bubbleLinearSpd-0.10f, bubbleBody.getLinearVelocity().y);
-        }
-        else if(bubbleBody.getLinearVelocity().x<(-bubbleLinearSpd) || !goingRight && bubbleBody.getLinearVelocity().x>(-bubbleLinearSpd+0.10f)){
-            bubbleBody.setLinearVelocity(-bubbleLinearSpd+0.10f, bubbleBody.getLinearVelocity().y);
+        if(!isFrozen) {
+            if (bubbleBody.getLinearVelocity().x > bubbleLinearSpd || goingRight && bubbleBody.getLinearVelocity().x < bubbleLinearSpd - 0.10f) {
+                bubbleBody.setLinearVelocity(bubbleLinearSpd - 0.10f, bubbleBody.getLinearVelocity().y);
+            } else if (bubbleBody.getLinearVelocity().x < (-bubbleLinearSpd) || !goingRight && bubbleBody.getLinearVelocity().x > (-bubbleLinearSpd + 0.10f)) {
+                bubbleBody.setLinearVelocity(-bubbleLinearSpd + 0.10f, bubbleBody.getLinearVelocity().y);
+            }
         }
     }
+
+    public void setBumpLeftWallNextUpdate() {
+        this.bumpLeftWallNextUpdate = true;
+    }
+
     public final void bumpLeftWall(){//Action för contact listenern när bubbla träffar vänster vägg
         bubbleBody.setLinearVelocity(bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
+        bumpLeftWallNextUpdate = false;
         goingRight = true;
     }
+
+    public void setBumpRightWallNextUpdate() {
+        this.bumpRightWallNextUpdate = true;
+    }
+
     public final void bumpRightWall(){//Action för contact listenern när bubbla träffar höger vägg
         bubbleBody.setLinearVelocity(-bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
+        bumpRightWallNextUpdate = false;
         goingRight = false;
+    }
+
+    public void setBumpObstacaleNextUpdate(){
+        bumpObstacaleNextUpdate = true;
     }
 
     public void bumpObstacale(){
@@ -254,6 +284,11 @@ public class Bubble extends Sprite {
         else{
             bumpLeftWall();
         }
+        bumpObstacaleNextUpdate = false;
+    }
+
+    public void setBumpFloorNextUpdate(){
+        bumpFloorNextUpdate = true;
     }
 
     public final void bumpFloor() {////Action för contact listenern när bubbla träffar marken
@@ -265,6 +300,7 @@ public class Bubble extends Sprite {
         else{
             bumpRightWall();
         }
+        bumpFloorNextUpdate = false;
     }
 
     private float scaleForce(){
@@ -281,6 +317,10 @@ public class Bubble extends Sprite {
 
     }
 
+    public void setBumpObstacaleTopNextUpdate(){
+        bumpObstacaleTopNextUpdate = true;
+    }
+
     public final void bumpObstacaleTop() {////Action för contact listenern när bubbla träffar marken
         bubbleBounceForceCalc.y = scaleForce();
         bubbleBody.setLinearVelocity(0f, 0f);//Boll måste först stanna(för att vi alltid ska uppnå samma höjd)
@@ -291,12 +331,31 @@ public class Bubble extends Sprite {
         else{
             bumpRightWall();
         }
+        bumpObstacaleTopNextUpdate = false;
     }
 
 
     public void update(float dt) {
         checkSpd();
         scaleForce();
+
+        if(!isFrozen){
+            if(bumpObstacaleNextUpdate){
+                bumpObstacale();
+            }
+            if(bumpObstacaleTopNextUpdate){
+                bumpObstacaleTop();
+            }
+            if(bumpFloorNextUpdate){
+                bumpFloor();
+            }
+            if(bumpRightWallNextUpdate){
+                bumpRightWall();
+            }
+            if(bumpLeftWallNextUpdate){
+                bumpLeftWall();
+            }
+        }
 
         if(destroyNextUpdate){
             setToDestroy();
@@ -312,7 +371,6 @@ public class Bubble extends Sprite {
                 explosionSoundDone = true;
             }
             if(animateExplosion(dt)){
-                destroyed = true;
                 destroy();
             }
         }
@@ -323,6 +381,12 @@ public class Bubble extends Sprite {
             }
             else{
                 bumpRightWall();
+            }
+            if(upOnBirth){
+                bumpObstacaleTop();
+            }
+            if(isFrozen){
+                freezeBubble();
             }
             spawnSpdIsSet = true;
         }
@@ -350,13 +414,6 @@ public class Bubble extends Sprite {
         bubbleBody.setActive(true);
     }
 
-    public void destroy(){//Raderar kropp från värld
-        world.destroyBody(bubbleBody);
-    }
-
-    public boolean isDestroyed() {//Visar om bubblan är förstörd denna status får bubblan när explosions animationen är klar.
-        return destroyed;
-    }
     public int getPoints(){
         if (destroyNextUpdate && !pointsCollected){
             return startSize.value;
@@ -365,6 +422,16 @@ public class Bubble extends Sprite {
             return 0;
         }
     }
+
+    public boolean isDestroyed() {//Visar om bubblan är förstörd denna status får bubblan när explosions animationen är klar.
+        return destroyed;
+    }
+
+    public void destroy(){//Raderar kropp från värld
+        destroyed = true;
+        world.destroyBody(bubbleBody);
+    }
+
     public void destroyNextUpdate(){
         destroyNextUpdate = true;
         Filter spareDude = new Filter();// Bubblan ska inte kunna skada dude mer
@@ -471,6 +538,7 @@ public class Bubble extends Sprite {
 
         return frames;
     }
+
     private void setExplodeSound(BubbleState size, AssetManager assetManager){//Sätter igång explosions ljud för rätt storlek av bubbla
         switch(size){
             case XLARGE:
@@ -490,24 +558,26 @@ public class Bubble extends Sprite {
 
         }
     }
+
     public boolean isBubblesCreated(){//Spelet behöver veta om bubblan har förökat sig
         return newBubblesCreated;
     }
+
     public DoubleBoubble createNewBubbles(){//Skapar två nya bubblor om bubblan inte är av minsta sorten XSMALL.
         DoubleBoubble myBoubbles;
         if(startSize!=minSize) {
             switch (startSize) {
                 case XLARGE:
-                    myBoubbles = new DoubleBoubble(world, LARGE, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 24f, minSize);
+                    myBoubbles = new DoubleBoubble(world, LARGE, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 24f, minSize, isFrozen);
                     break;
                 case LARGE:
-                    myBoubbles = new DoubleBoubble(world, MEDIUM, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 18f, minSize);
+                    myBoubbles = new DoubleBoubble(world, MEDIUM, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 18f, minSize, isFrozen);
                     break;
                 case MEDIUM:
-                    myBoubbles = new DoubleBoubble(world, SMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 13f, minSize);
+                    myBoubbles = new DoubleBoubble(world, SMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 13f, minSize, isFrozen);
                     break;
                 case SMALL:
-                    myBoubbles = new DoubleBoubble(world, XSMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 7f, minSize);
+                    myBoubbles = new DoubleBoubble(world, XSMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 7f, minSize, isFrozen);
                     break;
                 default:
                     myBoubbles = null;
@@ -521,11 +591,24 @@ public class Bubble extends Sprite {
 
         return myBoubbles;
     }
+
     public int getDestroyables(){
         int generations = minSize.ordinal()-startSize.ordinal()+1;
         return ((int)Math.pow(2,(generations))) - 1;//Hur många bubblor en bubbla kommer att resultera i.
     }
 
+    public Vector2 getPosition(){
+        return bubbleBody.getPosition();
+    }
 
+    public final void freezeBubble(){
+        bubbleBody.setGravityScale(0f);
+        bubbleBody.setLinearVelocity(new Vector2(0f,0f));
+        isFrozen = true;
+    }
 
+    public void unFreezeBubble(){
+        bubbleBody.setGravityScale(1);
+        isFrozen = false;
+    }
 }

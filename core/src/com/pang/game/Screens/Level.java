@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -36,27 +37,25 @@ public class Level implements Screen {
     private ObstacleHandler obstacleHandler;
     private Pang game;
     private OrthographicCamera orthographicCamera;
-
     private Viewport viewPort;
-
     private TmxMapLoader tmxMapLoader;
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
-
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
     private Sprite mapBottom;
-
-
     private Dude dude;
     private boolean endMusicStarted;
     private float gameOverTimer;
+    private boolean timeOut;
+    private int lastLevelNbr;
 
     public Level(Pang game){
 
         obstacleHandler = new ObstacleHandler();
-        bubbleHandler = new BubbleHandler();
+        bubbleHandler = new BubbleHandler(game);
         this.game = game;
+        timeOut = false;
 
         gameOverTimer = 0;
         endMusicStarted = false;
@@ -75,6 +74,8 @@ public class Level implements Screen {
         orthographicCamera.position.set(((viewPort.getWorldWidth())/2), ((viewPort.getWorldHeight())/2), 0);
 
         tmxMapLoader = new TmxMapLoader();
+
+        lastLevelNbr = 3;
         loadMap();
         //Ladda karta och skalera då box2d har enheten meter så delar vi med pixels per meter
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1/PPM);
@@ -132,6 +133,10 @@ public class Level implements Screen {
         //Bara det som visas ska renderas
         orthogonalTiledMapRenderer.setView(orthographicCamera);
         world.step(1/60f, 6,2);
+        if(game.hud.isTimeOut() && !dude.isDudeDead()){
+            dude.dudeDie();
+            timeOut = true;
+        }
         if(dude.isDudeDead()){
             gameOverTimer += dt;
             if(!endMusicStarted){
@@ -190,15 +195,19 @@ public class Level implements Screen {
                 game.setScreen(new GameOverScreen(game));
             }
             else{
-                game.hud.newLevel(100);
                 dispose();
-                game.setScreen(new DeadScreen(game));
+                game.setScreen(new DeadScreen(game,timeOut));
             }
         }
-        if(bubbleHandler.getBubbles()==0){//Bana klar
+        if(bubbleHandler.getBubbles()==0) {//Bana klar
             musicStop();
             unloadLevelMusic();
-            game.setScreen(new LevelCompleteScreen(game));
+            if (game.hud.getLevel() < lastLevelNbr) {
+                game.setScreen(new LevelCompleteScreen(game));
+            }
+            else{
+                game.setScreen(new GameCompleteScreen(game));
+            }
             dispose();
         }
         game.hud.stage.draw();
@@ -257,7 +266,6 @@ public class Level implements Screen {
                 game.assetManager.get("audio/music/enterTheEmperor.ogg", Music.class).setVolume(0.7f);
                 game.assetManager.get("audio/music/enterTheEmperor.ogg", Music.class).play();
                 break;
-
         }
     }
 
@@ -297,7 +305,6 @@ public class Level implements Screen {
                     game.assetManager.finishLoading();
                 }
                 break;
-
         }
     }
     private void unloadLevelMusic(){
@@ -476,8 +483,7 @@ public class Level implements Screen {
                         break;
                 }
             }
-            System.out.println(new Vector2(((RectangleMapObject) o).getRectangle().x, ((RectangleMapObject) o).getRectangle().y));
-            bubbleHandler.addBubble(new Bubble(world, startSize, color, new Vector2(((RectangleMapObject) o).getRectangle().x, ((RectangleMapObject) o).getRectangle().y), game.assetManager, spawnRight, endSize));
+            bubbleHandler.addBubble(new Bubble(world, startSize, color, new Vector2(((RectangleMapObject) o).getRectangle().x, ((RectangleMapObject) o).getRectangle().y), game.assetManager, spawnRight, endSize,false,false));
         }
 
     }
@@ -549,7 +555,7 @@ public class Level implements Screen {
             throw new Exception("Tiled karta får bara innehålla en dude");
         }
         for (MapObject o : tiledMap.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
-            dude = new Dude(world, game, new Vector2(((RectangleMapObject) o).getRectangle().x, ((RectangleMapObject) o).getRectangle().y + ((RectangleMapObject) o).getRectangle().getHeight()/2),bubbleHandler.getDestroyables()+obstacleHandler.getDestroyables());
+            dude = new Dude(world, game, new Vector2(((RectangleMapObject) o).getRectangle().x, ((RectangleMapObject) o).getRectangle().y + ((RectangleMapObject) o).getRectangle().getHeight()/2),bubbleHandler.getDestroyables()+obstacleHandler.getDestroyables(), bubbleHandler);
         }
         if(dude == null){
             throw new Exception("Fel vid skapande av dude");

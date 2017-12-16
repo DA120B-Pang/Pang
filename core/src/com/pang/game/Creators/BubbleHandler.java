@@ -1,21 +1,35 @@
 package com.pang.game.Creators;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pang.game.HUD.HUD;
+import com.pang.game.Pang;
 import com.pang.game.Sprites.Bubble;
 import com.pang.game.Sprites.DoubleBoubble;
 
 import java.util.ArrayList;
 
 public class BubbleHandler {
-    public ArrayList<Bubble> myBubbles; //Här har vi bubblor som används i spelet
-    ArrayList<DoubleBoubble> myCreatedDoubles;//Här lagrar vi nyskapade bubblor
-    ArrayList<Bubble> myBubblesToDestroy;//Här lagrar vi bubblor som ska förstöras
+    private ArrayList<Bubble> myBubbles; //Här har vi bubblor som används i spelet
+    private ArrayList<DoubleBoubble> myCreatedDoubles;//Här lagrar vi nyskapade bubblor
+    private ArrayList<Bubble> myBubblesToDestroy;//Här lagrar vi bubblor som ska förstöras
+    private float freezeTimer;
+    private boolean bubblesFrozen;
+    private boolean freezeBubblesNextUpdate;
+    private float freezeTime;
+    private int freezeSoundMask;
+    private Pang game;
 
-    public BubbleHandler(){
+    public BubbleHandler(Pang game){
+        this.game = game;
         myBubbles = new ArrayList<>();
         myCreatedDoubles = new ArrayList<>();
         myBubblesToDestroy = new ArrayList<>();
+        freezeTimer = 0;
+        bubblesFrozen = false;
+        freezeBubblesNextUpdate = false;
+        freezeTime = 7;
+        freezeSoundMask = 0;
     }
 
     public void addBubble(Bubble bubble){//Metod för att lägga till bubblor vid start av bana
@@ -55,6 +69,8 @@ public class BubbleHandler {
 
     public void update(float dt, HUD hud) {//Kollar om bubblor ska skapas och förstöras
 
+
+
         for(Bubble b:myBubbles){
             b.update(dt);
             if (!b.isBubblesCreated() && b.isSetToDestroy()) {//Varje bubbla ska producera två nya bubblor om den inte har minsta storleken
@@ -78,5 +94,55 @@ public class BubbleHandler {
             myBubbles.remove(b);
         }
         myBubblesToDestroy.clear();//Rensa bubblor att radera
+
+        if(bubblesFrozen){
+            freezeTimer += dt;
+            if(freezeTimer>freezeTime){
+                unFreezeBubbles();
+            }
+            if (freezeTimer>freezeTime-3){
+                if(0 == (freezeSoundMask & 1)){
+                    game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).play(), 0.3f);
+                    freezeSoundMask |= 1;
+                }
+                if (freezeTimer>freezeTime-2){
+                    if(0 == (freezeSoundMask & 2)){
+                        game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).play(), 0.3f);
+                        freezeSoundMask |= 2;
+                    }
+                    if (freezeTimer>freezeTime-1){
+                        if(0 == (freezeSoundMask & 4)){
+                            game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).play(), 0.3f);
+                            freezeSoundMask |= 4;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(freezeBubblesNextUpdate){
+            freezeBubbles();
+        }
+    }
+
+    private void freezeBubbles(){
+        freezeTimer = 0;
+        freezeSoundMask = 0;
+        for(Bubble b:myBubbles) {
+            b.freezeBubble();
+        }
+        bubblesFrozen = true;
+        freezeBubblesNextUpdate = false;
+    }
+
+    private void unFreezeBubbles(){
+        for(Bubble b:myBubbles) {
+            b.unFreezeBubble();
+        }
+        bubblesFrozen = false;
+    }
+
+    public void freezeBubblesNextUpdate(){
+        freezeBubblesNextUpdate = true;
     }
 }

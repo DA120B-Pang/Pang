@@ -31,7 +31,7 @@ public class DeadScreen implements Screen {
 
 
     private Viewport viewPort;
-    public DeadScreen(Pang game){
+    public DeadScreen(Pang game, boolean timeOut){
         viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         this.game = game;
@@ -39,7 +39,8 @@ public class DeadScreen implements Screen {
 
         youDiedFont = new BitmapFont(Gdx.files.internal("font/robot/size72dead.fnt"));
         Color youdiedColor = new Color(Color.WHITE);
-        youDiedLbl = new Label("You died!!", new Label.LabelStyle(youDiedFont,youdiedColor));
+        String text = timeOut? "Ran out of time!!":"You died!!";
+        youDiedLbl = new Label(text, new Label.LabelStyle(youDiedFont,youdiedColor));
         youDiedLbl.setFontScale(0.7f);
         pressToRestart = new Label("Press space to restart level", new Label.LabelStyle(youDiedFont,youdiedColor));
         pressToRestart.setFontScale(0.4f);

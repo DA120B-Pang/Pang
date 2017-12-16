@@ -13,12 +13,10 @@
   <object id="5" name="left" x="0.749833" y="0.5" width="6.66667" height="206.333"/>
  </objectgroup>
  <objectgroup name="Balls">
-  <object id="6" name="G,XL,XL,R," x="299.5" y="41.5"/>
-  <object id="7" name="R,XL,XL,L," x="79.5" y="44.5"/>
+  <object id="6" name="G,XL,M,R," x="299.5" y="41.5"/>
+  <object id="7" name="R,XL,M,L," x="79.5" y="44.5"/>
  </objectgroup>
- <objectgroup name="Obstacle">
-  <object id="16" name="y,f," x="126" y="101.5" width="32" height="7"/>
- </objectgroup>
+ <objectgroup name="Obstacle"/>
  <objectgroup name="Dude(there can be only one)">
   <object id="15" name="TheDude" x="202.5" y="168" width="32" height="32"/>
  </objectgroup>

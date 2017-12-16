@@ -10,8 +10,8 @@ import com.pang.game.Creators.ShotHandler;
 
 
 import static com.pang.game.Constants.Constants.*;
-import static com.pang.game.Sprites.Shot.ShotType.BARB;
-import static com.pang.game.Sprites.Shot.ShotType.STANDARD;
+import static com.pang.game.Sprites.Shot.ShotType.SHOT_BARB;
+import static com.pang.game.Sprites.Shot.ShotType.SHOT_STANDARD;
 
 public class Shot extends Sprite {
 
@@ -32,7 +32,7 @@ public class Shot extends Sprite {
 
 
     public enum ShotType{
-        STANDARD, BARB
+        SHOT_STANDARD, SHOT_BARB
     }
 
 
@@ -82,13 +82,13 @@ public class Shot extends Sprite {
         //Gå åt höger
         //Väljer bild Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
         switch(shotType) {
-            case STANDARD:
+            case SHOT_STANDARD:
                 frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion("shots"), 21, 1, 8, 200));
                 frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion("shots"), 39, 1, 8, 200));
                 //Sätter tid på animation i sekunder samt anger en Array av frames
                 shotUp = new Animation(0.15f, frames);
             break;
-            case BARB:
+            case SHOT_BARB:
                 frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion("shots"), 57, 1, 8, 200));
                 frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack", TextureAtlas.class).findRegion("shots"), 75, 1, 8, 200));
                 //Sätter tid på animation i sekunder samt anger en Array av frames
@@ -115,16 +115,18 @@ public class Shot extends Sprite {
             destroyShot();
         }
 
-        if(shotType == STANDARD || shotType == BARB){
+        if(shotType == SHOT_STANDARD || shotType == SHOT_BARB){
             setPosition(shot.getPosition().x - getWidth() / 2, shot.getPosition().y - getHeight() / 2);
         }
 
     }
-
+    /**Tar bort skott från världen*/
     public ShotType getShotType(){
         return shotType;
     }
 
+    /**Stoppar barb skottet vid kollision.
+     * Det ska ju stanna vid kollision med tak och oförstörbara hinder.*/
     public void setBarbStop(){
         barbStop = true;
         shot.setLinearVelocity(0, 0f);
@@ -137,6 +139,9 @@ public class Shot extends Sprite {
     public void draws(Batch batch) {
         super.draw(batch);
     }
+
+    /**Sätter att skott ska tas bort vid nästa update.
+     * Filterdata återställs så att skott inte kan kollidera.*/
     public void destroyNextUpdate(){
         destroyShotNextUpdate = true;
         Filter shutofShot = new Filter();
@@ -150,7 +155,8 @@ public class Shot extends Sprite {
         return shotDestroyed;
     }
 
-    public void destroyShot() {//Sätter att bubblan ska förstöras.. denna ska anropas i contact handlern. När bubblan blir skjuten
+    /**Tar bort skott från världen*/
+    public void destroyShot() {
         shot.setActive(false);
         shot.setUserData(null);
         setToDestroyShot = true;
@@ -162,7 +168,7 @@ public class Shot extends Sprite {
     public TextureRegion getAnimation(float dt){
 
         TextureRegion region = null;
-        if(shotType == STANDARD || (shotType == BARB && !barbStop)) {
+        if(shotType == SHOT_STANDARD || (shotType == SHOT_BARB && !barbStop)) {
             //State timer är tiden till animationen så den vet när den ska skifta bild och
             //loop är att den ska börja om när denkommit till sista bilden
             region = (TextureRegion) shotUp.getKeyFrame(stateTimer, true);
@@ -175,8 +181,13 @@ public class Shot extends Sprite {
         //returnera
         return region;
     }
-    public void getPowerUp(){
-
+    /**Genererar en ny powerup om nästa object i poweruplistan är en powerup.
+     * Kallas på i Contact handlern*/
+    public void setPowerUp(Vector2 position){
+        PowerUp powerUp =  shotHandler.getPowerUp();
+        if(powerUp != null){
+            shotHandler.generatePowerUp(position,powerUp);
+        }
     }
 
 }

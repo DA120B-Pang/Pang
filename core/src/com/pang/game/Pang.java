@@ -28,7 +28,7 @@ public class Pang extends Game {
 	public void create () {
 
 		assetManager = new AssetManager();
-		assetManager.load("sprites/sprites.pack", TextureAtlas.class);
+        assetManager.load("sprites/sprites.pack", TextureAtlas.class);
 		assetManager.load("audio/sound/shoot.wav", Sound.class);
 		assetManager.load("audio/sound/boomSmall.wav", Sound.class);
 		assetManager.load("audio/sound/boomMedium.wav", Sound.class);
@@ -37,18 +37,19 @@ public class Pang extends Game {
 		assetManager.load("audio/sound/countDown.wav", Sound.class);
 		assetManager.load("audio/sound/tileBreak.wav", Sound.class);
 		assetManager.load("audio/sound/tileNonBreak.wav", Sound.class);
+		assetManager.load("audio/sound/powerUpBarb.wav", Sound.class);
+        assetManager.load("audio/sound/powerUpDouble.wav", Sound.class);
+        assetManager.load("audio/sound/powerUpLife.wav", Sound.class);
+        assetManager.load("audio/sound/powerUpLifeFull.wav", Sound.class);
+        assetManager.load("audio/sound/powerUpSheild.wav", Sound.class);
+        assetManager.load("audio/sound/powerUpSheildDown.wav", Sound.class);
+        assetManager.load("audio/sound/powerUpStopTime.wav", Sound.class);
+        assetManager.load("audio/sound/powerUpStopTimeDown.wav", Sound.class);
 		assetManager.load("audio/music/nighttideWaltz.ogg", Music.class);
 		assetManager.finishLoading();
 		batch = new SpriteBatch();
 
 		initFonts();
-
-		for (int i = 0; i <5 ; i++) {
-			Sprite sprite = new Sprite();
-			sprite.setBounds(0f,0f, 18,18);
-			sprite.setRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 5, 44, 18,18);
-		}
-
 
 		hud = new HUD(this, assetManager);
 		setScreen(new StartingScreen(this));//Starta med Meny
