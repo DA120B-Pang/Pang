@@ -59,9 +59,9 @@ public class HUD {
         fontGetReady = new BitmapFont(Gdx.files.internal("font/robot/size72getReady.fnt"));
         Color colorGetReady = new Color(Color.WHITE);
         getReadyLbl = new Label("Get ready", new Label.LabelStyle(fontGetReady,colorGetReady));
-        levelNames = new String[]{  "Ballon Pooopern",
-                                    "Die hard Ballon",
-                                    "Full Ballon"};
+        levelNames = new String[]{  "Balloon Pooopern",
+                                    "Die hard Balloon",
+                                    "Full Balloon"};
         resetHud();
         stage = new Stage();
         fontTop = new BitmapFont(Gdx.files.internal("font/robot/size72.fnt"));
@@ -109,7 +109,7 @@ public class HUD {
         tableTop.add(timeLbl).padRight(20f).width(270f);
         stage.addActor(tableTop);
         //Lägg till powerUps här till varje bana
-        powerUps = new PowerUp[][]{{BARBSHOT,DOUBLESHOT},                                       //Level 1
+        powerUps = new PowerUp[][]{{SHEILD,LIFE,BARBSHOT,DOUBLESHOT,STOPTIME,STOPTIME,STOPTIME,STOPTIME},                                       //Level 1
                                     {DOUBLESHOT,STOPTIME,STOPTIME,BARBSHOT},                                      //Level 2
                                     {DOUBLESHOT, BARBSHOT, DOUBLESHOT, STOPTIME, LIFE, SHEILD}};//Level 3
     }
@@ -184,7 +184,7 @@ public class HUD {
                     getReadyLbl.setText("3");
                     if(0 == (startUpSoundMask & 1)) {
                         assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f);
-                        startUpSoundMask = startUpSoundMask | 1;
+                        startUpSoundMask |= 1;
                     }
                     scale = (3f - startUpTimer) * 1.5f;
                     if (scale < 0) {
@@ -195,7 +195,7 @@ public class HUD {
                     getReadyLbl.setText("2");
                     if(0 == (startUpSoundMask & 2)) {
                         assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f);
-                        startUpSoundMask = startUpSoundMask | 2;
+                        startUpSoundMask |= 2;
                     }
                     scale = (4f - startUpTimer) * 1.5f;
                     if (scale < 0) {
@@ -206,7 +206,7 @@ public class HUD {
                     getReadyLbl.setText("1");
                     if(0 == (startUpSoundMask & 4)) {
                         assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f);
-                        startUpSoundMask = startUpSoundMask | 4;
+                        startUpSoundMask |= 4;
                     }
                     scale = (5f - startUpTimer) * 1.5f;
                     if (scale < 0) {
@@ -238,6 +238,17 @@ public class HUD {
             lives--;
         }
     }
+
+    public void addLife(){
+        if (lives<5) {
+            lives++;
+            game.assetManager.get("audio/sound/powerUpLife.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpLife.wav", Sound.class).play(), 0.6f);
+        }
+        else{
+            game.assetManager.get("audio/sound/powerUpLifeFull.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpLifeFull.wav", Sound.class).play(), 0.6f);
+        }
+    }
+
     public void addScore(int score){
         this.score += score;
     }
@@ -248,6 +259,10 @@ public class HUD {
 
     public int getTimeLeft(){
         return timeLeft;
+    }
+
+    public boolean isTimeOut(){
+        return timeLeft == 0;
     }
 
     public void update(float dt){

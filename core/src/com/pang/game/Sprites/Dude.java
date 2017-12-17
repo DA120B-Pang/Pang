@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.pang.game.Creators.BubbleHandler;
 import com.pang.game.Creators.ShotHandler;
 import com.pang.game.Pang;
 
@@ -22,20 +23,28 @@ public class Dude extends Sprite {
     private enum State { RUNLEFT, RUNRIGHT, STANDING, SHOOTING, DIE };
     private State previousState;
     private State currentState;
-    private AssetManager assetManager;
     private TextureRegion dudeStand;
     private TextureRegion dudeshoot;
     private TextureRegion dudeDie;
+    private BubbleHandler bubbleHandler;
 
     private boolean isShooting;
     private float shooterTime;
     private float shooterTimer;
     private float stateTimer;
     private boolean booleanOfDeath;
+    private boolean isSheilded;
+    private float resetSheildtimer;
+    private boolean resetSheild;
 
-    public Dude(World world, Pang game, Vector2 startPos, int destroyables){
-        this.assetManager = game.assetManager;
+    private Pang game;
+
+    public Dude(World world, Pang game, Vector2 startPos, int destroyables, BubbleHandler bubbleHandler){
+        this.game = game;
         this.world = world;
+        this.bubbleHandler = bubbleHandler;
+        resetSheildtimer = 0;
+        resetSheild = false;
         //Initiera boolean of death
         booleanOfDeath = false;
         //Initiera shoot
@@ -63,7 +72,7 @@ public class Dude extends Sprite {
         //Sätter kategoribit DUDE för kollisioner
         dudeFixtureDef.filter.categoryBits = DUDE;
         //Dude ska kollidera med boll och
-        dudeFixtureDef.filter.maskBits = BUBBLE | FLOOR_WALL;
+        dudeFixtureDef.filter.maskBits = BUBBLE | FLOOR_WALL | POWER_UP;
 
         //Fäster en form till kroppen
         dudeBody.createFixture(dudeFixtureDef);
@@ -76,42 +85,11 @@ public class Dude extends Sprite {
         setBounds(0, 0, 32 / PPM, 32 / PPM);
 
         isShooting = false;
-        //Array för animationer
-        Array<TextureRegion> frames = new Array<>();
-
-        //Gå åt höger
-        //Väljer bild Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
-        frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 1, 2, 32, 32));
-        frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 35, 2, 32, 32));
-        frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 69, 2, 32, 32));
-        frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 102, 2, 32, 32));
-        //Sätter tid på animation i sekunder samt anger en Array av frames
-        goRight = new Animation(0.07f, frames);
-        //Raderar frame Array
-        frames.clear();
-
-        //Gå åt vänster
+        dudeNormal();// animationer
         //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
-        frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 209, 2, 32, 32));
-        frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 243, 2, 32, 32));
-        frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 277, 2, 32, 32));
-        frames.add(new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 310, 2, 32, 32));
-        //Sätter tid på animation i sekunder samt anger en Array av frames
-        goLeft = new Animation(0.07f, frames);
+        dudeDie = new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 84, 69, 38, 32);
 
-        //Bild för stående gubbe
-        //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
-        dudeStand = new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 166, 69, 32, 32);
-
-        //Bild för stående gubbe
-        //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
-        dudeshoot = new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 133, 69, 32, 32);
-
-        //Bild för stående gubbe
-        //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
-        dudeDie = new TextureRegion(assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 84, 69, 38, 32);
-
-        shotHandler = new ShotHandler();
+        shotHandler = new ShotHandler(world, game, game.assetManager);
 
         shotHandler.loadPowerUps(game.hud.getPowerUps(),destroyables);
 
@@ -125,10 +103,10 @@ public class Dude extends Sprite {
         else if((Gdx.input.isKeyJustPressed(Input.Keys.Z) && shotHandler.isReadyForShot()) || isShooting){//dude skjuter
             if(!isShooting) {
                 dudeBody.setLinearVelocity((0f), 0);
-                assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f);
+                game.assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f);
                 isShooting = true;
                 shooterTimer = 0f;
-                shotHandler.addShot(world,dudeBody.getPosition(),assetManager);
+                shotHandler.addShot(dudeBody.getPosition());
             }
             else if(shooterTimer>shooterTime){
                 isShooting = false;
@@ -231,6 +209,13 @@ public class Dude extends Sprite {
         }
 
         shotHandler.update(dt);
+
+        if(resetSheild){
+            resetSheildtimer += dt;
+            if(resetSheildtimer>0.1f){
+                dudeNormal();
+            }
+        }
     }
 
     public  void dispose(){
@@ -264,6 +249,104 @@ public class Dude extends Sprite {
 
         super.draw(batch);
 
+    }
+
+    public void setPowerUp(PowerUp powerUp){
+        switch (powerUp){
+            case BARBSHOT: case DOUBLESHOT:
+                shotHandler.setPowerUp(powerUp);
+                break;
+            case STOPTIME:
+                bubbleHandler.freezeBubblesNextUpdate();
+                break;
+            case LIFE:
+                game.hud.addLife();
+                break;
+            case SHEILD:
+                dudeShield();
+                break;
+        }
+
+    }
+
+    private final void dudeNormal(){
+        Array<TextureRegion> frames = new Array<>();
+
+        //Gå åt höger
+        //Väljer bild Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 1, 2, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 35, 2, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 69, 2, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 102, 2, 32, 32));
+        //Sätter tid på animation i sekunder samt anger en Array av frames
+        goRight = new Animation(0.07f, frames);
+        //Raderar frame Array
+        frames.clear();
+
+        //Gå åt vänster
+        //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 209, 2, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 243, 2, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 277, 2, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 310, 2, 32, 32));
+        //Sätter tid på animation i sekunder samt anger en Array av frames
+        goLeft = new Animation(0.07f, frames);
+
+        //Bild för stående gubbe
+        //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+        dudeStand = new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 166, 69, 32, 32);
+
+        //Bild för stående gubbe
+        //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+        dudeshoot = new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 133, 69, 32, 32);
+        if(isSheilded){
+            game.assetManager.get("audio/sound/powerUpSheildDown.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpSheildDown.wav", Sound.class).play(), 1.0f);
+        }
+        isSheilded = false;
+        resetSheild = false;
+    }
+
+    private final void dudeShield(){
+        Array<TextureRegion> frames = new Array<>();
+
+        //Gå åt höger
+        //Väljer bild Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 2, 176, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 36, 176, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 70, 176, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 103, 176, 32, 32));
+        //Sätter tid på animation i sekunder samt anger en Array av frames
+        goRight = new Animation(0.07f, frames);
+        //Raderar frame Array
+        frames.clear();
+
+        //Gå åt vänster
+        //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 210, 176, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 244, 176, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 278, 176, 32, 32));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 311, 176, 32, 32));
+        //Sätter tid på animation i sekunder samt anger en Array av frames
+        goLeft = new Animation(0.07f, frames);
+
+        //Bild för stående gubbe
+        //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+        dudeStand = new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 247, 135, 32, 32);
+
+        //Bild för stående gubbe
+        //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+        dudeshoot = new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 214, 135, 32, 32);
+
+        isSheilded = true;
+    }
+
+    public boolean isSheilded(){
+        return isSheilded;
+    }
+
+    public void resetSheild(){
+        resetSheild = true;
+        resetSheildtimer = 0;
     }
 }
 

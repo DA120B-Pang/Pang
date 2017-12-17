@@ -112,9 +112,12 @@ public class Obstacle extends Sprite{
             setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
             if (destroyNextUpdate && isBreakable) {
                 if (!filterDataSet) {
-                    Filter filter = new Filter();
-                    filter = body.getFixtureList().get(0).getFilterData();
-                    filter.maskBits = FREEFALL;
+                    Filter[] filter = new Filter[3];
+                    for (int i = 0; i <3 ; i++) {
+                        filter[i] = body.getFixtureList().get(i).getFilterData();
+                        filter[i].maskBits = FREEFALL;
+                        body.getFixtureList().get(i).setFilterData(filter[i]);
+                    }
                     filterDataSet = true;
                     body.setUserData(null);
                 }
@@ -132,10 +135,14 @@ public class Obstacle extends Sprite{
         }
     }
 
+    public Vector2 getPosition(){
+        return body.getPosition();
+    }
 
     public boolean isDestroyed(){
         return isDestroyed;
     }
+
     public int getDestroyables() {
         if(isBreakable){
             return 1;

@@ -38,9 +38,10 @@ public class LevelCompleteScreen implements Screen {
     private boolean isTalking;
 
     public LevelCompleteScreen(Pang game){
-        game.assetManager.load("audio/music/theEmpire.ogg", Music.class);
-        game.assetManager.finishLoading();
-
+        if(!game.assetManager.isLoaded("audio/music/theEmpire.ogg", Music.class)) {
+            game.assetManager.load("audio/music/theEmpire.ogg", Music.class);
+            game.assetManager.finishLoading();
+        }
 
         Array<TextureRegion> frames = new Array<>();
         frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 4, 105, 64, 64));
@@ -165,8 +166,6 @@ public class LevelCompleteScreen implements Screen {
         if(restartGame){
             musicStop();
             game.setScreen(new Level(game));
-
-            game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).stop();
             dispose();
         }
     }
