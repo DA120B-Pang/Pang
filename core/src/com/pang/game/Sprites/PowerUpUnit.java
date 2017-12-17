@@ -90,7 +90,7 @@ public class PowerUpUnit extends Sprite {
         if(terminateTimer>7f && terminateTimer<10f){
             float alpha = 0;
             if(redAlpha<0.2) {
-                redAlpha += dt;
+                redAlpha += dt*0.2f;
             }
             setColor(1,0,0,redAlpha);
             alphaTimer += dt;

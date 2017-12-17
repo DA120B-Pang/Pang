@@ -36,6 +36,10 @@ public class Dude extends Sprite {
     private boolean isSheilded;
     private float resetSheildtimer;
     private boolean resetSheild;
+    private Sprite shotBurst;
+    private Animation shotAnimation;
+    private float shotBurstTimer;
+    private float shotBurstFadeTimer;
 
     private Pang game;
 
@@ -84,6 +88,23 @@ public class Dude extends Sprite {
         //Position och storlek för (super)sprite när den ska ritas
         setBounds(0, 0, 32 / PPM, 32 / PPM);
 
+        shotBurst = new Sprite();
+        shotBurst.setBounds(0,0,14/PPM,14/PPM);
+        shotBurstTimer = 0.05f;
+        shotBurstFadeTimer = 0;
+
+        Array<TextureRegion> frames = new Array<>();
+
+        //Gå åt höger
+        //Väljer bild Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("pangStuff"), 196, 153, 16, 16));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("pangStuff"), 180, 156, 16, 16));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("pangStuff"), 164, 157, 15, 16));
+        frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("pangStuff"), 148, 159, 15, 16));
+        //Sätter tid på animation i sekunder samt anger en Array av frames
+        shotAnimation = new Animation(0.05f, frames);
+
+
         isShooting = false;
         dudeNormal();// animationer
         //Player All2 i sprites.pack hämtar sedan bild på x,y koordinat och anger storlek. x har positiv riktning åt höger. y har positiv riktning nedåt.
@@ -106,6 +127,7 @@ public class Dude extends Sprite {
                 game.assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f);
                 isShooting = true;
                 shooterTimer = 0f;
+                shotBurstTimer = 0f;
                 shotHandler.addShot(dudeBody.getPosition());
             }
             else if(shooterTimer>shooterTime){
@@ -198,6 +220,16 @@ public class Dude extends Sprite {
         float offset = 2/PPM; //Offset för att korrigera position av sprite vid gång
         //Sätter Texture region till sprite
         setRegion(getAnimation(dt));
+        if(shotBurstTimer<0.12f) {
+            shotBurstTimer += dt;
+            shotBurst.setRegion(((TextureRegion) shotAnimation.getKeyFrame(shotBurstTimer, false)));
+            shotBurst.setPosition(dudeBody.getPosition().x - 11 / PPM, dudeBody.getPosition().y + getHeight() / 2.5f);
+            shotBurst.setAlpha(1f);
+        }
+        else {
+            shotBurst.setAlpha(0f);
+        }
+
         if(currentState==State.RUNLEFT) {
             setPosition(dudeBody.getPosition().x - offset - getWidth() / 2, dudeBody.getPosition().y - getHeight() / 2);
         }//Justera position av sprite när vi går åt höger
@@ -247,6 +279,7 @@ public class Dude extends Sprite {
     @Override
     public void draw(Batch batch) {
 
+        shotBurst.draw(batch);
         super.draw(batch);
 
     }

@@ -266,7 +266,7 @@ public class GameCompleteScreen implements Screen {
         levelComplete = new Label("VICTORY!!!", new Label.LabelStyle(victoryFont,scoreColor));
         levelComplete.setFontScale(0.7f);
 
-        timer = -5f;
+        timer = -10f;
 
         spriteDude = new Sprite();
         spriteDude.setBounds(0 ,0,64,64);
@@ -305,7 +305,7 @@ public class GameCompleteScreen implements Screen {
             if (animation.isAnimationFinished(timer)){
                 loopTalk++;
                 if(loopTalk>4){
-                    timer = -7;
+                    timer = -15;
                     isTalking = false;
                     loopTalk = 0;
                 }
