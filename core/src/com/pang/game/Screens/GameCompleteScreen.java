@@ -26,6 +26,7 @@ public class GameCompleteScreen implements Screen {
     private boolean restartGame;
     private Label timeBonus;
     private BitmapFont scoreFont;
+    private BitmapFont victoryFont;
     private Label scoreTotal;
     private Stage stage;
     private float timer;
@@ -86,8 +87,8 @@ public class GameCompleteScreen implements Screen {
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket1"), 384, 768, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket1"), 576, 768, 192, 192));
 
-        min = new Vector2(50,WORLD_HEIGHT/1.5f);
-        max = new Vector2(WORLD_WIDTH-100, WORLD_HEIGHT-64);
+        min = new Vector2(40,WORLD_HEIGHT/1.5f);
+        max = new Vector2(WORLD_WIDTH-80, WORLD_HEIGHT-64);
 
         fireWork1 = new FireWork(new Animation( 0.1f,frames),min,max);
 
@@ -158,7 +159,7 @@ public class GameCompleteScreen implements Screen {
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket3"), 576, 1344, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket3"), 768, 1344, 192, 192));
 
-        fireWork3 = new FireWork(new Animation( 0.05f,frames),min,max);
+        fireWork3 = new FireWork(new Animation( 0.1f,frames),min,max);
 
         frames.clear();
 
@@ -261,7 +262,8 @@ public class GameCompleteScreen implements Screen {
         scoreTotal = new Label(String.format("Total score: %06d", game.hud.getScore()), new Label.LabelStyle(scoreFont,scoreColor));
         scoreTotal.setFontScale(0.5f);
 
-        levelComplete = new Label("Victory!!!", new Label.LabelStyle(scoreFont,scoreColor));
+        victoryFont = new BitmapFont(Gdx.files.internal("font/robot/size72Victory.fnt"));
+        levelComplete = new Label("VICTORY!!!", new Label.LabelStyle(victoryFont,scoreColor));
         levelComplete.setFontScale(0.7f);
 
         timer = -5f;

@@ -173,7 +173,7 @@ public class Level implements Screen {
         //render map
         orthogonalTiledMapRenderer.render();
         //Debug linjer för box2d
-        box2DDebugRenderer.render(world,orthographicCamera.combined);
+        //box2DDebugRenderer.render(world,orthographicCamera.combined);
         game.batch.setProjectionMatrix(orthographicCamera.combined);//.combined);
 
         game.batch.begin();
@@ -187,7 +187,6 @@ public class Level implements Screen {
         //Rita dude
         dude.draw(game.batch);
         game.batch.end();
-
 
         if(gameOverTimer>4) {
             if (game.hud.getLives() == 0) {//Dude är helt död
