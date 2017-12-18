@@ -140,15 +140,23 @@ public class ShotHandler {
     public void loadPowerUps(PowerUp[] powerUps, int destroyables){
         Random myRandom = new Random();
         int myRandomNbr = 0;
+        int nbrOfPowerUps;
+        int randomPowerUp = 0;
         ArrayList<PowerUp> tmpList = new ArrayList<>(Arrays.asList(new PowerUp[destroyables]));
 
-        for (int i = 0; i <powerUps.length ; i++) {
+        if(game.hud.getLevel()<5){
+            nbrOfPowerUps = 2;
+        }
+        else{
+            nbrOfPowerUps = 4;
+        }
+        for (int i = 0; i <nbrOfPowerUps  ; i++) {
             if(tmpList.size()<=i){//Fler powerups än breakables
                 break;
             }
-            tmpList.set(i,powerUps[i]);
+            randomPowerUp = myRandom.nextInt(powerUps.length);
+            tmpList.set(i,powerUps[randomPowerUp]);
         }
-        int random = 0;
         do{
             myRandomNbr = myRandom.nextInt(tmpList.size());
             myPowerUps.add(tmpList.get(myRandomNbr));
