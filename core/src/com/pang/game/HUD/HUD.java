@@ -137,7 +137,7 @@ public class HUD {
         score = 0;
         lives = 5;
         highScore = 0;// länka till highscore
-        actLevel = 7;
+        actLevel = 4;
     }
 
     public final void newLevel(int timeLeft){

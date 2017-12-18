@@ -371,8 +371,8 @@ public class Level implements Screen {
             case 3:
                 tiledMap = tmxMapLoader.load("maps/level3.tmx");
                 break;
-            case 5:
-                tiledMap = tmxMapLoader.load("maps/Level3 - kopia.tmx");
+            case 4:
+                tiledMap = tmxMapLoader.load("maps/Level4.tmx");
                 break;
             case 6:
                 break;
