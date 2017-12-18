@@ -40,7 +40,6 @@ public class Bubble extends Sprite {
     private boolean bumpLeftWallNextUpdate;
     private boolean bumpRightWallNextUpdate;
     private boolean upOnBirth;
-    private Vector2 getCurrentVel;
 
 
 
@@ -64,7 +63,6 @@ public class Bubble extends Sprite {
         bumpLeftWallNextUpdate = false;
         bumpRightWallNextUpdate = false;
         this.upOnBirth = upOnBirth;
-        getCurrentVel = new Vector2();
         if (minSize.ordinal()<startSize.ordinal()){
             this.minSize = startSize;
         }
@@ -91,7 +89,6 @@ public class Bubble extends Sprite {
         explosionSoundDone = false;
         newBubblesCreated = false;
         pointsCollected = false;
-
 
         switch (startSize) {
             case XLARGE:
@@ -605,7 +602,6 @@ public class Bubble extends Sprite {
     }
 
     public final void freezeBubble(){
-        getCurrentVel = bubbleBody.getLinearVelocity();
         bubbleBody.setGravityScale(0f);
         bubbleBody.setLinearVelocity(new Vector2(0f,0f));
         isFrozen = true;
@@ -613,7 +609,6 @@ public class Bubble extends Sprite {
 
     public void unFreezeBubble(){
         bubbleBody.setGravityScale(1);
-        bubbleBody.setLinearVelocity(getCurrentVel);
         isFrozen = false;
     }
 }

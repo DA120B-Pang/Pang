@@ -38,6 +38,7 @@ public class DeadScreen implements Screen {
         restartGame = false;
 
         youDiedFont = new BitmapFont(Gdx.files.internal("font/robot/size72dead.fnt"));
+
         Color youdiedColor = new Color(Color.WHITE);
         String text = timeOut? "Ran out of time!!":"You died!!";
         youDiedLbl = new Label(text, new Label.LabelStyle(youDiedFont,youdiedColor));

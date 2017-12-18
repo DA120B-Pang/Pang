@@ -11,8 +11,6 @@ import com.pang.game.Sprites.Shot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-
-import static com.pang.game.Constants.Constants.PPM;
 import static com.pang.game.Creators.ShotHandler.ShotTypeHandler.*;
 import static com.pang.game.Sprites.Shot.ShotType.*;
 
@@ -54,7 +52,6 @@ public class ShotHandler {
     /*************************** Shots ***************************/
     /**Lägger till skott i världen*/
     public void addShot(Vector2 position){
-        position.x -= 4/PPM;
         myShots.add(new Shot(world, position, assetManager, shotType,this));
     }
 

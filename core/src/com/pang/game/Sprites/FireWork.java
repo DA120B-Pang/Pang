@@ -36,8 +36,6 @@ public class FireWork extends Sprite {
         animationTimer += dt;
         setRegion((TextureRegion)animation.getKeyFrame(animationTimer,false));
         if(animation.isAnimationFinished(animationTimer)){
-            int bound = 56+random.nextInt(15);
-            setBounds(0, 0, bound, bound);
             position = getPosition();
             setPosition( position.x, position.y);
             randomWait -= dt;

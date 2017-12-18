@@ -12,6 +12,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
@@ -22,31 +27,38 @@ public class GameOverScreen implements Screen {
     private float screenTimer;
     private boolean restartGame;
 
+
+
     private Viewport viewPort;
-    public GameOverScreen(Pang game){
+
+    public GameOverScreen(Pang game) {
         this.game = game;
         restartGame = false;
         sprite = new Sprite();
-        sprite.setBounds(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+        sprite.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
         sprite.setRegion(new Texture(Gdx.files.internal("images/gameOver.png")));
         orthographicCamera = new OrthographicCamera();
         //Sätt storlek på viewport
-        viewPort = new FitViewport( WORLD_WIDTH, WORLD_HEIGHT, orthographicCamera);
+        viewPort = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, orthographicCamera);
         orthographicCamera.position.set((viewPort.getWorldWidth() / 2), (viewPort.getWorldHeight() / 2), 0);
     }
+
     @Override
     public void show() {
 
     }
-    public void handleInput(float dt){
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+
+    public void handleInput(float dt) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             restartGame = true;
         }
     }
-    public void update(float dt){
+
+    public void update(float dt) {
         handleInput(dt);
         orthographicCamera.update();
     }
+
     @Override
     public void render(float dt) {
         //Logix
@@ -59,16 +71,16 @@ public class GameOverScreen implements Screen {
         game.batch.begin();
         sprite.draw(game.batch);
         game.batch.end();
-        if(restartGame){
+        if (restartGame) {
             game.setScreen(new StartingScreen(game));
-            game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).stop();
+            game.assetManager.get("audio/music/nighttideWaltz.ogg", Music.class).stop();
             dispose();
         }
     }
 
     @Override
     public void resize(int width, int height) {
-        viewPort.update(width,height);
+        viewPort.update(width, height);
         orthographicCamera.position.set((viewPort.getWorldWidth() / 2), (viewPort.getWorldHeight() / 2), 0);
     }
 
@@ -91,4 +103,8 @@ public class GameOverScreen implements Screen {
     public void dispose() {
 
     }
-}
+
+
+
+
+    }
