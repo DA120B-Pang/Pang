@@ -26,8 +26,8 @@ public class MainMenu implements Screen {
     private Stage stage;
     private Skin skin;
 
-    private TextButton buttonPlay, buttonExit, buttonHighScore, buttonCredits;
 
+    private TextButton buttonPlay, buttonExit, buttonHighScore, buttonCredits;
     private ShapeRenderer shapeRenderer;
 
 
@@ -84,12 +84,16 @@ public class MainMenu implements Screen {
         buttonHighScore.setSize(70, 20);
         buttonHighScore.setPosition(Constants.WORLD_WIDTH / 2 - buttonHighScore.getWidth() / 2, 130);
         buttonHighScore.addListener(new ClickListener() {
-                                        @Override
-                                        public void clicked(InputEvent event, float x, float y) {
-                                            game.setScreen(new HighScoreScreen(game));
-                                            dispose();
-                                        }
-                                    });
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new HighScoreScreen(game));
+                dispose();
+            }
+        });
+
+
+
+
 
 
         buttonCredits = new TextButton("CREDITS", skin, "default");

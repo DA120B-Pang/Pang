@@ -26,8 +26,8 @@ public class GameOverScreen implements Screen {
     private OrthographicCamera orthographicCamera;
     private float screenTimer;
     private boolean restartGame;
-    private int score = 0;
-    private String highScore = "";
+
+
 
     private Viewport viewPort;
 
@@ -104,26 +104,7 @@ public class GameOverScreen implements Screen {
 
     }
 
-    public String GetHighScore() throws FileNotFoundException {
-        // ex: Alex: 500
-        FileReader readFile = null;
-        BufferedReader reader = null;
-        try {
-            readFile = new FileReader("highscore.dat");
-            reader = new BufferedReader(readFile);
-            return reader.readLine();
-        } catch (Exception e) {
-            return "0";
-        } finally {
-            {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (highScore.equals("")) {
-                }
-            }
-        }
+
+
+
     }
-}
