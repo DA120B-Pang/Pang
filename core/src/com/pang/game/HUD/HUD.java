@@ -17,6 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
+
+import java.util.ArrayList;
+
 import static com.pang.game.Constants.Constants.*;
 import static com.pang.game.Constants.Constants.PowerUp.*;
 
@@ -32,6 +35,7 @@ public class HUD {
     private boolean startGame;
     private AssetManager assetManager;
     private int actLevel;
+    private ArrayList<HighScore> highScorelist;
 
     private boolean startTimer;
     private boolean startUpDone;
@@ -52,8 +56,23 @@ public class HUD {
     String[] levelNames;
 
     public HUD(Pang game, AssetManager assetManager){
+
+
+
+
         this.assetManager = assetManager;
         this.game = game;
+        highScorelist = new ArrayList<>();
+
+        for (int i = 0; i <10 ; i++) {
+            if(1 == i%2)
+                highScorelist.add(new HighScore("Christian"+i,i+23));
+            else
+                highScorelist.add(new HighScore("Chran"+i,i+23));
+        }
+
+
+
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         fontGetReady = new BitmapFont(Gdx.files.internal("font/robot/size72getReady.fnt"));
@@ -109,9 +128,9 @@ public class HUD {
         tableTop.add(timeLbl).padRight(20f).width(270f);
         stage.addActor(tableTop);
         //Lägg till powerUps här till varje bana
-        powerUps = new PowerUp[][]{{SHEILD,LIFE,BARBSHOT,DOUBLESHOT,STOPTIME,STOPTIME,STOPTIME,STOPTIME},                                       //Level 1
-                                    {DOUBLESHOT,STOPTIME,STOPTIME,BARBSHOT},                                      //Level 2
-                                    {DOUBLESHOT, BARBSHOT, DOUBLESHOT, STOPTIME, LIFE, SHEILD}};//Level 3
+        powerUps = new PowerUp[][]{{SHEILD,LIFE,BARBSHOT,DOUBLESHOT,STOPTIME},                                  //Level 1
+                                    {DOUBLESHOT,STOPTIME,STOPTIME,BARBSHOT},                                    //Level 2
+                                    {DOUBLESHOT, BARBSHOT, DOUBLESHOT, STOPTIME, LIFE, SHEILD}};                //Level 3
     }
 
     public final void resetHud(){
@@ -273,5 +292,9 @@ public class HUD {
 
     public PowerUp[] getPowerUps(){
         return powerUps[actLevel-1];
+    }
+
+    public ArrayList<HighScore> getHighScorelist(){
+        return highScorelist;
     }
 }
