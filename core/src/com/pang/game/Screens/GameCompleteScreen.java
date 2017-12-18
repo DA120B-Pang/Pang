@@ -319,7 +319,7 @@ public class GameCompleteScreen implements Screen {
 
     private void musicStart(){
         game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).setLooping(true);
-        game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).setVolume(0.7f);
+        game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).setVolume(0.4f);
         game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).play();
 
     }
