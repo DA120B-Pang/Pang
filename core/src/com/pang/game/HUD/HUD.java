@@ -70,7 +70,7 @@ public class HUD {
                                     "Full Balloon",
                                     "Do Or Die",
                                     "Balloonatic",
-                                    "......",
+                                    "Nightfall",
                                     "Temple"};
         resetHud();
         stage = new Stage();
@@ -137,7 +137,7 @@ public class HUD {
         score = 0;
         lives = 5;
         highScore = 0;// länka till highscore
-        actLevel = 5;
+        actLevel = 6;
     }
 
     public final void newLevel(int timeLeft){

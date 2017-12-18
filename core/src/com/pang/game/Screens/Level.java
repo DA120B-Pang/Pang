@@ -75,7 +75,7 @@ public class Level implements Screen {
 
         tmxMapLoader = new TmxMapLoader();
 
-        lastLevelNbr = 3;
+        lastLevelNbr = 7;
         loadMap();
         //Ladda karta och skalera då box2d har enheten meter så delar vi med pixels per meter
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1/PPM);
@@ -376,6 +376,9 @@ public class Level implements Screen {
                 break;
             case 5:
                 tiledMap = tmxMapLoader.load("maps/Level5.tmx");
+                break;
+            case 6:
+                tiledMap = tmxMapLoader.load("maps/Level6.tmx");
                 break;
             case 7:
                 tiledMap = tmxMapLoader.load("maps/Level7.tmx");
