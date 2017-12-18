@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
+import sun.tools.jconsole.Tab;
 
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
@@ -30,7 +31,6 @@ public class InstructionScreen implements Screen {
     private BitmapFont instructionFont;
 
     private Skin skin;
-
     private TextButton backButton;
 
 public InstructionScreen (Pang game) {
@@ -93,24 +93,32 @@ public InstructionScreen (Pang game) {
     table1.add(shoot);
     stage.addActor(table1);
 
+    Table table2 = new Table();
+    table2.setFillParent(true);
+    table2.top().right();
+    table2.row();
+    table2.add(empty);
+    table2.row();
+    table2.add(moveExp);
+    table2.row();
+    table2.add(move1Exp);
+    table2.row();
+    table2.add(shootExp);
+    stage.addActor(table2);
+
+
+    Table table3 = new Table();
+    table3.setFillParent(true);
+    table3.bottom();
+    table3.add(explain);
+    table3.row();
+    table3.add(explain2);
+    stage.addActor(table3);
+
     dispose();
 }
 
-private void initButtons() {
-    backButton = new TextButton("BACK", skin, "default");
-    backButton.setSize(90,30);
-    backButton.setPosition(0,0);
-    backButton.addListener(new ClickListener() {
-        @Override
-        public void clicked(InputEvent event, float x, float y) {
-            game.setScreen(new MainMenu(game));
-            dispose();
-        }
-    });
 
-    stage.addActor(backButton);
-
-}
 
 
     @Override
@@ -121,6 +129,23 @@ private void initButtons() {
         this.skin.addRegions(new TextureAtlas(Gdx.files.internal("ui/uiskin.atlas")));
         this.skin.add("default-font", game.font);
         this.skin.load(Gdx.files.internal("ui/uiskin.json"));
+
+        initButtons();
+    }
+
+    private void initButtons() {
+        backButton = new TextButton("BACK", skin, "default");
+        backButton.setSize(90,30);
+        backButton.setPosition(0,0);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MainMenu(game));
+                dispose();
+            }
+        });
+
+        stage.addActor(backButton);
     }
 
     @Override
