@@ -99,14 +99,14 @@ public class   MainMenu implements Screen {
         buttonInstruct = new TextButton("INSTRUCTIONS", skin, "default");
         buttonInstruct.setSize(90, 30);
         buttonInstruct.setPosition(Constants.WORLD_WIDTH / 2 - buttonInstruct.getWidth() / 2,100);
-        /*buttonInstruct.addListener(new ClickListener() {
+        buttonInstruct.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new CreditScreen(game));
+                game.setScreen(new InstructionScreen(game));
                 dispose();
             }
         });
-*/
+
         buttonCredits = new TextButton("CREDITS", skin, "default");
         buttonCredits.setSize(90, 30);
         buttonCredits.setPosition(Constants.WORLD_WIDTH / 2 - buttonCredits.getWidth() / 2,60);

@@ -53,6 +53,7 @@ public class CreditScreen implements Screen {
 
         creditFont = new BitmapFont(Gdx.files.internal("font/robot/size72dead.fnt"));
         Color creditFontColor = new Color(Color.WHITE);
+
         credits = new Label("CREDITS", new Label.LabelStyle(creditFont, creditFontColor));
         credits.setFontScale(0.4f);
 
@@ -71,6 +72,9 @@ public class CreditScreen implements Screen {
         name4 = new Label("Alex Hsiung", new Label.LabelStyle(creditFont, creditFontColor));
         name4.setFontScale(0.3f);
 
+        Label name5 = new Label(" ", new Label.LabelStyle(creditFont, creditFontColor));
+        name5.setFontScale(0.3f);
+
         timer = 0f;
 
         Table table = new Table();
@@ -82,8 +86,9 @@ public class CreditScreen implements Screen {
         Table padtable1 = new Table();
         table.setFillParent(true);
         table.row();
-        table.row();
         table.padTop(0.8f);
+        table.add(name5);
+        table.row();
         table.add(name);
         table.row();
         table.add(name1);
