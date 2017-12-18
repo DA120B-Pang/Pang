@@ -11,6 +11,8 @@ import com.pang.game.Sprites.Shot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+
+import static com.pang.game.Constants.Constants.PPM;
 import static com.pang.game.Creators.ShotHandler.ShotTypeHandler.*;
 import static com.pang.game.Sprites.Shot.ShotType.*;
 
@@ -52,6 +54,7 @@ public class ShotHandler {
     /*************************** Shots ***************************/
     /**Lägger till skott i världen*/
     public void addShot(Vector2 position){
+        position.x -= 4/PPM;
         myShots.add(new Shot(world, position, assetManager, shotType,this));
     }
 
@@ -137,23 +140,13 @@ public class ShotHandler {
     public void loadPowerUps(PowerUp[] powerUps, int destroyables){
         Random myRandom = new Random();
         int myRandomNbr = 0;
-        int nbrOfPowerUps;
-        int randomPowerUp = 0;
         ArrayList<PowerUp> tmpList = new ArrayList<>(Arrays.asList(new PowerUp[destroyables]));
 
-        if(game.hud.getLevel()<5){
-            nbrOfPowerUps = 2;
-        }
-        else{
-            nbrOfPowerUps = 4;
-        }
-
-        for (int i = 0; i <nbrOfPowerUps ; i++) {
+        for (int i = 0; i <powerUps.length ; i++) {
             if(tmpList.size()<=i){//Fler powerups än breakables
                 break;
             }
-            randomPowerUp = myRandom.nextInt(powerUps.length);
-            tmpList.set(i,powerUps[randomPowerUp]);
+            tmpList.set(i,powerUps[i]);
         }
         int random = 0;
         do{
@@ -162,7 +155,6 @@ public class ShotHandler {
             tmpList.remove(myRandomNbr);
 
         }while (tmpList.size()>0);
-        myRandom = myRandom;
     }
 
     /*************************** PowerUps ***************************/

@@ -23,12 +23,18 @@ public class PowerUpUnit extends Sprite {
     private boolean isDestroyed;
     private Pang game;
     private float terminateTimer;
+    private float alphaTimer;
+    private boolean alphaUp;
+    private float redAlpha;
 
     public PowerUpUnit(World world, Pang game, Constants.PowerUp powerUp, Vector2 position){
         this.game = game;
         destroyNextUpdate = false;
         isDestroyed = false;
         terminateTimer = 0;
+        alphaTimer = 1;
+        alphaUp = false;
+        redAlpha = 0;
         this.powerUp = powerUp;
         this.world = world;
         BodyDef bodydef = new BodyDef();
@@ -80,8 +86,32 @@ public class PowerUpUnit extends Sprite {
     public void update(float dt){
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         terminateTimer += dt;
-        if (destroyNextUpdate || terminateTimer>10){
+
+        if(terminateTimer>7f && terminateTimer<10f){
+            float alpha = 0;
+            if(redAlpha<0.2) {
+                redAlpha += dt*0.2f;
+            }
+            setColor(1,0,0,redAlpha);
+            alphaTimer += dt;
+            if (alphaTimer >= 0.5f) {
+                alphaUp = !alphaUp;
+                alphaTimer = 0;
+            }
+            if (alphaUp){
+                alpha = Math.min(1f, 0.5f+alphaTimer);
+            }
+            else{
+                alpha = Math.max(0.5f, 1f-alphaTimer);
+            }
+            System.out.println(alpha);
+            setAlpha(alpha);
+        }
+        if (destroyNextUpdate){
             destroy();
+        }
+        else if(terminateTimer>10){
+            alphaDown(dt);
         }
     }
 
@@ -103,10 +133,20 @@ public class PowerUpUnit extends Sprite {
         return isDestroyed;
     }
     public void destroy(){//Raderar kropp från värld
-        body.setActive(false);
-        body.setUserData(null);
         isDestroyed = true;
         world.destroyBody(body);
+    }
+
+    private void alphaDown(float dt){
+        body.setActive(false);
+        body.setUserData(null);
+        alphaTimer -= dt;
+        if (alphaTimer<0){
+            alphaTimer = 0;
+            destroy();
+        }
+        setAlpha(alphaTimer);
+
     }
 
     private void playPickSound(){
