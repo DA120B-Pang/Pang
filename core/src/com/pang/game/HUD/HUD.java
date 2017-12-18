@@ -67,7 +67,9 @@ public class HUD {
         getReadyLbl = new Label("Get ready", new Label.LabelStyle(fontGetReady,colorGetReady));
         levelNames = new String[]{  "Balloon Pooopern",
                                     "Die hard Balloon",
-                                    "Full Balloon"};
+                                    "Full Balloon",
+                                    "Do Or Die",
+                                    "......"};
         resetHud();
         stage = new Stage();
         fontTop = new BitmapFont(Gdx.files.internal("font/robot/size72.fnt"));
@@ -115,9 +117,9 @@ public class HUD {
         tableTop.add(timeLbl).padRight(20f).width(270f);
         stage.addActor(tableTop);
         //Lägg till powerUps här till varje bana
-        powerUps = new PowerUp[][]{{SHEILD,LIFE,BARBSHOT,DOUBLESHOT,STOPTIME,STOPTIME,STOPTIME,STOPTIME},                                       //Level 1
-                                    {DOUBLESHOT,STOPTIME,STOPTIME,BARBSHOT},                                      //Level 2
-                                    {DOUBLESHOT, BARBSHOT, DOUBLESHOT, STOPTIME, LIFE, SHEILD}};//Level 3
+        powerUps = new PowerUp[][]{{null},
+                                    {SHEILD, BARBSHOT, STOPTIME},
+                                    {LIFE,BARBSHOT,BARBSHOT,DOUBLESHOT,DOUBLESHOT,DOUBLESHOT,SHEILD,SHEILD,STOPTIME,STOPTIME}};
 
 
         highScorelist = new ArrayList<>();
@@ -133,7 +135,7 @@ public class HUD {
         score = 0;
         lives = 5;
         highScore = 0;// länka till highscore
-        actLevel = 1;
+        actLevel = 5;
     }
 
     public final void newLevel(int timeLeft){
@@ -292,7 +294,17 @@ public class HUD {
     }
 
     public PowerUp[] getPowerUps(){
-        return powerUps[actLevel-1];
+        PowerUp[] tmpPowerUp = null;
+        if(actLevel<2){
+            tmpPowerUp = powerUps[0];
+        }
+        else if(actLevel<5){
+            tmpPowerUp = powerUps[1];
+        }
+        else if(actLevel>=5){
+            tmpPowerUp = powerUps[2];
+        }
+        return tmpPowerUp;
     }
 }
 

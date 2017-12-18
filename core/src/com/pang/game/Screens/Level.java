@@ -250,7 +250,12 @@ public class Level implements Screen {
         endMusicStarted = true;//Kvittera att musik är startad
     }
     private void musicStart(){
-        switch(game.hud.getLevel()) {
+        switch(game.hud.getLevel()%5) {
+            case 0:
+                game.assetManager.get("audio/music/overworld.ogg", Music.class).setLooping(true);
+                game.assetManager.get("audio/music/overworld.ogg", Music.class).setVolume(0.7f);
+                game.assetManager.get("audio/music/overworld.ogg", Music.class).play();
+                break;
             case 1:
                 game.assetManager.get("audio/music/overworld.ogg", Music.class).setLooping(true);
                 game.assetManager.get("audio/music/overworld.ogg", Music.class).setVolume(0.7f);
@@ -266,11 +271,19 @@ public class Level implements Screen {
                 game.assetManager.get("audio/music/enterTheEmperor.ogg", Music.class).setVolume(0.7f);
                 game.assetManager.get("audio/music/enterTheEmperor.ogg", Music.class).play();
                 break;
+            case 4:
+                game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).setLooping(true);
+                game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).setVolume(0.7f);
+                game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).play();
+                break;
         }
     }
 
     private void musicStop(){
-        switch(game.hud.getLevel()) {
+        switch(game.hud.getLevel()%5) {
+            case 0:
+                game.assetManager.get("audio/music/overworld.ogg", Music.class).stop();
+                break;
             case 1:
                 game.assetManager.get("audio/music/overworld.ogg", Music.class).stop();
                 break;
@@ -280,13 +293,22 @@ public class Level implements Screen {
             case 3:
                 game.assetManager.get("audio/music/enterTheEmperor.ogg", Music.class).stop();
                 break;
+            case 4:
+                game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).stop();
+                break;
 
         }
     }
 
     private void loadLevelMusic(){
 
-        switch (game.hud.getLevel()) {//Ladda musik till assetmanagern
+        switch (game.hud.getLevel()%5) {//Ladda musik till assetmanagern
+            case 0:
+                if(!game.assetManager.isLoaded("audio/music/overworld.ogg", Music.class)) {
+                    game.assetManager.load("audio/music/overworld.ogg", Music.class);
+                    game.assetManager.finishLoading();
+                }
+                break;
             case 1:
                 if(!game.assetManager.isLoaded("audio/music/overworld.ogg", Music.class)) {
                     game.assetManager.load("audio/music/overworld.ogg", Music.class);
@@ -305,10 +327,20 @@ public class Level implements Screen {
                     game.assetManager.finishLoading();
                 }
                 break;
+            case 4:
+                if(!game.assetManager.isLoaded("audio/music/barbarianKing.ogg", Music.class)) {
+                    game.assetManager.load("audio/music/barbarianKing.ogg", Music.class);
+                    game.assetManager.finishLoading();
+                }
+                break;
         }
     }
     private void unloadLevelMusic(){
-        switch (game.hud.getLevel()) {//Ta bort musik från assetmanagern
+        switch (game.hud.getLevel()%5) {//Ta bort musik från assetmanagern
+            case 0:
+                game.assetManager.unload("audio/music/overworld.ogg");
+                game.assetManager.finishLoading();
+                break;
             case 1:
                 game.assetManager.unload("audio/music/overworld.ogg");
                 game.assetManager.finishLoading();
@@ -319,6 +351,10 @@ public class Level implements Screen {
                 break;
             case 3:
                 game.assetManager.unload("audio/music/enterTheEmperor.ogg");
+                game.assetManager.finishLoading();
+                break;
+            case 4:
+                game.assetManager.unload("audio/music/barbarianKing.ogg");
                 game.assetManager.finishLoading();
                 break;
         }
@@ -335,6 +371,10 @@ public class Level implements Screen {
             case 3:
                 tiledMap = tmxMapLoader.load("maps/level3.tmx");
                 break;
+            case 5:
+                tiledMap = tmxMapLoader.load("maps/Level3 - kopia.tmx");
+            default:
+                System.out.println("Du har inte lagt in någon tiledMap för aktuell level");
         }
     }
 
