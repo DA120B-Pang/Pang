@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="48" height="32" tilewidth="8" tileheight="8" nextobjectid="23">
+ <tileset firstgid="1" source="Backgrounds.tsx"/>
+ <layer name="Tile Layer 1" width="48" height="32">
+  <data encoding="base64" compression="zlib">
+   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
+  </data>
+ </layer>
+ <objectgroup name="Walls">
+  <object id="2" name="right" x="376.606" y="-0.19697" width="7" height="207"/>
+  <object id="3" name="roof" type="roof" x="0.999833" y="-0.166667" width="383.333" height="7.33333"/>
+  <object id="4" name="floor" x="0.6665" y="200.166" width="382.333" height="6.66667"/>
+  <object id="5" name="left" x="0.749833" y="0.5" width="6.66667" height="206.333"/>
+ </objectgroup>
+ <objectgroup name="Balls">
+  <object id="6" name="R,XL,XS,L," x="244" y="50.5"/>
+  <object id="7" name="B,XS,XS,R," x="34.9329" y="145.384"/>
+  <object id="16" name="R,XS,XS,R," x="57.0498" y="144.989"/>
+  <object id="17" name="B,XS,XS,R," x="79.1667" y="144.989"/>
+  <object id="18" name="R,XS,XS,R," x="100.494" y="144.594"/>
+  <object id="22" name="B,XS,XS,R," x="122.611" y="144.594"/>
+ </objectgroup>
+ <objectgroup name="Obstacle">
+  <object id="10" name="y,t," x="39.5229" y="72.2117" width="32" height="7.39494"/>
+  <object id="14" name="y,t," x="168.496" y="88.4044" width="32" height="7.39494"/>
+  <object id="15" name="y,t," x="360.337" y="95.0895" width="87.345" height="6.3845" rotation="-180.647"/>
+  <object id="19" name="y,t," x="73.0932" y="72.2117" width="32" height="7.39494"/>
+  <object id="20" name="y,t," x="106.269" y="72.6066" width="32" height="7.39494"/>
+ </objectgroup>
+ <objectgroup name="Dude(there can be only one)">
+  <object id="13" name="TheDude" x="265.904" y="167.105" width="32" height="32.3949"/>
+ </objectgroup>
+</map>

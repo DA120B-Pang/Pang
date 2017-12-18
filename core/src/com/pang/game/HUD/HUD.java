@@ -69,7 +69,9 @@ public class HUD {
                                     "Die hard Balloon",
                                     "Full Balloon",
                                     "Do Or Die",
-                                    "......"};
+                                    "......",
+                                    "......",
+                                    "Temple"};
         resetHud();
         stage = new Stage();
         fontTop = new BitmapFont(Gdx.files.internal("font/robot/size72.fnt"));
@@ -135,7 +137,7 @@ public class HUD {
         score = 0;
         lives = 5;
         highScore = 0;// länka till highscore
-        actLevel = 5;
+        actLevel = 7;
     }
 
     public final void newLevel(int timeLeft){

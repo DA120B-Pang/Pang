@@ -373,6 +373,12 @@ public class Level implements Screen {
                 break;
             case 5:
                 tiledMap = tmxMapLoader.load("maps/Level3 - kopia.tmx");
+                break;
+            case 6:
+                break;
+            case 7:
+                tiledMap = tmxMapLoader.load("maps/Level7.tmx");
+                break;
             default:
                 System.out.println("Du har inte lagt in någon tiledMap för aktuell level");
         }

@@ -44,22 +44,22 @@ public InstructionScreen (Pang game) {
     instruction = new Label("INSTRUCTION", new Label.LabelStyle(instructionFont, instructionFontColor ));
     instruction.setFontScale(0.4f);
 
-    Label move = new Label("   -->", new Label.LabelStyle(instructionFont, instructionFontColor));
+    Label move = new Label("         -->", new Label.LabelStyle(instructionFont, instructionFontColor));
     move.setFontScale(0.3f);
 
-    Label move1 = new Label("  <--", new Label.LabelStyle(instructionFont, instructionFontColor));
+    Label move1 = new Label("     <--", new Label.LabelStyle(instructionFont, instructionFontColor));
     move1.setFontScale(0.3f);
 
-    Label moveExp = new Label("Move Right", new Label.LabelStyle(instructionFont, instructionFontColor));
+    Label moveExp = new Label("Move Right     ", new Label.LabelStyle(instructionFont, instructionFontColor));
     moveExp.setFontScale(0.3f);
 
-    Label move1Exp = new Label("Move Left", new Label.LabelStyle(instructionFont, instructionFontColor));
+    Label move1Exp = new Label("Move Left     ", new Label.LabelStyle(instructionFont, instructionFontColor));
     move1Exp.setFontScale(0.3f);
 
-    Label shoot = new Label("Z", new Label.LabelStyle(instructionFont, instructionFontColor));
+    Label shoot = new Label("    Z", new Label.LabelStyle(instructionFont, instructionFontColor));
     shoot.setFontScale(0.3f);
 
-    Label shootExp = new Label("Shoot", new Label.LabelStyle(instructionFont, instructionFontColor));
+    Label shootExp = new Label("Shoot     ", new Label.LabelStyle(instructionFont, instructionFontColor));
     shootExp.setFontScale(0.3f);
 
     Label explain = new Label("Destroy all the bubbles", new Label.LabelStyle(instructionFont, instructionFontColor));
