@@ -68,7 +68,7 @@ public class HUD {
         levelNames = new String[]{  "Balloon Pooopern",
                                     "Die hard Balloon",
                                     "Full Balloon",
-                                    "Do Or Die",
+                                    "Lake of Doom",
                                     "Balloonatic",
                                     "Nightfall",
                                     "Temple"};
@@ -137,7 +137,7 @@ public class HUD {
         score = 0;
         lives = 5;
         highScore = 0;// länka till highscore
-        actLevel = 6;
+        actLevel = 1;
     }
 
     public final void newLevel(int timeLeft){
