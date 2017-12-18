@@ -22,7 +22,7 @@ public class Constants {
     public static final short OBSTACLE = 32;
     public static final short OBSTACLE_TOP = 64;
     public static final short OBSTACLE_SIDE = 128;
-    public static final short UNDEFINED_9 = 256;
+    public static final short POWER_UP = 256;
     public static final short UNDEFINED_10 = 512;
     public static final short UNDEFINED_11 = 1024;
     public static final short UNDEFINED_12 = 2048;

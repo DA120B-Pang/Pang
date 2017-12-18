@@ -1,10 +1,7 @@
 package com.pang.game.ContactHandling;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.pang.game.Sprites.Bubble;
-import com.pang.game.Sprites.Dude;
-import com.pang.game.Sprites.Obstacle;
-import com.pang.game.Sprites.Shot;
+import com.pang.game.Sprites.*;
 
 import static com.pang.game.Constants.Constants.*;
 import static com.pang.game.Constants.Constants.ROOF;
@@ -32,24 +29,24 @@ public class ContactHandler implements ContactListener {
                 switch (((FLOOR_OR_WHOT)other.getBody().getUserData())) {//Userdata i väggar,golv och tak är enum på vilken typ det är.
                     case ID_FLOOR:
                         //UserData i body är bubblans referens därför kan vi kalla på metoder från bubblan
-                        ((Bubble) main.getBody().getUserData()).bumpFloor();//Om bubbla kolliderat med golv ska den studsa, bumfloor i bubbleobject kallas på
+                        ((Bubble) main.getBody().getUserData()).setBumpFloorNextUpdate();//Om bubbla kolliderat med golv ska den studsa, bumfloor i bubbleobject kallas på
                         break;
                     case ID_LEFT_WALL:
-                        ((Bubble) main.getBody().getUserData()).bumpLeftWall();//Om bubbla kolliderar med vänster vägg ska den ändra färdriktning åt höger.
+                        ((Bubble) main.getBody().getUserData()).setBumpLeftWallNextUpdate();//Om bubbla kolliderar med vänster vägg ska den ändra färdriktning åt höger.
                         break;
                     case ID_RIGHT_WALL:
-                        ((Bubble) main.getBody().getUserData()).bumpRightWall();//Om bubbla kolliderar med höger vägg ska den ändra färdriktning åt vänster.
+                        ((Bubble) main.getBody().getUserData()).setBumpRightWallNextUpdate();//Om bubbla kolliderar med höger vägg ska den ändra färdriktning åt vänster.
                         break;
                     default:
                 }
                 break;
             case BUBBLE | OBSTACLE_TOP:
                 main = A.getBody().getUserData() instanceof Shot ? A:B;
-                ((Bubble) main.getBody().getUserData()).bumpObstacaleTop();
+                ((Bubble) main.getBody().getUserData()).setBumpObstacaleTopNextUpdate();
                 break;
             case BUBBLE | OBSTACLE_SIDE:
                 main = A.getBody().getUserData() instanceof Shot ? A:B;
-                ((Bubble) main.getBody().getUserData()).bumpObstacale();
+                ((Bubble) main.getBody().getUserData()).setBumpObstacaleNextUpdate();
                 break;
             case FLOOR_WALL | DUDE: //Dude kolliderar med golv vägg eller tak... denna är till för dudes dödsryck när han studsar ut ur bild
                 main = A.getBody().getUserData() instanceof Dude? A:B;//Kolla om Fixture A eller B är Dude
@@ -62,13 +59,26 @@ public class ContactHandler implements ContactListener {
                 }
                 break;
             case BUBBLE | DUDE: // Bubbla träffar dude
-                main = A.getBody().getUserData() instanceof Dude? A:B;//Kolla om Fixture A eller B är Dude
+                if( A.getBody().getUserData() instanceof Dude){
+                    main = A;
+                    other = B;
+                }
+                else{
+                    main = B;
+                    other = A;
+                }
                 //Userdata i dudes body är referensen till dude därför kan vi kalla på metoder via den
-                ((Dude)main.getBody().getUserData()).dudeDie();//Sätt att dude ska dö
+                if(((Dude)main.getBody().getUserData()).isSheilded()){
+                    ((Dude) main.getBody().getUserData()).resetSheild();
+                    ((Bubble) other.getBody().getUserData()).setBumpObstacaleTopNextUpdate();
+                }
+                else {
+                    ((Dude) main.getBody().getUserData()).dudeDie();//Sätt att dude ska dö
+                }
                 break;
             case SHOT | ROOF:
                 main = A.getBody().getUserData() instanceof Shot ? A:B;
-                if(((Shot)main.getBody().getUserData()).getShotType() == Shot.ShotType.STANDARD) {//Förstör skott
+                if(((Shot)main.getBody().getUserData()).getShotType() == Shot.ShotType.SHOT_STANDARD) {//Förstör skott
                     ((Shot) main.getBody().getUserData()).destroyNextUpdate();
                 }
                 else{//Stoppa skott om Barbskott
@@ -84,6 +94,7 @@ public class ContactHandler implements ContactListener {
                     main = B;
                     other = A;
                 }
+                ((Shot) main.getBody().getUserData()).setPowerUp(((Bubble)other.getBody().getUserData()).getPosition());// Tar position på hinder och skapar powerup
                 ((Shot)main.getBody().getUserData()).destroyNextUpdate();
                 ((Bubble)other.getBody().getUserData()).destroyNextUpdate();
                 break;
@@ -96,15 +107,31 @@ public class ContactHandler implements ContactListener {
                     main = B;
                     other = A;
                 }
-                if(((Shot)main.getBody().getUserData()).getShotType() == Shot.ShotType.STANDARD || ((Obstacle)other.getBody().getUserData()).isBreakable()) {//Förstör skott
+                if(((Shot)main.getBody().getUserData()).getShotType() == Shot.ShotType.SHOT_STANDARD || ((Obstacle)other.getBody().getUserData()).isBreakable()) {//Förstör skott
                     ((Shot) main.getBody().getUserData()).destroyNextUpdate();
+                    if(((Obstacle)other.getBody().getUserData()).isBreakable()) {
+                        ((Shot) main.getBody().getUserData()).setPowerUp(((Obstacle) other.getBody().getUserData()).getPosition());// Tar position på hinder och skapar powerup
+                    }
                 }
                 else{//Stoppa skott om Barbskott
                     ((Shot) main.getBody().getUserData()).setBarbStop();
                 }
                 ((Obstacle)other.getBody().getUserData()).destroyNextUpdate();
-                break;
 
+                break;
+            case DUDE | POWER_UP:
+                if( A.getBody().getUserData() instanceof Dude){
+                    main = A;
+                    other = B;
+                }
+                else{
+                    main = B;
+                    other = A;
+                }
+                ((Dude) main.getBody().getUserData()).setPowerUp(((PowerUpUnit)other.getBody().getUserData()).getPower());
+                ((PowerUpUnit)other.getBody().getUserData()).destroyNextUpdate();
+
+                break;
             default:
         }
 

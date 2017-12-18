@@ -14,7 +14,7 @@
  </objectgroup>
  <objectgroup name="Balls">
   <object id="6" name="G,XL,L,R," x="299.5" y="41.5"/>
-  <object id="7" name="R,XL,S,L," x="79.5" y="44.5"/>
+  <object id="7" name="R,XL,L,L," x="79.5" y="44.5"/>
   <object id="24" name="B,XL,L,R," x="180.333" y="36"/>
  </objectgroup>
  <objectgroup name="Obstacle">

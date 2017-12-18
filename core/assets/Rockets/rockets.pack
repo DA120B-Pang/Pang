@@ -1,0 +1,40 @@
+
+rockets.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+rocket3
+  rotate: false
+  xy: 1, 387
+  size: 960, 1536
+  orig: 960, 1536
+  offset: 0, 0
+  index: -1
+rocket4
+  rotate: false
+  xy: 963, 387
+  size: 960, 1536
+  orig: 960, 1536
+  offset: 0, 0
+  index: -1
+rocket5
+  rotate: false
+  xy: 1925, 387
+  size: 960, 1536
+  orig: 960, 1536
+  offset: 0, 0
+  index: -1
+rocket1
+  rotate: false
+  xy: 2887, 963
+  size: 960, 960
+  orig: 960, 960
+  offset: 0, 0
+  index: -1
+rocket2
+  rotate: false
+  xy: 2887, 1
+  size: 960, 960
+  orig: 960, 960
+  offset: 0, 0
+  index: -1
