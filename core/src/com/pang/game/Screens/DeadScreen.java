@@ -97,7 +97,7 @@ public class DeadScreen implements Screen {
         stage.draw();
 
         if(restartGame){
-            game.setScreen(new Level(game));
+            game.setScreen(new LevelScreen(game));
             game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).stop();
             dispose();
         }

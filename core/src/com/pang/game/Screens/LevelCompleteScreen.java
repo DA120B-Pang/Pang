@@ -165,7 +165,7 @@ public class LevelCompleteScreen implements Screen {
 
         if(restartGame){
             musicStop();
-            game.setScreen(new Level(game));
+            game.setScreen(new LevelScreen(game));
             dispose();
         }
     }

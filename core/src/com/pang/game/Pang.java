@@ -59,7 +59,7 @@ public class Pang extends Game {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/Arcon.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
-		parameter.size = 10;
+		parameter.size = 18;
 		parameter.color = Color.BLACK;
 		font = generator.generateFont(parameter);
 	}

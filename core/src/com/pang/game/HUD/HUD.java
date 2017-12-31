@@ -81,7 +81,7 @@ public class HUD {
         scoreLbl = new Label(String.format("Score: %06d", score), new Label.LabelStyle(fontBottom, colorBottom));
         actLevel = 1;
         levelNameLbl = new Label(levelNames[0], new Label.LabelStyle(fontBottom, colorBottom));
-        levelLbl = new Label("Level "+actLevel, new Label.LabelStyle(fontBottom, colorBottom));
+        levelLbl = new Label("LevelScreen "+actLevel, new Label.LabelStyle(fontBottom, colorBottom));
 
         livesLbl = new Label("Lives:", new Label.LabelStyle(fontBottom, colorBottom));
 
@@ -149,7 +149,7 @@ public class HUD {
         startGame = false;
         startUpSoundMask = 0;
         startUpTimer = 0;
-        levelLbl.setText("Level "+actLevel);
+        levelLbl.setText("LevelScreen "+actLevel);
         levelNameLbl.setText(levelNames[actLevel-1]);
     }
 

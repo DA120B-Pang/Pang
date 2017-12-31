@@ -115,17 +115,18 @@ public class CreditScreen implements Screen {
     public void show() {
 
         Gdx.input.setInputProcessor(stage);
-        this.skin = new Skin();
+        /*this.skin = new Skin();
         this.skin.addRegions(new TextureAtlas(Gdx.files.internal("ui/uiskin.atlas")));
-        this.skin.add("default-font", game.font);
-        this.skin.load(Gdx.files.internal("ui/uiskin.json"));
+        this.skin.add("default-font", game.font);*/
+        this.skin = new Skin(Gdx.files.internal("ui/skin/neon-ui.json"));
 
         initButtons();
     }
 
     private void initButtons() {
         backButton = new TextButton("BACK", skin, "default");
-        backButton.setSize(90,30);
+        backButton.setSize(90,40);
+        backButton.getLabel().setFontScale(0.25f);
         backButton.setPosition(0,0);
         backButton.addListener(new ClickListener() {
             @Override

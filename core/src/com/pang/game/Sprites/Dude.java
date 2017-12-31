@@ -90,8 +90,9 @@ public class Dude extends Sprite {
 
         shotBurst = new Sprite();
         shotBurst.setBounds(0,0,14/PPM,14/PPM);
-        shotBurstTimer = 0f;
+        shotBurstTimer = 12f;
         shotBurstFadeTimer = 0;
+
 
         Array<TextureRegion> frames = new Array<>();
 
@@ -103,6 +104,7 @@ public class Dude extends Sprite {
         frames.add(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("pangStuff"), 148, 159, 15, 16));
         //Sätter tid på animation i sekunder samt anger en Array av frames
         shotAnimation = new Animation(0.05f, frames);
+        shotBurst.setRegion(frames.get(0));
 
 
         isShooting = false;

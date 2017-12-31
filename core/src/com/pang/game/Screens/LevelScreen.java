@@ -31,7 +31,7 @@ import static com.pang.game.Sprites.Bubble.BubbleColor.*;
 import static com.pang.game.Sprites.Bubble.BubbleState.*;
 
 
-public class Level implements Screen {
+public class LevelScreen implements Screen {
 
     private BubbleHandler bubbleHandler;
     private ObstacleHandler obstacleHandler;
@@ -50,7 +50,7 @@ public class Level implements Screen {
     private boolean timeOut;
     private int lastLevelNbr;
 
-    public Level(Pang game){
+    public LevelScreen(Pang game){
 
         obstacleHandler = new ObstacleHandler();
         bubbleHandler = new BubbleHandler(game);
