@@ -5,15 +5,15 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
@@ -44,22 +44,25 @@ public InstructionScreen (Pang game) {
     instruction = new Label("INSTRUCTIONS", new Label.LabelStyle(instructionFont, instructionFontColor ));
     instruction.setFontScale(0.4f);
 
-    Label move = new Label("         -->", new Label.LabelStyle(instructionFont, instructionFontColor));
-    move.setFontScale(0.3f);
+    Texture texture = new Texture(Gdx.files.internal("images/keyboard_key_left.png"));
+    Image left = new Image();
+    left.setDrawable(new TextureRegionDrawable(new TextureRegion(texture)));
 
-    Label move1 = new Label("     <--", new Label.LabelStyle(instructionFont, instructionFontColor));
-    move1.setFontScale(0.3f);
+    texture = new Texture(Gdx.files.internal("images/keyboard_key_right.png"));
+    Image right = new Image();
+    right.setDrawable(new TextureRegionDrawable(new TextureRegion(texture)));
 
-    Label moveExp = new Label("Move Right     ", new Label.LabelStyle(instructionFont, instructionFontColor));
-    moveExp.setFontScale(0.3f);
+    texture = new Texture(Gdx.files.internal("images/keyboard_key_z.png"));
+    Image z = new Image();
+    z.setDrawable(new TextureRegionDrawable(new TextureRegion(texture)));
 
-    Label move1Exp = new Label("Move Left     ", new Label.LabelStyle(instructionFont, instructionFontColor));
-    move1Exp.setFontScale(0.3f);
+    Label moveRightLbl = new Label("Move Right", new Label.LabelStyle(instructionFont, instructionFontColor));
+    moveRightLbl.setFontScale(0.3f);
 
-    Label shoot = new Label("    Z", new Label.LabelStyle(instructionFont, instructionFontColor));
-    shoot.setFontScale(0.3f);
+    Label move1LeftLbl = new Label("Move Left", new Label.LabelStyle(instructionFont, instructionFontColor));
+    move1LeftLbl.setFontScale(0.3f);
 
-    Label shootExp = new Label("Shoot     ", new Label.LabelStyle(instructionFont, instructionFontColor));
+    Label shootExp = new Label("Shoot", new Label.LabelStyle(instructionFont, instructionFontColor));
     shootExp.setFontScale(0.3f);
 
     Label explain = new Label("Destroy all the bubbles", new Label.LabelStyle(instructionFont, instructionFontColor));
@@ -74,25 +77,18 @@ public InstructionScreen (Pang game) {
     table.add(instruction);
     stage.addActor(table);
 
-    Table table1 = new Table().padTop(40f);
-    table1.setFillParent(true);
-    table1.top().left();
-    table1.add(move);
-    table1.row();
-    table1.add(move1);
-    table1.row();
-    table1.add(shoot);
-    stage.addActor(table1);
-
-    Table table2 = new Table().padTop(40f);
-    table2.setFillParent(true);
-    table2.top().right();
-    table2.add(moveExp);
-    table2.row();
-    table2.add(move1Exp);
-    table2.row();
-    table2.add(shootExp);
-    stage.addActor(table2);
+    Table tableControls = new Table().padTop(40f);
+    tableControls.setFillParent(true);
+    tableControls.top();
+    tableControls.add(right).width(16).height(16).padRight(10f);
+    tableControls.add(moveRightLbl);
+    tableControls.row();
+    tableControls.add(left).width(16).height(16).padRight(10f);
+    tableControls.add(move1LeftLbl);
+    tableControls.row();
+    tableControls.add(z).width(16).height(16).padRight(10f);
+    tableControls.add(shootExp);
+    stage.addActor(tableControls);
 
 
     Table table3 = new Table();
@@ -100,7 +96,7 @@ public InstructionScreen (Pang game) {
     table3.bottom();
     table3.add(explain);
     table3.row();
-    table3.add(explain2).padBottom(8f);
+    table3.add(explain2).padBottom(50f);
     stage.addActor(table3);
 
     dispose();
@@ -113,10 +109,6 @@ public InstructionScreen (Pang game) {
     public void show() {
 
         Gdx.input.setInputProcessor(stage);
-        /*this.skin = new Skin();
-        this.skin.addRegions(new TextureAtlas(Gdx.files.internal("ui/uiskin.atlas")));
-        this.skin.add("default-font", game.font);
-        this.skin.load(Gdx.files.internal("ui/uiskin.json"));*/
         this.skin = new Skin(Gdx.files.internal("ui/skin/neon-ui.json"));
 
         initButtons();
@@ -136,6 +128,20 @@ public InstructionScreen (Pang game) {
         });
 
         stage.addActor(backButton);
+
+        TextButton powerUpButton = new TextButton("PowerUps", skin, "default");
+        powerUpButton.setSize(100,40);
+        powerUpButton.getLabel().setFontScale(0.25f);
+        powerUpButton.setPosition(284,0);
+        powerUpButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new InstructionPupScreen(game));
+                dispose();
+            }
+        });
+
+        stage.addActor(powerUpButton);
     }
 
     @Override
