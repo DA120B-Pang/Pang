@@ -16,7 +16,6 @@ import static com.pang.game.Sprites.Shot.ShotType.SHOT_STANDARD;
 public class Shot extends Sprite {
 
     private Body shot;
-    private Texture shot1;
     private World world;
     private boolean setToDestroyShot;
     private boolean destroyShotNextUpdate;

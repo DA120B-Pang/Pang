@@ -34,6 +34,7 @@ public class HUD {
     private boolean startGame;
     private AssetManager assetManager;
     private int actLevel;
+    public int startLevel = 1;
 
 
     private boolean startTimer;
@@ -54,7 +55,7 @@ public class HUD {
     PowerUp[][] powerUps;
     String[] levelNames;
     private int score = 0;
-    public ArrayList<HighScoreData> highScorelist;
+    private ArrayList<HighScoreData> highScorelist = new ArrayList<>();
 
 
     public HUD(Pang game, AssetManager assetManager){
@@ -136,8 +137,13 @@ public class HUD {
     public final void resetHud(){
         score = 0;
         lives = 5;
-        highScore = 0;// länka till highscore
-        actLevel = 1;
+        if(highScorelist.size()>=1) {
+            highScore = highScorelist.get(0).score;// länka till highscore
+        }
+        else{
+            highScore = 0;
+        }
+        actLevel = startLevel;
     }
 
     public final void newLevel(int timeLeft){
@@ -202,7 +208,7 @@ public class HUD {
                 } else if (startUpTimer >= 2 && startUpTimer < 3) {
                     getReadyLbl.setText("3");
                     if(0 == (startUpSoundMask & 1)) {
-                        assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f);
+                        assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f*game.soundVolume);
                         startUpSoundMask |= 1;
                     }
                     scale = (3f - startUpTimer) * 1.5f;
@@ -213,7 +219,7 @@ public class HUD {
                 } else if (startUpTimer >= 3 && startUpTimer < 4) {
                     getReadyLbl.setText("2");
                     if(0 == (startUpSoundMask & 2)) {
-                        assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f);
+                        assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f*game.soundVolume);
                         startUpSoundMask |= 2;
                     }
                     scale = (4f - startUpTimer) * 1.5f;
@@ -224,7 +230,7 @@ public class HUD {
                 } else if (startUpTimer >= 4 && startUpTimer < 5) {
                     getReadyLbl.setText("1");
                     if(0 == (startUpSoundMask & 4)) {
-                        assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f);
+                        assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f*game.soundVolume);
                         startUpSoundMask |= 4;
                     }
                     scale = (5f - startUpTimer) * 1.5f;
@@ -261,10 +267,10 @@ public class HUD {
     public void addLife(){
         if (lives<5) {
             lives++;
-            game.assetManager.get("audio/sound/powerUpLife.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpLife.wav", Sound.class).play(), 0.6f);
+            game.assetManager.get("audio/sound/powerUpLife.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpLife.wav", Sound.class).play(), 0.6f*game.soundVolume);
         }
         else{
-            game.assetManager.get("audio/sound/powerUpLifeFull.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpLifeFull.wav", Sound.class).play(), 0.6f);
+            game.assetManager.get("audio/sound/powerUpLifeFull.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpLifeFull.wav", Sound.class).play(), 0.6f*game.soundVolume);
         }
     }
 

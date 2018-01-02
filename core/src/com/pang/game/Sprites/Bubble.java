@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.pang.game.Pang;
 
 import static com.pang.game.Constants.Constants.*;
 import static com.pang.game.Sprites.Bubble.BubbleState.*;
@@ -41,6 +42,7 @@ public class Bubble extends Sprite {
     private boolean bumpRightWallNextUpdate;
     private boolean upOnBirth;
     private Vector2 getCurrentVel;
+    private Pang game;
 
 
 
@@ -54,10 +56,11 @@ public class Bubble extends Sprite {
     public enum BubbleColor {//Visar vilken färg bubblan har
         BLUE,RED,GREEN
     }
-    public Bubble(World world, BubbleState startSize, BubbleColor color, Vector2 position, AssetManager assetManager,boolean spawnRight, BubbleState minSize, boolean isFrozen, boolean upOnBirth){
-        this.assetManager = assetManager;
+    public Bubble(World world, BubbleState startSize, BubbleColor color, Vector2 position, Pang game,boolean spawnRight, BubbleState minSize, boolean isFrozen, boolean upOnBirth){
+        this.assetManager = game.assetManager;
         this.startSize = startSize;
         this.isFrozen = isFrozen;
+        this.game = game;
         bumpObstacaleTopNextUpdate = false;
         bumpObstacaleNextUpdate = false;
         bumpFloorNextUpdate = false;
@@ -545,19 +548,19 @@ public class Bubble extends Sprite {
     private void setExplodeSound(BubbleState size, AssetManager assetManager){//Sätter igång explosions ljud för rätt storlek av bubbla
         switch(size){
             case XLARGE:
-                assetManager.get("audio/sound/boomXlarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomXlarge.wav", Sound.class).play(), 1.2f);
+                assetManager.get("audio/sound/boomXlarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomXlarge.wav", Sound.class).play(), 1.2f*game.soundVolume);
                 break;
             case LARGE:
-                assetManager.get("audio/sound/boomLarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomLarge.wav", Sound.class).play(), 1.0f);
+                assetManager.get("audio/sound/boomLarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomLarge.wav", Sound.class).play(), 1.0f*game.soundVolume);
                 break;
             case MEDIUM:
-                assetManager.get("audio/sound/boomMedium.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomMedium.wav", Sound.class).play(), 0.9f);
+                assetManager.get("audio/sound/boomMedium.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomMedium.wav", Sound.class).play(), 0.9f*game.soundVolume);
                 break;
             case SMALL:
-                assetManager.get("audio/sound/boomSmall.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomSmall.wav", Sound.class).play(), 0.8f);
+                assetManager.get("audio/sound/boomSmall.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomSmall.wav", Sound.class).play(), 0.8f*game.soundVolume);
                 break;
             default:
-                assetManager.get("audio/sound/boomSmall.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomSmall.wav", Sound.class).play(), 0.7f);
+                assetManager.get("audio/sound/boomSmall.wav", Sound.class).setVolume(assetManager.get("audio/sound/boomSmall.wav", Sound.class).play(), 0.7f*game.soundVolume);
 
         }
     }
@@ -571,16 +574,16 @@ public class Bubble extends Sprite {
         if(startSize!=minSize) {
             switch (startSize) {
                 case XLARGE:
-                    myBoubbles = new DoubleBoubble(world, LARGE, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 24f, minSize, isFrozen);
+                    myBoubbles = new DoubleBoubble(world, LARGE, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), game, 24f, minSize, isFrozen);
                     break;
                 case LARGE:
-                    myBoubbles = new DoubleBoubble(world, MEDIUM, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 18f, minSize, isFrozen);
+                    myBoubbles = new DoubleBoubble(world, MEDIUM, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), game, 18f, minSize, isFrozen);
                     break;
                 case MEDIUM:
-                    myBoubbles = new DoubleBoubble(world, SMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 13f, minSize, isFrozen);
+                    myBoubbles = new DoubleBoubble(world, SMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), game, 13f, minSize, isFrozen);
                     break;
                 case SMALL:
-                    myBoubbles = new DoubleBoubble(world, XSMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), assetManager, 7f, minSize, isFrozen);
+                    myBoubbles = new DoubleBoubble(world, XSMALL, color, new Vector2(bubbleBody.getPosition().x * PPM, bubbleBody.getPosition().y * PPM), game, 7f, minSize, isFrozen);
                     break;
                 default:
                     myBoubbles = null;

@@ -22,6 +22,8 @@ public class Pang extends Game {
 	public HUD hud;
 	public SpriteBatch batch;
 	public BitmapFont font;
+	public float musicVolume = 1f;
+	public float soundVolume = 1f;
 
 
 	@Override

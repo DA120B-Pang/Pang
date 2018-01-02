@@ -126,7 +126,7 @@ public class Dude extends Sprite {
         else if((Gdx.input.isKeyJustPressed(Input.Keys.Z) && shotHandler.isReadyForShot()) || isShooting){//dude skjuter
             if(!isShooting) {
                 dudeBody.setLinearVelocity((0f), 0);
-                game.assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f);
+                game.assetManager.get("audio/sound/shoot.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/shoot.wav", Sound.class).play(), 0.1f*game.soundVolume);
                 isShooting = true;
                 shooterTimer = 0f;
                 shotBurstTimer = 0f;

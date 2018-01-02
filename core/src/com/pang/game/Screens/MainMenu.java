@@ -64,9 +64,6 @@ public class   MainMenu implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         this.skin = new Skin(Gdx.files.internal("ui/skin/neon-ui.json"));
-        /*this.skin.addRegions(new TextureAtlas(Gdx.files.internal("ui/uiskin.atlas")));
-        this.skin.add("default-font", game.font);
-        this.skin.load(Gdx.files.internal("ui/skin/sgx-ui.json"));*/
         this.skin.remove("font", BitmapFont.class);
         this.skin.add("font", Gdx.files.internal("font/robot/size72dead.fnt"));
 
@@ -79,10 +76,12 @@ public class   MainMenu implements Screen {
         float buttonWidth = 140;
         float buttonHeight = 42;
         float fontScale = 0.25f;
+        float topPosition = 180;
+        float bottomPosition = 10;
         buttonPlay = new TextButton("PLAY", skin, "default");
         buttonPlay.setSize(buttonWidth,buttonHeight);
         buttonPlay.getLabel().setFontScale(fontScale);
-        buttonPlay.setPosition(Constants.WORLD_WIDTH / 2 - buttonPlay.getWidth() / 2,180);
+        buttonPlay.setPosition(Constants.WORLD_WIDTH / 2 - buttonPlay.getWidth() / 2, topPosition);
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -92,10 +91,22 @@ public class   MainMenu implements Screen {
             }
         });
 
+        TextButton buttonSettings = new TextButton("SETTINGS", skin, "default");
+        buttonSettings.setSize(buttonWidth, buttonHeight);
+        buttonSettings.getLabel().setFontScale(fontScale);
+        buttonSettings.setPosition(Constants.WORLD_WIDTH / 2 - buttonPlay.getWidth() / 2,bottomPosition + ((topPosition-bottomPosition)/5)*4);
+        buttonSettings.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new SettingsScreen(game));
+                dispose();
+            }
+        });
+
         buttonHighScore = new TextButton("HIGHSCORE", skin, "default");
         buttonHighScore.setSize(buttonWidth, buttonHeight);
         buttonHighScore.getLabel().setFontScale(fontScale);
-        buttonHighScore.setPosition(Constants.WORLD_WIDTH / 2 - buttonHighScore.getWidth() / 2, 140);
+        buttonHighScore.setPosition(Constants.WORLD_WIDTH / 2 - buttonHighScore.getWidth() / 2, bottomPosition + ((topPosition-bottomPosition)/5)*3);
         /*buttonPlay.addListener(new ClickListener() {
             @Override
         public void clicked(InputEvent event, float x, float y) {
@@ -106,7 +117,7 @@ public class   MainMenu implements Screen {
         buttonInstruct = new TextButton("INSTRUCTIONS", skin, "default");
         buttonInstruct.setSize(buttonWidth, buttonHeight);
         buttonInstruct.getLabel().setFontScale(fontScale);
-        buttonInstruct.setPosition(Constants.WORLD_WIDTH / 2 - buttonInstruct.getWidth() / 2,100);
+        buttonInstruct.setPosition(Constants.WORLD_WIDTH / 2 - buttonInstruct.getWidth() / 2,bottomPosition + ((topPosition-bottomPosition)/5)*2);
         buttonInstruct.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -118,7 +129,7 @@ public class   MainMenu implements Screen {
         buttonCredits = new TextButton("CREDITS", skin, "default");
         buttonCredits.setSize(buttonWidth, buttonHeight);
         buttonCredits.getLabel().setFontScale(fontScale);
-        buttonCredits.setPosition(Constants.WORLD_WIDTH / 2 - buttonCredits.getWidth() / 2,60);
+        buttonCredits.setPosition(Constants.WORLD_WIDTH / 2 - buttonCredits.getWidth() / 2,bottomPosition + ((topPosition-bottomPosition)/5)*1);
         buttonCredits.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -131,7 +142,7 @@ public class   MainMenu implements Screen {
         buttonExit = new TextButton("EXIT", skin, "default");
         buttonExit.setSize(buttonWidth,buttonHeight);
         buttonExit.getLabel().setFontScale(fontScale);
-        buttonExit.setPosition(Constants.WORLD_WIDTH / 2 - buttonExit.getWidth() / 2,20);
+        buttonExit.setPosition(Constants.WORLD_WIDTH / 2 - buttonExit.getWidth() / 2, bottomPosition);
 
         buttonExit.addListener(new ClickListener() {
             @Override
@@ -141,16 +152,13 @@ public class   MainMenu implements Screen {
         });
 
 
-
-
-
-
-
         stage.addActor(buttonPlay);
-        stage.addActor(buttonExit);
-        stage.addActor(buttonCredits);
+        stage.addActor(buttonSettings);
         stage.addActor(buttonHighScore);
         stage.addActor(buttonInstruct);
+        stage.addActor(buttonCredits);
+        stage.addActor(buttonExit);
+
 
     }
 
@@ -162,10 +170,6 @@ public class   MainMenu implements Screen {
         update(delta);
 
         stage.draw();
-
-        game.batch.begin();
-        game.font.draw(game.batch, "SCREEN: MAIN MENU", 20,20   );
-        game.batch.end();
 
     }
 

@@ -127,7 +127,7 @@ public class LevelCompleteScreen implements Screen {
 
     private void musicStart(){
         game.assetManager.get("audio/music/theEmpire.ogg",Music.class).setLooping(true);
-        game.assetManager.get("audio/music/theEmpire.ogg",Music.class).setVolume(0.7f);
+        game.assetManager.get("audio/music/theEmpire.ogg",Music.class).setVolume(0.7f*game.musicVolume);
         game.assetManager.get("audio/music/theEmpire.ogg",Music.class).play();
 
     }

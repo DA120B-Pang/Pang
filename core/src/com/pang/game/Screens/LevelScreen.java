@@ -243,7 +243,7 @@ public class LevelScreen implements Screen {
     }
 
     private void musicEnd(){//Musik till död dude
-        game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).setVolume(0.8f);
+        game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).setVolume(0.8f*game.musicVolume);
         game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).setLooping(true);
         game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).play();
         musicStop();
@@ -253,27 +253,27 @@ public class LevelScreen implements Screen {
         switch(game.hud.getLevel()%5) {
             case 0:
                 game.assetManager.get("audio/music/overworld.ogg", Music.class).setLooping(true);
-                game.assetManager.get("audio/music/overworld.ogg", Music.class).setVolume(0.7f);
+                game.assetManager.get("audio/music/overworld.ogg", Music.class).setVolume(0.7f*game.musicVolume);
                 game.assetManager.get("audio/music/overworld.ogg", Music.class).play();
                 break;
             case 1:
                 game.assetManager.get("audio/music/overworld.ogg", Music.class).setLooping(true);
-                game.assetManager.get("audio/music/overworld.ogg", Music.class).setVolume(0.7f);
+                game.assetManager.get("audio/music/overworld.ogg", Music.class).setVolume(0.7f*game.musicVolume);
                 game.assetManager.get("audio/music/overworld.ogg", Music.class).play();
                 break;
             case 2:
                 game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).setLooping(true);
-                game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).setVolume(0.7f);
+                game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).setVolume(0.7f*game.musicVolume);
                 game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).play();
                 break;
             case 3:
                 game.assetManager.get("audio/music/enterTheEmperor.ogg", Music.class).setLooping(true);
-                game.assetManager.get("audio/music/enterTheEmperor.ogg", Music.class).setVolume(0.7f);
+                game.assetManager.get("audio/music/enterTheEmperor.ogg", Music.class).setVolume(0.7f*game.musicVolume);
                 game.assetManager.get("audio/music/enterTheEmperor.ogg", Music.class).play();
                 break;
             case 4:
                 game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).setLooping(true);
-                game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).setVolume(0.7f);
+                game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).setVolume(0.7f*game.musicVolume);
                 game.assetManager.get("audio/music/barbarianKing.ogg", Music.class).play();
                 break;
         }
@@ -533,7 +533,7 @@ public class LevelScreen implements Screen {
                         break;
                 }
             }
-            bubbleHandler.addBubble(new Bubble(world, startSize, color, new Vector2(((RectangleMapObject) o).getRectangle().x, ((RectangleMapObject) o).getRectangle().y), game.assetManager, spawnRight, endSize,false,false));
+            bubbleHandler.addBubble(new Bubble(world, startSize, color, new Vector2(((RectangleMapObject) o).getRectangle().x, ((RectangleMapObject) o).getRectangle().y), game, spawnRight, endSize,false,false));
         }
 
     }

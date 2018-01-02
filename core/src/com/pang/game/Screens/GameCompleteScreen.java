@@ -321,7 +321,7 @@ public class GameCompleteScreen implements Screen {
 
     private void musicStart(){
         game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).setLooping(true);
-        game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).setVolume(0.4f);
+        game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).setVolume(0.4f*game.musicVolume);
         game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).play();
 
     }
@@ -407,6 +407,5 @@ public class GameCompleteScreen implements Screen {
         fireWork3.getTexture().dispose();
         fireWork4.getTexture().dispose();
         fireWork5.getTexture().dispose();
-        System.out.println(game.assetManager.isLoaded("audio/music/Royal_Entrance_Loop.ogg"));
     }
 }
