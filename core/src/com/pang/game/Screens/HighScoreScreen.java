@@ -15,8 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.pang.game.Constants.Constants;
 import com.pang.game.HUD.HighScoreData;
 import com.pang.game.Pang;
 
@@ -27,12 +29,9 @@ import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
 public class HighScoreScreen implements Screen {
-    private Pang game;
-    private boolean exit;
     private Label nameTopLbl;
     private Label scoreTopLbl;
     private Label dateTopLbl;
-    private Label[] numberLabel;
     private Label[] nameLbl;
     private Label[] scoreLbl;
     private Label[] dateLbl;
@@ -40,28 +39,26 @@ public class HighScoreScreen implements Screen {
     private Label highScoreLbl;
     private Stage stage;
     private Viewport viewport;
-    private TextButton backBtn;
+    private TextButton backButton;
     private Skin skin;
 
 
 
     private Viewport viewPort;
     public HighScoreScreen(Pang game){
-        viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
-        this.game = game;
-        exit = false;
 
 
-        this.skin = new Skin();
-        this.skin.addRegions(new TextureAtlas(Gdx.files.internal("ui/uiskin.atlas")));
-        this.skin.add("default-font", game.font);
-        this.skin.load(Gdx.files.internal("ui/uiskin.json"));
 
-        backBtn = new TextButton("Back to menu", skin, "default");
-        backBtn.setSize(70,20);
-        backBtn.addListener(new ClickListener() {
+        this.skin = new Skin(Gdx.files.internal("ui/skin/neon-ui.json"));
+
+        backButton = new TextButton("BACK", skin, "default");
+        backButton.setSize(90,40);
+        backButton.getLabel().setFontScale(0.25f);
+        backButton.setPosition(0,0);
+        backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MainMenu(game));
@@ -79,7 +76,6 @@ public class HighScoreScreen implements Screen {
 
         ArrayList<HighScoreData> highscorelist = game.hud.getHighScorelist();
 
-        numberLabel = new Label[10];
         nameLbl = new Label[10];
         scoreLbl = new Label[10];
         dateLbl = new Label[10];
@@ -96,7 +92,7 @@ public class HighScoreScreen implements Screen {
         for (int i = 0; i <highscorelist.size() ; i++) {
             nameLbl[i] = new Label(String.format("%2d. %s", i+1, highscorelist.get(i).getName()) , new Label.LabelStyle(scoreFont,highScoreColor));
             nameLbl[i].setFontScale(fontScaleSmall);
-            scoreLbl[i] = new Label(String.format("%06d", i, highscorelist.get(i).getScore()) , new Label.LabelStyle(scoreFont,highScoreColor));
+            scoreLbl[i] = new Label(String.format("%06d", highscorelist.get(i).getScore()) , new Label.LabelStyle(scoreFont,highScoreColor));
             scoreLbl[i].setFontScale(fontScaleSmall);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy MM dd");
             String text = highscorelist.get(i).getDate().format(formatter);
@@ -109,18 +105,18 @@ public class HighScoreScreen implements Screen {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.top();
+        table.top().padTop(-7f);
         table.add(highScoreLbl);
         stage.addActor(table);
 
         Table tableScore = new Table();
         tableScore.setFillParent(true);
-        tableScore.top().padTop(45f);
+        tableScore.top().padTop(38f);
         tableScore.add(nameTopLbl);
         tableScore.add(scoreTopLbl);
         tableScore.add(dateTopLbl);
         tableScore.row();
-        for (int i = 0; i < nameLbl.length ; i++) {
+        for (int i = 0; i < highscorelist.size() ; i++) {
             tableScore.add(nameLbl[i]).padRight(5f).uniformX().left();
             tableScore.add(scoreLbl[i]).padRight(5f);
             tableScore.add(dateLbl[i]).padRight(5f);
@@ -128,11 +124,7 @@ public class HighScoreScreen implements Screen {
         }
         stage.addActor(tableScore);
 
-        Table tableBtn = new Table();
-        tableBtn.setFillParent(true);
-        tableBtn.right().bottom().pad(5f);
-        tableBtn.add(backBtn);
-        stage.addActor(tableBtn);
+        stage.addActor(backButton);
 
 
     }
@@ -141,12 +133,10 @@ public class HighScoreScreen implements Screen {
 
     }
     public void handleInput(float dt){
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            exit = true;
-        }
+
     }
     public void update(float dt){
-
+        stage.act(dt);
 
         handleInput(dt);
 
@@ -161,10 +151,6 @@ public class HighScoreScreen implements Screen {
 
         stage.draw();
 
-        if(exit){
-            game.setScreen(new MainMenu(game));
-            dispose();
-        }
     }
 
     @Override

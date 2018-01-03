@@ -57,6 +57,7 @@ public class GameOverScreen implements Screen {
     public void update(float dt) {
         handleInput(dt);
         orthographicCamera.update();
+
     }
 
     @Override
@@ -72,7 +73,12 @@ public class GameOverScreen implements Screen {
         sprite.draw(game.batch);
         game.batch.end();
         if (restartGame) {
-            game.setScreen(new StartingScreen(game));
+            if(game.hud.isHighScore()){
+                game.setScreen(new HighScoreInputScreen(game));
+            }
+            else {
+                game.setScreen(new StartingScreen(game));
+            }
             game.assetManager.get("audio/music/nighttideWaltz.ogg", Music.class).stop();
             dispose();
         }

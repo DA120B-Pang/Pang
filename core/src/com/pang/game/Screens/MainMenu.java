@@ -60,7 +60,6 @@ public class   MainMenu implements Screen {
 
     @Override
     public void show() {
-        System.out.println("MENU");
         Gdx.input.setInputProcessor(stage);
 
         this.skin = new Skin(Gdx.files.internal("ui/skin/neon-ui.json"));
@@ -107,12 +106,12 @@ public class   MainMenu implements Screen {
         buttonHighScore.setSize(buttonWidth, buttonHeight);
         buttonHighScore.getLabel().setFontScale(fontScale);
         buttonHighScore.setPosition(Constants.WORLD_WIDTH / 2 - buttonHighScore.getWidth() / 2, bottomPosition + ((topPosition-bottomPosition)/5)*3);
-        /*buttonPlay.addListener(new ClickListener() {
+        buttonHighScore.addListener(new ClickListener() {
             @Override
         public void clicked(InputEvent event, float x, float y) {
-            game.setScreen(new (game));
-        }*/
-        //});
+            game.setScreen(new HighScoreScreen(game));
+        }
+        });
 
         buttonInstruct = new TextButton("INSTRUCTIONS", skin, "default");
         buttonInstruct.setSize(buttonWidth, buttonHeight);

@@ -173,7 +173,7 @@ public class LevelScreen implements Screen {
         //render map
         orthogonalTiledMapRenderer.render();
         //Debug linjer för box2d
-        box2DDebugRenderer.render(world,orthographicCamera.combined);
+        //box2DDebugRenderer.render(world,orthographicCamera.combined);
         game.batch.setProjectionMatrix(orthographicCamera.combined);//.combined);
 
         game.batch.begin();

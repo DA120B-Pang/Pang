@@ -371,7 +371,12 @@ public class GameCompleteScreen implements Screen {
 
         if(restartGame){
             musicStop();
-            game.setScreen(new StartingScreen(game));
+            if(game.hud.isHighScore()){
+                game.setScreen(new HighScoreInputScreen(game));
+            }
+            else {
+                game.setScreen(new StartingScreen(game));
+            }
             dispose();
         }
     }

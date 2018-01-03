@@ -56,6 +56,8 @@ public class HUD {
     String[] levelNames;
     private int score = 0;
     private ArrayList<HighScoreData> highScorelist = new ArrayList<>();
+    private HighScoreDataSort highScoreDataSort = new HighScoreDataSort();
+    private FileReadWriter file = new FileReadWriter();
 
 
     public HUD(Pang game, AssetManager assetManager){
@@ -125,18 +127,13 @@ public class HUD {
                                     {LIFE,BARBSHOT,BARBSHOT,DOUBLESHOT,DOUBLESHOT,DOUBLESHOT,SHEILD,SHEILD,STOPTIME,STOPTIME}};
 
 
-        highScorelist = new ArrayList<>();
-
-        for (int i = 0; i <10 ; i++) {
-            highScorelist.add(new HighScoreData("name"+i,i+23));
-        }
-
+        highScorelist = file.readFile();
 
     }
 
     public final void resetHud(){
         score = 0;
-        lives = 5;
+        lives = 1;
         if(highScorelist.size()>=1) {
             highScore = highScorelist.get(0).score;// länka till highscore
         }
@@ -286,6 +283,26 @@ public class HUD {
         return highScorelist;
     }
 
+    public void addToHighScore(String name){
+        if (highScorelist.size()>=10){
+            highScorelist.remove(9);
+        }
+
+        highScorelist.add(new HighScoreData(name, score));
+        highScorelist.sort(highScoreDataSort);
+        file.writeFile(highScorelist);
+    }
+
+    public boolean isHighScore(){
+        boolean retVal = false;
+        if (highScorelist.size()<10){
+            retVal = true;
+        }
+        else if(highScorelist.get(9).score < score){
+            retVal = true;
+        }
+        return retVal;
+    }
 
     public int getTimeLeft(){
         return timeLeft;
