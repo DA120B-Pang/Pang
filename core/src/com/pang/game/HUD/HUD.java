@@ -75,7 +75,7 @@ public class HUD {
                                     "Balloonatic",
                                     "Nightfall",
                                     "Temple"};
-        resetHud();
+        //resetHud();
         stage = new Stage();
         fontTop = new BitmapFont(Gdx.files.internal("font/robot/size72.fnt"));
         fontBottom = new BitmapFont(Gdx.files.internal("font/robot/size48.png.fnt"));
@@ -84,7 +84,7 @@ public class HUD {
         scoreLbl = new Label(String.format("Score: %06d", score), new Label.LabelStyle(fontBottom, colorBottom));
         actLevel = 1;
         levelNameLbl = new Label(levelNames[0], new Label.LabelStyle(fontBottom, colorBottom));
-        levelLbl = new Label("LevelScreen "+actLevel, new Label.LabelStyle(fontBottom, colorBottom));
+        levelLbl = new Label("Level "+actLevel, new Label.LabelStyle(fontBottom, colorBottom));
 
         livesLbl = new Label("Lives:", new Label.LabelStyle(fontBottom, colorBottom));
 
@@ -133,13 +133,14 @@ public class HUD {
 
     public final void resetHud(){
         score = 0;
-        lives = 1;
+        lives = 5;
         if(highScorelist.size()>=1) {
             highScore = highScorelist.get(0).score;// länka till highscore
         }
         else{
             highScore = 0;
         }
+        highScoreLbl.setText(String.format("High score: %06d", highScore));
         actLevel = startLevel;
     }
 
@@ -152,7 +153,7 @@ public class HUD {
         startGame = false;
         startUpSoundMask = 0;
         startUpTimer = 0;
-        levelLbl.setText("LevelScreen "+actLevel);
+        levelLbl.setText("Level "+actLevel);
         levelNameLbl.setText(levelNames[actLevel-1]);
     }
 
