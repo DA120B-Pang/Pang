@@ -152,16 +152,16 @@ public class PowerUpUnit extends Sprite {
     private void playPickSound(){
         switch (powerUp) {
             case BARBSHOT:
-                game.assetManager.get("audio/sound/powerUpBarb.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpBarb.wav", Sound.class).play(), 0.6f);
+                game.assetManager.get("audio/sound/powerUpBarb.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpBarb.wav", Sound.class).play(), 0.6f*game.soundVolume);
                 break;
             case SHEILD:
-                game.assetManager.get("audio/sound/powerUpSheild.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpSheild.wav", Sound.class).play(), 0.6f);
+                game.assetManager.get("audio/sound/powerUpSheild.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpSheild.wav", Sound.class).play(), 0.6f*game.soundVolume);
                 break;
             case STOPTIME:
-                game.assetManager.get("audio/sound/powerUpStopTime.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpStopTime.wav", Sound.class).play(), 0.6f);
+                game.assetManager.get("audio/sound/powerUpStopTime.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpStopTime.wav", Sound.class).play(), 0.6f*game.soundVolume);
                 break;
             case DOUBLESHOT:
-                game.assetManager.get("audio/sound/powerUpDouble.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpDouble.wav", Sound.class).play(), 0.4f);
+                game.assetManager.get("audio/sound/powerUpDouble.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpDouble.wav", Sound.class).play(), 0.4f*game.soundVolume);
                 break;
                 //LIFE görs i hud
         }

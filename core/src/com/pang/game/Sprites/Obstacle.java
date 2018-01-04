@@ -27,8 +27,10 @@ public class Obstacle extends Sprite{
     private boolean isBreakable;
     private World world;
     private float timerAnimation;
+    private Pang game;
 
     public Obstacle( Pang game, Rectangle rectangle, World world, boolean colorYellow, boolean isBreakable){
+        this.game = game;
         assetManager = game.assetManager;
         this.world = world;
         this.colorYellow = colorYellow;
@@ -99,7 +101,7 @@ public class Obstacle extends Sprite{
             destroyNextUpdate = true;
         }
         else {
-            assetManager.get("audio/sound/boomLarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/tileNonBreak.wav", Sound.class).play(), 1.0f);
+            assetManager.get("audio/sound/boomLarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/tileNonBreak.wav", Sound.class).play(), 1.0f*game.soundVolume);
         }
     }
 
@@ -124,7 +126,7 @@ public class Obstacle extends Sprite{
                 timerAnimation += dt;
                 setRegion((TextureRegion) animation.getKeyFrame(timerAnimation, false));
                 if(!destroySoundStarted) {
-                    assetManager.get("audio/sound/boomLarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/tileBreak.wav", Sound.class).play(), 1.0f);
+                    assetManager.get("audio/sound/boomLarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/tileBreak.wav", Sound.class).play(), 1.0f*game.soundVolume);
                     destroySoundStarted = true;
                 }
                 if (animation.isAnimationFinished(timerAnimation)) {
