@@ -6,7 +6,7 @@ public class HighScoreDataSort implements Comparator<HighScoreData> {
 
     @Override
     public int compare(HighScoreData o1, HighScoreData o2) {
-        if(o1.score < o2.score){
+        if(o1.getScore() < o2.getScore()){
             return 1;
         }
         else{

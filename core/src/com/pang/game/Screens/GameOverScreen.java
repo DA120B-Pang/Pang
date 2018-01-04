@@ -24,11 +24,7 @@ public class GameOverScreen implements Screen {
     private Sprite sprite;
     private Pang game;
     private OrthographicCamera orthographicCamera;
-    private float screenTimer;
     private boolean restartGame;
-
-
-
     private Viewport viewPort;
 
     public GameOverScreen(Pang game) {

@@ -24,11 +24,9 @@ import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 public class InstructionPupScreen implements Screen {
 
     private Pang game;
-    private Label instruction;
     private Viewport viewport;
     private Stage stage;
     private BitmapFont instructionFont;
-
     private Skin skin;
     private TextButton backButton;
 
@@ -114,7 +112,6 @@ public InstructionPupScreen(Pang game) {
     tablePowerUp.add(barbImg).padRight(10f);
     tablePowerUp.add(barbLbl).left();
     stage.addActor(tablePowerUp);
-
 
     dispose();
 }

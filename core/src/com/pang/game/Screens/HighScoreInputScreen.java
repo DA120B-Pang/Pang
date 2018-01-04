@@ -40,9 +40,6 @@ public class HighScoreInputScreen implements Screen {
     private String name ="";
     private float messageTimer = 0f;
 
-
-
-    private Viewport viewPort;
     public HighScoreInputScreen(Pang game){
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);

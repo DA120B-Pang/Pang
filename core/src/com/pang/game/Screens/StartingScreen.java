@@ -16,8 +16,8 @@ public class StartingScreen implements Screen {
     private Pang game;
     private OrthographicCamera orthographicCamera;
     private float screenTimer;
-
     private Viewport viewPort;
+
     public StartingScreen(Pang game){
         this.game = game;
         screenTimer = 0f;

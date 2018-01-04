@@ -35,8 +35,6 @@ public class HUD {
     private AssetManager assetManager;
     private int actLevel;
     public int startLevel = 1;
-
-
     private boolean startTimer;
     private boolean startUpDone;
     private Label scoreLbl;
@@ -135,7 +133,7 @@ public class HUD {
         score = 0;
         lives = 5;
         if(highScorelist.size()>=1) {
-            highScore = highScorelist.get(0).score;// länka till highscore
+            highScore = highScorelist.get(0).getScore();// länka till highscore
         }
         else{
             highScore = 0;
@@ -299,7 +297,7 @@ public class HUD {
         if (highScorelist.size()<10){
             retVal = true;
         }
-        else if(highScorelist.get(9).score < score){
+        else if(highScorelist.get(9).getScore() < score){
             retVal = true;
         }
         return retVal;

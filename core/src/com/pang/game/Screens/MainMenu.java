@@ -29,19 +29,14 @@ public class   MainMenu implements Screen {
 
     private Stage stage;
     private Skin skin;
-
     private BitmapFont menuFont;
     private Label mainMenu;
-
     private TextButton buttonPlay, buttonExit, buttonHighScore, buttonCredits, buttonInstruct;
-
-    private ShapeRenderer shapeRenderer;
 
 
     public MainMenu(final Pang game) {
         this.game = game;
         this.stage = new Stage(new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, new OrthographicCamera()));
-        this.shapeRenderer = new ShapeRenderer();
 
         menuFont = new BitmapFont(Gdx.files.internal("font/robot/size72dead.fnt"));
         Color menuFontColor = new Color(Color.WHITE);
@@ -174,7 +169,6 @@ public class   MainMenu implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
         stage.getViewport().update(width, height, true);
     }
 

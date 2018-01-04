@@ -21,11 +21,11 @@
   <object id="22" name="B,XS,XS,R," x="122.611" y="144.594"/>
  </objectgroup>
  <objectgroup name="Obstacle">
-  <object id="10" name="y,t," x="39.5229" y="72.2117" width="32" height="7.39494"/>
-  <object id="14" name="y,t," x="168.496" y="88.4044" width="32" height="7.39494"/>
-  <object id="19" name="y,t," x="73.0932" y="72.2117" width="32" height="7.39494"/>
-  <object id="20" name="y,t," x="106.269" y="72.6066" width="32" height="7.39494"/>
-  <object id="23" name="y,t," x="338" y="84.3025" width="32" height="7.39494"/>
+  <object id="10" name="y,t," x="39.5229" y="72.2117" width="32" height="7"/>
+  <object id="14" name="y,t," x="168.496" y="88.4044" width="32" height="7"/>
+  <object id="19" name="y,t," x="73.0932" y="72.2117" width="32" height="7"/>
+  <object id="20" name="y,t," x="106.269" y="72.6066" width="32" height="7"/>
+  <object id="23" name="y,t," x="338" y="84.3025" width="32" height="7"/>
  </objectgroup>
  <objectgroup name="Dude(there can be only one)">
   <object id="13" name="TheDude" x="265.904" y="167.105" width="32" height="32.3949"/>

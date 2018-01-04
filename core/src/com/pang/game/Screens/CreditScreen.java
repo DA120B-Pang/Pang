@@ -36,7 +36,6 @@ public class CreditScreen implements Screen {
     private Label name2;
     private Label name3;
     private Label name4;
-    private Boolean exitToMenu;
 
 
     private Skin skin;
@@ -49,7 +48,6 @@ public class CreditScreen implements Screen {
         viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         this.game = game;
-        exitToMenu = false;
 
         creditFont = new BitmapFont(Gdx.files.internal("font/robot/size72dead.fnt"));
         Color creditFontColor = new Color(Color.WHITE);
@@ -149,10 +147,6 @@ public class CreditScreen implements Screen {
         stage.draw();
 
 
-
-       /* if (exitToMenu) {
-            game.setScreen(new MainMenu(game));
-        }*/
     }
 
     @Override
@@ -181,12 +175,8 @@ public class CreditScreen implements Screen {
 
 
     }
-    public void handleInput(float dt){
-        /*if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
-            exitToMenu = true;*/
-        }
     public void update(float dt) {
-        handleInput(dt);
+
         stage.act(dt);
 
     }

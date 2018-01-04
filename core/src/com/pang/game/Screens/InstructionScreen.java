@@ -28,7 +28,6 @@ public class InstructionScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private BitmapFont instructionFont;
-
     private Skin skin;
     private TextButton backButton;
 

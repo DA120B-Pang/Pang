@@ -22,14 +22,12 @@ import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 public class SettingsScreen implements Screen {
 
     private Pang game;
-    private Label instruction;
     private Viewport viewport;
     private Stage stage;
     private BitmapFont instructionFont;
-    Label soundVolumeLbl;
-    Label musicVolumeLbl;
-    Label startLevelLbl;
-
+    private Label soundVolumeLbl;
+    private Label musicVolumeLbl;
+    private Label startLevelLbl;
     private Skin skin;
     private TextButton backButton;
 

@@ -42,9 +42,6 @@ public class HighScoreScreen implements Screen {
     private TextButton backButton;
     private Skin skin;
 
-
-
-    private Viewport viewPort;
     public HighScoreScreen(Pang game){
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
@@ -132,13 +129,9 @@ public class HighScoreScreen implements Screen {
     public void show() {
 
     }
-    public void handleInput(float dt){
 
-    }
     public void update(float dt){
         stage.act(dt);
-
-        handleInput(dt);
 
     }
     @Override

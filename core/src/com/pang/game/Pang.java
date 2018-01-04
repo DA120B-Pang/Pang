@@ -21,7 +21,6 @@ public class Pang extends Game {
 	public AssetManager assetManager;
 	public HUD hud;
 	public SpriteBatch batch;
-	public BitmapFont font;
 	public float musicVolume = 1f;
 	public float soundVolume = 1f;
 
@@ -51,20 +50,11 @@ public class Pang extends Game {
 		assetManager.finishLoading();
 		batch = new SpriteBatch();
 
-		initFonts();
 
 		hud = new HUD(this, assetManager);
 		setScreen(new StartingScreen(this));//Starta med Meny
 	}
 
-	private void initFonts() {
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/Arcon.ttf"));
-		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-
-		parameter.size = 18;
-		parameter.color = Color.BLACK;
-		font = generator.generateFont(parameter);
-	}
 
 	@Override
 	public void dispose() {
