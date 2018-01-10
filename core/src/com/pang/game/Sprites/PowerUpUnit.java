@@ -13,6 +13,9 @@ import com.pang.game.Pang;
 import static com.pang.game.Constants.Constants.*;
 import static com.pang.game.Constants.Constants.PowerUp.*;
 
+/**
+ * Klass för att skapa powerUps
+ */
 public class PowerUpUnit extends Sprite {
     private Constants.PowerUp powerUp;
     private World world;

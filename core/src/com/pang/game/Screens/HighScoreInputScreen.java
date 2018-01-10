@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
+/**
+ * Klass för skärm för input av higscore
+ */
 public class HighScoreInputScreen implements Screen {
     private Pang game;
     private Label nameLbl;

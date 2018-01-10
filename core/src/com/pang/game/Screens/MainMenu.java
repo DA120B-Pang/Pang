@@ -22,11 +22,11 @@ import com.pang.game.Pang;
 
 import static com.badlogic.gdx.Gdx.app;
 
-
+/**
+ * Klass för skärm som visar meny.
+ */
 public class   MainMenu implements Screen {
-    /*
-    Det ligger en pdf i core/assets som beskriver vart vi lånat grafik.
-     */
+
     private Pang game;
 
     private Stage stage;

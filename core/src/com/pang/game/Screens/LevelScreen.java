@@ -30,7 +30,9 @@ import static com.pang.game.Constants.Constants.FLOOR_OR_WHOT.*;
 import static com.pang.game.Sprites.Bubble.BubbleColor.*;
 import static com.pang.game.Sprites.Bubble.BubbleState.*;
 
-
+/**
+ * Klass för skärm som visar spelvärld
+ */
 public class LevelScreen implements Screen {
 
     private BubbleHandler bubbleHandler;
@@ -50,6 +52,10 @@ public class LevelScreen implements Screen {
     private boolean timeOut;
     private int lastLevelNbr;
 
+    /**
+     *
+     * @param game referens till Pang objekt.
+     */
     public LevelScreen(Pang game){
 
         obstacleHandler = new ObstacleHandler();

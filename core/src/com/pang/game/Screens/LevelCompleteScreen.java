@@ -19,6 +19,9 @@ import com.pang.game.Pang;
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
+/**
+ * Klass för skärm som visar poäng när spelare klarat bana
+ */
 public class LevelCompleteScreen implements Screen {
     private Pang game;
     private boolean restartGame;
@@ -37,6 +40,10 @@ public class LevelCompleteScreen implements Screen {
     private int loopTalk;
     private boolean isTalking;
 
+    /**
+     *
+     * @param game referens till Pang objekt
+     */
     public LevelCompleteScreen(Pang game){
         if(!game.assetManager.isLoaded("audio/music/theEmpire.ogg", Music.class)) {
             game.assetManager.load("audio/music/theEmpire.ogg", Music.class);

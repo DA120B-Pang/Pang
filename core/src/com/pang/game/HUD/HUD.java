@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import static com.pang.game.Constants.Constants.*;
 import static com.pang.game.Constants.Constants.PowerUp.*;
 
+/**
+ * Klass för att göra Head up display som ligger längst ner på spelskärm
+ */
 public class HUD {
     public Stage stage;
     private Viewport viewport;
