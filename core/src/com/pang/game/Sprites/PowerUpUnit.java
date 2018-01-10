@@ -27,6 +27,13 @@ public class PowerUpUnit extends Sprite {
     private boolean alphaUp;
     private float redAlpha;
 
+    /**
+     *
+     * @param world referens till box2d värld
+     * @param game referens till Pang objektet
+     * @param powerUp vilken powerup objektet ska vara
+     * @param position Position att skapas på
+     */
     public PowerUpUnit(World world, Pang game, Constants.PowerUp powerUp, Vector2 position){
         this.game = game;
         destroyNextUpdate = false;
@@ -55,24 +62,24 @@ public class PowerUpUnit extends Sprite {
         setBounds(0,0,16/PPM,16/PPM);
         int x = 0;
         int y = 0;
-        if(powerUp == LIFE){
+        if(powerUp == LIFE){//Hämtar grafik för powerUp extra liv
             setRegion(new TextureRegion(game.assetManager.get("sprites/sprites.pack",TextureAtlas.class).findRegion("Player All2"), 5, 43, 16, 16));
         }
         else {
             switch (powerUp) {
-                case DOUBLESHOT:
+                case DOUBLESHOT://Grafik koordinater för dubbelskott powerUp
                     x = 208;
                     y = 39;
                     break;
-                case BARBSHOT:
+                case BARBSHOT://Grafik koordinater för taggtrådskott powerUp(fastnar i taket)
                     x = 191;
                     y = 39;
                     break;
-                case SHEILD:
+                case SHEILD://grafik koordinater för sköld powerUp
                     x = 280;
                     y = 59;
                     break;
-                case STOPTIME:
+                case STOPTIME://grafik koordinater för stoptime powerUp
                     x = 262;
                     y = 59;
                     break;
@@ -87,9 +94,9 @@ public class PowerUpUnit extends Sprite {
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         terminateTimer += dt;
 
-        if(terminateTimer>7f && terminateTimer<10f){
+        if(terminateTimer>7f && terminateTimer<10f){// 3 sista sekunderna börjar powerUp blinka rött(färg sätts till röd och blinkning görs med alfa kanal)
             float alpha = 0;
-            if(redAlpha<0.2) {
+            if(redAlpha<0.2) {//Tona in röd
                 redAlpha += dt*0.2f;
             }
             setColor(1,0,0,redAlpha);
@@ -98,13 +105,12 @@ public class PowerUpUnit extends Sprite {
                 alphaUp = !alphaUp;
                 alphaTimer = 0;
             }
-            if (alphaUp){
+            if (alphaUp){//Gå mot synlig
                 alpha = Math.min(1f, 0.5f+alphaTimer);
             }
-            else{
+            else{//Gå mot osynlig
                 alpha = Math.max(0.5f, 1f-alphaTimer);
             }
-            System.out.println(alpha);
             setAlpha(alpha);
         }
         if (destroyNextUpdate){
@@ -119,9 +125,17 @@ public class PowerUpUnit extends Sprite {
         super.draw(batch);
     }
 
+    /**
+     *
+     * @return PowerUp .. vilken powerup detta objektet är
+     */
     public PowerUp getPower(){
         return powerUp;
     }
+
+    /**
+     * Förstör powerup nästa uppdatering
+     */
     public void destroyNextUpdate(){
         playPickSound();
         destroyNextUpdate = true;
@@ -129,6 +143,11 @@ public class PowerUpUnit extends Sprite {
         filter.maskBits = FLOOR_WALL;
         body.getFixtureList().get(0).setFilterData(filter);
     }
+
+    /**
+     *
+     * @return boolean .. PowerUp är förstörd ta bort referens
+     */
     public boolean isDestroyed(){
         return isDestroyed;
     }
@@ -137,6 +156,10 @@ public class PowerUpUnit extends Sprite {
         world.destroyBody(body);
     }
 
+    /**
+     * Gör powerUp osynlig förstör sedan
+     * @param dt
+     */
     private void alphaDown(float dt){
         body.setActive(false);
         body.setUserData(null);
@@ -149,6 +172,9 @@ public class PowerUpUnit extends Sprite {
 
     }
 
+    /**
+     * Spelar upp ljud för powerup upp plockad
+     */
     private void playPickSound(){
         switch (powerUp) {
             case BARBSHOT:

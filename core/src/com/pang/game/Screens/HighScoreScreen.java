@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
+/**
+ * Klass för skärm som visar highscorelista
+ */
 public class HighScoreScreen implements Screen {
     private Label nameTopLbl;
     private Label scoreTopLbl;
@@ -42,6 +45,10 @@ public class HighScoreScreen implements Screen {
     private TextButton backButton;
     private Skin skin;
 
+    /**
+     *
+     * @param game referens till Pang objekt
+     */
     public HighScoreScreen(Pang game){
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
@@ -79,14 +86,14 @@ public class HighScoreScreen implements Screen {
 
         float fontScaleSmall = 0.2f;
 
-        nameTopLbl = new Label("  Name" , new Label.LabelStyle(scoreFont,highScoreColor));
+        nameTopLbl = new Label("  Name" , new Label.LabelStyle(scoreFont,highScoreColor));//Rubrik för namn
         nameTopLbl.setFontScale(fontScaleSmall);
-        scoreTopLbl = new Label("Score" , new Label.LabelStyle(scoreFont,highScoreColor));
+        scoreTopLbl = new Label("Score" , new Label.LabelStyle(scoreFont,highScoreColor));//Rubrik för poäng
         scoreTopLbl.setFontScale(fontScaleSmall);
-        dateTopLbl = new Label("Date" , new Label.LabelStyle(scoreFont,highScoreColor));
+        dateTopLbl = new Label("Date" , new Label.LabelStyle(scoreFont,highScoreColor));//Rubrik för datum
         dateTopLbl.setFontScale(fontScaleSmall);
 
-        for (int i = 0; i <highscorelist.size() ; i++) {
+        for (int i = 0; i <highscorelist.size() ; i++) {//Läs in highscorelista
             nameLbl[i] = new Label(String.format("%2d. %s", i+1, highscorelist.get(i).getName()) , new Label.LabelStyle(scoreFont,highScoreColor));
             nameLbl[i].setFontScale(fontScaleSmall);
             scoreLbl[i] = new Label(String.format("%06d", highscorelist.get(i).getScore()) , new Label.LabelStyle(scoreFont,highScoreColor));
@@ -113,7 +120,7 @@ public class HighScoreScreen implements Screen {
         tableScore.add(scoreTopLbl);
         tableScore.add(dateTopLbl);
         tableScore.row();
-        for (int i = 0; i < highscorelist.size() ; i++) {
+        for (int i = 0; i < highscorelist.size() ; i++) {//Generera så många rader som finns i lista
             tableScore.add(nameLbl[i]).padRight(5f).uniformX().left();
             tableScore.add(scoreLbl[i]).padRight(5f);
             tableScore.add(dateLbl[i]).padRight(5f);

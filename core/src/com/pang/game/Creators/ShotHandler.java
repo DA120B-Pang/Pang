@@ -16,7 +16,9 @@ import static com.pang.game.Constants.Constants.PPM;
 import static com.pang.game.Creators.ShotHandler.ShotTypeHandler.*;
 import static com.pang.game.Sprites.Shot.ShotType.*;
 
-/**Hanterar skott & powerups i världen*/
+/**
+ * Hanterar skott & powerups i världen
+ */
 public class ShotHandler {
 
     private ArrayList<Shot> myShots;
@@ -36,6 +38,12 @@ public class ShotHandler {
         SINGLE, DOUBLE, BARB;
     }
 
+    /**
+     *
+     * @param world referens till box2d värld
+     * @param game referens till Pang Objekt
+     * @param assetManager hanterare av ljud och grafik
+     */
     public ShotHandler(World world, Pang game, AssetManager assetManager) {
         this.world = world;
         this.game = game;
@@ -52,14 +60,18 @@ public class ShotHandler {
 }
 
     /*************************** Shots ***************************/
-    /**Lägger till skott i världen*/
+    /**
+     * Lägger till skott i världen
+     */
     public void addShot(Vector2 position){
         position.x -= 4/PPM;
         myShots.add(new Shot(world, position, assetManager, shotType,this));
     }
 
     /*************************** Shots ***************************/
-    /**Kollar om powerup är för skott. Ändras isf skott typ*/
+    /**
+     * Kollar om powerup är för skott. Ändras isf skott typ
+     */
     public void setPowerUp(PowerUp powerUp){
         switch (powerUp){
             case DOUBLESHOT:
@@ -74,7 +86,9 @@ public class ShotHandler {
     }
 
     /*************************** Shots ***************************/
-    /**Kollar om skott kan avfyras det finns två begränsningar, singelskott eller dubbel (Används i dude)*/
+    /**
+     * Kollar om skott kan avfyras det finns två begränsningar, singelskott eller dubbel (Används i dude)
+     */
     public boolean isReadyForShot(){
         boolean ready = false;
         switch (type){
@@ -100,26 +114,26 @@ public class ShotHandler {
         }
         for(PowerUpUnit p: myActivePowerUps){
             p.update(dt);
-            if(p.isDestroyed()){
+            if(p.isDestroyed()){//Lägg till i förstörda listan
                 myDestroyedPowerUps.add(p);
             }
         }
 
-        for(PowerUpUnit p: myDestroyedPowerUps){
+        for(PowerUpUnit p: myDestroyedPowerUps){//Ta bort referenser till förstörda powerUps
             myActivePowerUps.remove(p);
         }
-        myDestroyedPowerUps.clear();
+        myDestroyedPowerUps.clear();//Töm lista
         /*************************** Shots ***************************/
         for(Shot s: myShots){
             s.update(dt);
             if(s.isDestroyed()){
-                myDestroyedShots.add(s);
+                myDestroyedShots.add(s);//Lägg till i förstörda listan
             }
         }
-        for(Shot s: myDestroyedShots){
+        for(Shot s: myDestroyedShots){//Ta bort referenser till förstörda skott
             myShots.remove(s);
         }
-        myDestroyedShots.clear();
+        myDestroyedShots.clear();//Töm lista
     }
 
     public void renderer(Batch batch){//För att rita alla skott
@@ -135,8 +149,10 @@ public class ShotHandler {
     }
 
     /*************************** PowerUps ***************************/
-    /**Portionerar ut powerup som är definierade för bana slumpmässigt i lista. Varje object som går att skjuta isönder har en plats i listan.
-     * Varje gång något skjuts tas första objectet från listan.*/
+    /**
+     * Portionerar ut powerup som är definierade för bana slumpmässigt i lista. Varje object som går att skjuta isönder har en plats i listan.
+     * Varje gång något skjuts tas första objectet från listan.
+     */
     public void loadPowerUps(PowerUp[] powerUps, int destroyables){
         Random myRandom = new Random();
         int myRandomNbr = 0;
@@ -166,15 +182,19 @@ public class ShotHandler {
     }
 
     /*************************** PowerUps ***************************/
-    /**Genererar en ny powerup i världen*/
+    /**
+     * Genererar en ny powerup i världen
+     */
     public void generatePowerUp(Vector2 position, PowerUp powerUp){
         nextPowerUp = powerUp;
         nextPowerUpPosition = position;
     }
 
     /*************************** PowerUps ***************************/
-    /**Kollar vad nästa object i powerup listan är en powerup.
-     * Raderar sedan platsen i listan*/
+    /**
+     * Kollar vad nästa object i powerup listan är en powerup.
+     * Raderar sedan platsen i listan
+     */
     public PowerUp getPowerUp(){
         PowerUp powerUp = null;
         if (myPowerUps.size()>0){

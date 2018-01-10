@@ -18,6 +18,9 @@ import com.pang.game.Pang;
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
+/**
+ * Klass för skärm som visas när Dude dött men har fler liv kvar
+ */
 public class DeadScreen implements Screen {
     private Pang game;
     private boolean restartGame;
@@ -28,9 +31,11 @@ public class DeadScreen implements Screen {
     private float timer;
     private Viewport viewport;
 
-
-
-    private Viewport viewPort;
+    /**
+     *
+     * @param game referens till Pang objektet
+     * @param timeOut om döden beror på att tiden gick ut
+     */
     public DeadScreen(Pang game, boolean timeOut){
         viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
@@ -76,7 +81,7 @@ public class DeadScreen implements Screen {
         handleInput(dt);
 
         timer += dt;
-        if(timer >= 0) {
+        if(timer >= 0) {//Texten ska blinka med 2 sekunders intervall
 
             pressToRestart.setText("");
 

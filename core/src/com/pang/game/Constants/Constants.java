@@ -1,5 +1,8 @@
 package com.pang.game.Constants;
 
+/**
+ * Klass för konstanter
+ */
 public class Constants {
     public static final int WORLD_WIDTH = 384;//768;
     public static final int WORLD_HEIGHT = 256;//512;

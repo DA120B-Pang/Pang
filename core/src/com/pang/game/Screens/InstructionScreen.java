@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
@@ -21,6 +22,9 @@ import com.pang.game.Pang;
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
+/**
+ * Klass för skärm som visar instruktioner för styrning till spelet
+ */
 public class InstructionScreen implements Screen {
 
     private Pang game;
@@ -31,9 +35,13 @@ public class InstructionScreen implements Screen {
     private Skin skin;
     private TextButton backButton;
 
-public InstructionScreen (Pang game) {
+    /**
+     *
+     * @param game referens till Pang objekt
+     */
+    public InstructionScreen (Pang game) {
 
-    viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
+    viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
     stage = new Stage(viewport, game.batch);
     this.game = game;
 

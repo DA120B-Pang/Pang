@@ -11,6 +11,9 @@ import com.pang.game.Pang;
 
 import static com.pang.game.Constants.Constants.*;
 
+/**
+ * Klass för skärm som visas innan man kommer till menyn (enbart en bild)
+ */
 public class StartingScreen implements Screen {
     private Sprite sprite;
     private Pang game;
@@ -18,6 +21,10 @@ public class StartingScreen implements Screen {
     private float screenTimer;
     private Viewport viewPort;
 
+    /**
+     *
+     * @param game referens till Pang objektet
+     */
     public StartingScreen(Pang game){
         this.game = game;
         screenTimer = 0f;

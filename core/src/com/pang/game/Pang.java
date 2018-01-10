@@ -15,7 +15,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.pang.game.HUD.HUD;
 import com.pang.game.Screens.StartingScreen;
 
-
+/**
+ * Klass för objekt som ska följa med hela spelet
+ */
 public class Pang extends Game {
 
 	public AssetManager assetManager;
@@ -52,7 +54,7 @@ public class Pang extends Game {
 
 
 		hud = new HUD(this, assetManager);
-		setScreen(new StartingScreen(this));//Starta med Meny
+		setScreen(new StartingScreen(this));//Starta med startskärm
 	}
 
 

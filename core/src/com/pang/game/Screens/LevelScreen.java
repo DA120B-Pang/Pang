@@ -95,7 +95,7 @@ public class LevelScreen implements Screen {
             System.out.println(e);
         }
 
-        try {//Bollar till start från "Tiled" karta
+        try {//Bubblor till start från "Tiled" karta
             createBubbles(2);
         }
         catch(Exception e){
@@ -117,9 +117,9 @@ public class LevelScreen implements Screen {
         }
 
         game.hud.newLevel(100);
-        game.hud.startTimer();
-        dude.setToSleep();
-        bubbleHandler.setToSleep();
+        game.hud.startTimer();//Starta nedräkning
+        dude.setToSleep();//Ska inte gå att flytta Dude.
+        bubbleHandler.setToSleep();//Bubblor ska inte röra sig.
 }
 
     @Override
@@ -133,17 +133,18 @@ public class LevelScreen implements Screen {
         //Bara det som visas ska renderas
         orthogonalTiledMapRenderer.setView(orthographicCamera);
         world.step(1/60f, 6,2);
-        if(game.hud.isTimeOut() && !dude.isDudeDead()){
-            dude.dudeDie();
+
+        if(game.hud.isTimeOut() && !dude.isDudeDead()){//Slut på tid döda Dude
+            dude.dudeDie();//Dude dör.
             timeOut = true;
         }
-        if(dude.isDudeDead()){
+        if(dude.isDudeDead()){//Dude är död
             gameOverTimer += dt;
             if(!endMusicStarted){
-                musicEnd();
-                game.hud.takeLife();
+                musicEnd();//Startar döds musik.
+                game.hud.takeLife();//Ta ett liv från Dude
             }
-            game.hud.stopTimer();
+            game.hud.stopTimer();//Stänger av nedräkning av tid.
             bubbleHandler.setToSleep();//Stoppa bubblor
         }
         obstacleHandler.update(dt);
@@ -153,9 +154,9 @@ public class LevelScreen implements Screen {
         //Uppdatera dude
         dude.update(dt);
 
-        game.hud.update(dt);
+        game.hud.update(dt);//Kör update för HUD
 
-        if(game.hud.startGame()){
+        if(game.hud.startGame()){//Dags att starta spel... efter nedräkning efter detta går det att styra Dude
             dude.setToAwake();
             bubbleHandler.setToAwake();
             game.hud.gameIsStarted();
@@ -242,6 +243,9 @@ public class LevelScreen implements Screen {
         orthogonalTiledMapRenderer.dispose();
     }
 
+    /**
+     * Startar musik för när spelare dör.
+     */
     private void musicEnd(){//Musik till död dude
         game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).setVolume(0.8f*game.musicVolume);
         game.assetManager.get("audio/music/nighttideWaltz.ogg",Music.class).setLooping(true);
@@ -249,6 +253,10 @@ public class LevelScreen implements Screen {
         musicStop();
         endMusicStarted = true;//Kvittera att musik är startad
     }
+
+    /**
+     * Startar musik för aktuell Level.
+     */
     private void musicStart(){
         switch(game.hud.getLevel()%5) {
             case 0:
@@ -279,6 +287,9 @@ public class LevelScreen implements Screen {
         }
     }
 
+    /**
+     * Stänger av musik som spelas.
+     */
     private void musicStop(){
         switch(game.hud.getLevel()%5) {
             case 0:
@@ -300,6 +311,9 @@ public class LevelScreen implements Screen {
         }
     }
 
+    /**
+     * Lägger till musik i asset managern.
+     */
     private void loadLevelMusic(){
 
         switch (game.hud.getLevel()%5) {//Ladda musik till assetmanagern
@@ -335,6 +349,10 @@ public class LevelScreen implements Screen {
                 break;
         }
     }
+
+    /**
+     * Tar bort musik från assetmanagern. Enligt vilken level som är aktiv.
+     */
     private void unloadLevelMusic(){
         switch (game.hud.getLevel()%5) {//Ta bort musik från assetmanagern
             case 0:
@@ -360,6 +378,9 @@ public class LevelScreen implements Screen {
         }
     }
 
+    /**
+     * Metod som laddar rätt tiled karta till rätt level.
+     */
     private void loadMap(){
         switch (game.hud.getLevel()) {
             case 1:
@@ -387,7 +408,11 @@ public class LevelScreen implements Screen {
                 System.out.println("Du har inte lagt in någon tiledMap för aktuell level");
         }
     }
-
+    /**
+     * Function för att läsa av väggar golv och tak från Tiled Map och placera dessa i World.
+     * @param layer vilket lager i Tiled map som ska kollas
+     * @throws Exception
+     */
     private final void createWallFloorRoof(int layer) throws Exception {
         BodyDef bodydef = new BodyDef();
         PolygonShape polygonshape = new PolygonShape();
@@ -430,7 +455,11 @@ public class LevelScreen implements Screen {
             body.setUserData(type);
         }
     }
-
+    /**
+     * Function för att läsa av bubblor från Tiled Map och placera dessa i World samt kolla vilka egenskaper dessa ska ha. Detta lagras i namnet från tiled.
+     * @param layer vilket lager i Tiled map som ska kollas
+     * @throws Exception
+     */
     private final  void createBubbles( int layer) throws Exception {
         for (MapObject o : tiledMap.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
             String item[] = new String[4];//Färg en bokstav, startstorlek, stoppstorlek, spawn färdriktning;
@@ -538,6 +567,11 @@ public class LevelScreen implements Screen {
 
     }
 
+    /**
+     * Function för att läsa av hinder från Tiled Map och placera dessa i World samt kolla vilka egenskaper dessa ska ha. Detta lagras i namnet från tiled.
+     * @param layer vilket lager i Tiled map som ska kollas
+     * @throws Exception
+     */
     private final  void createObstacles(int layer) throws Exception {
         for (MapObject o : tiledMap.getLayers().get(layer).getObjects().getByType(RectangleMapObject.class)) {
             String item[] = new String[2];//Färg en bokstav, går att skjuta isönder?
@@ -599,7 +633,11 @@ public class LevelScreen implements Screen {
             obstacleHandler.addObstacle(game, rectangle, world, colorYellow, isBreakable);
         }
     }
-
+    /**
+     * Function för att läsa av placering av Dude från Tiled Map och placera honom i World
+     * @param layer vilket lager i Tiled map som ska kollas
+     * @throws Exception
+     */
     private final void createDude(int layer)throws Exception {
         if(tiledMap.getLayers().get(layer).getObjects().getCount() != 1){
             throw new Exception("Tiled karta får bara innehålla en dude");

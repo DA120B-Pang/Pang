@@ -6,6 +6,9 @@ import com.pang.game.Sprites.*;
 import static com.pang.game.Constants.Constants.*;
 import static com.pang.game.Constants.Constants.ROOF;
 
+/**
+ * Klass för hantering av kollisioner
+ */
 public class ContactHandler implements ContactListener {
     @Override
     public void beginContact(Contact contact) {

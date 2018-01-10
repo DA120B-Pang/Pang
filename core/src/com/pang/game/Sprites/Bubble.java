@@ -11,7 +11,9 @@ import com.pang.game.Pang;
 import static com.pang.game.Constants.Constants.*;
 import static com.pang.game.Sprites.Bubble.BubbleState.*;
 
-
+/**
+ * Klass för att göra en bubbla
+ */
 public class Bubble extends Sprite {
     private World world;
     private BubbleState startSize;
@@ -56,6 +58,19 @@ public class Bubble extends Sprite {
     public enum BubbleColor {//Visar vilken färg bubblan har
         BLUE,RED,GREEN
     }
+
+    /**
+     *
+     * @param world referens till box2d värld
+     * @param startSize storlek bubbla startar sitt liv på
+     * @param color bubblans färg... barn och barbarn har samma färg
+     * @param position Position att skapas på
+     * @param game referens till Pang Objekt
+     * @param spawnRight ska färdas åt höger efter skapandet (annars vänster)
+     * @param minSize Storlek där bubblan slutar att föröka sig vid sönderskjutning
+     * @param isFrozen kontroll om powerUp stopptime är aktiv när bubblan bildas
+     * @param upOnBirth används på bubblor som skapas av sönderskjuten bubbla. Lätt uppåt studs
+     */
     public Bubble(World world, BubbleState startSize, BubbleColor color, Vector2 position, Pang game,boolean spawnRight, BubbleState minSize, boolean isFrozen, boolean upOnBirth){
         this.assetManager = game.assetManager;
         this.startSize = startSize;
@@ -96,7 +111,7 @@ public class Bubble extends Sprite {
         pointsCollected = false;
 
 
-        switch (startSize) {
+        switch (startSize) {//Läser in grafik och krafter beroende på storlek och färg.
             case XLARGE:
                 bubbleBounceForce.y = 0.000409f; //0.000109f; //0.000409f;//Sätter hopp kraft i y uppåt
                 bubbleBounceForceObstacale.y = 0.000100f;
@@ -249,6 +264,10 @@ public class Bubble extends Sprite {
         //Position och storlek för (super)sprite när den ska ritas
 
     }
+
+    /**
+     * Kollar så att bubbla inte fastnat.
+     */
     private void checkSpd(){
         if(!isFrozen) {
             if (bubbleBody.getLinearVelocity().x > bubbleLinearSpd || goingRight && bubbleBody.getLinearVelocity().x < bubbleLinearSpd - 0.10f) {
@@ -259,30 +278,48 @@ public class Bubble extends Sprite {
         }
     }
 
+    /**
+     * Nästa update då ska bubbla köra bumpLeftWall().
+     */
     public void setBumpLeftWallNextUpdate() {
         this.bumpLeftWallNextUpdate = true;
     }
 
-    public final void bumpLeftWall(){//Action för contact listenern när bubbla träffar vänster vägg
+    /**
+     * Action för contact listenern när bubbla träffar vänster vägg
+     */
+    public final void bumpLeftWall(){
         bubbleBody.setLinearVelocity(bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
         bumpLeftWallNextUpdate = false;
         goingRight = true;
     }
 
+    /**
+     * Nästa update då ska bubbla köra bumpRightWall().
+     */
     public void setBumpRightWallNextUpdate() {
         this.bumpRightWallNextUpdate = true;
     }
 
-    public final void bumpRightWall(){//Action för contact listenern när bubbla träffar höger vägg
+    /**
+     * Action för contact listenern när bubbla träffar höger vägg
+     */
+    public final void bumpRightWall(){
         bubbleBody.setLinearVelocity(-bubbleLinearSpd, bubbleBody.getLinearVelocity().y);
         bumpRightWallNextUpdate = false;
         goingRight = false;
     }
 
+    /**
+     * Nästa update då ska bubbla köra bumpObstacale().
+     */
     public void setBumpObstacaleNextUpdate(){
         bumpObstacaleNextUpdate = true;
     }
 
+    /**
+     * Action för contact listenern när bubbla träffar ett hinder på sidan.
+     */
     public void bumpObstacale(){
         if(goingRight){//kolla vilket håll bollen färdades på och fortsätt på motsatt håll
             bumpRightWall();
@@ -293,11 +330,17 @@ public class Bubble extends Sprite {
         bumpObstacaleNextUpdate = false;
     }
 
+    /**
+     * Nästa update då ska bubbla köra bumpFloor().
+     */
     public void setBumpFloorNextUpdate(){
         bumpFloorNextUpdate = true;
     }
 
-    public final void bumpFloor() {////Action för contact listenern när bubbla träffar marken
+    /**
+     * Action för contact listenern när bubbla träffar marken
+     */
+    public final void bumpFloor() {
         bubbleBody.setLinearVelocity(0f, 0f);//Boll måste först stanna(för att vi alltid ska uppnå samma höjd)
         bubbleBody.applyLinearImpulse(bubbleBounceForce, bubbleBody.getWorldCenter(), true);
         if(goingRight){//kolla vilket håll bollen färdades på och fortsätt på samma håll
@@ -309,6 +352,10 @@ public class Bubble extends Sprite {
         bumpFloorNextUpdate = false;
     }
 
+    /**
+     * Skalerar kraft då bubbla träffa ett hinder på högre nivå än golvnivå.
+     * @return float... kraft.
+     */
     private float scaleForce(){
         float valueIn = bubbleBody.getPosition().y;
         float maxIn = (56)/PPM;
@@ -323,11 +370,17 @@ public class Bubble extends Sprite {
 
     }
 
+    /**
+     * Nästa update då ska bubbla köra bumpObstacaleTop().
+     */
     public void setBumpObstacaleTopNextUpdate(){
         bumpObstacaleTopNextUpdate = true;
     }
 
-    public final void bumpObstacaleTop() {////Action för contact listenern när bubbla träffar marken
+    /**
+     * Action för contact listenern när bubbla träffar ett hinder.
+     */
+    public final void bumpObstacaleTop() {
         bubbleBounceForceCalc.y = scaleForce();
         bubbleBody.setLinearVelocity(0f, 0f);//Boll måste först stanna(för att vi alltid ska uppnå samma höjd)
         bubbleBody.applyLinearImpulse(bubbleBounceForceCalc, bubbleBody.getWorldCenter(), true);
@@ -345,7 +398,7 @@ public class Bubble extends Sprite {
         checkSpd();
         scaleForce();
 
-        if(!isFrozen){
+        if(!isFrozen){//Kolla så att inte powerup stop time är aktiv.
             if(bumpObstacaleNextUpdate){
                 bumpObstacale();
             }
@@ -367,17 +420,17 @@ public class Bubble extends Sprite {
             setToDestroy();
         }
 
-        if(!setToDestroy) {//Slutar updatera position när spelare dör
+        if(!setToDestroy) {//Slutar updatera position när bubbla sprängs
             //Sätter Texture region till sprite
             setPosition(bubbleBody.getPosition().x - getWidth() / 2, bubbleBody.getPosition().y - getHeight() / 2);
         }
-        else if(setToDestroy && !destroyed){//
+        else if(setToDestroy && !destroyed){
             if(!explosionSoundDone) {
-                setExplodeSound(startSize, assetManager);
-                explosionSoundDone = true;
+                setExplodeSound(startSize, assetManager);//Starta explosions ljud.
+                explosionSoundDone = true;//Checka av att ljud är uppspelat
             }
-            if(animateExplosion(dt)){
-                destroy();
+            if(animateExplosion(dt)){//Om explosion är klar dödar vi objektet
+                destroy();//Ta bort objektet
             }
         }
 
@@ -388,38 +441,55 @@ public class Bubble extends Sprite {
             else{
                 bumpRightWall();
             }
-            if(upOnBirth){
+            if(upOnBirth){//Om bubbla ska studsa upp när den skapas
                 bumpObstacaleTop();
             }
-            if(isFrozen){
+            if(isFrozen){//Om powerUp för stopTime är aktiv när bubbla skapas.
                 freezeBubble();
             }
-            spawnSpdIsSet = true;
+            spawnSpdIsSet = true;//Checka av
         }
     }
+
     public void dispose(){
         getTexture().dispose();
     }
+
     public void draw(Batch batch) {//ritar bubbla om den inte är förstörd
         if(!destroyed) {
             super.draw(batch);
         }
     }
 
+    /**
+     * Sätter rätt TextureRegion på Explosion
+     * @param dt delta tid
+     * @return boolean.. animation är klar
+     */
     private boolean animateExplosion(float dt){//Skapar animation för explosion
         explosionTimer += dt;
         setRegion((TextureRegion)explode.getKeyFrame(explosionTimer, false));
         return explode.isAnimationFinished(explosionTimer)? true:false;
     }
 
+    /**
+     * Sätter bubblans kropp till inaktiv
+     */
     public void setToSleep(){//Inaktiverar bubblans body
         bubbleBody.setActive(false);
     }
 
+    /**
+     * Sätter bubblansKropp till aktiv
+     */
     public void setToAwake(){
         bubbleBody.setActive(true);
     }
 
+    /**
+     *
+     * @return int.. antal poäng bubbla är värd.
+     */
     public int getPoints(){
         if (destroyNextUpdate && !pointsCollected){
             return startSize.value;
@@ -429,15 +499,25 @@ public class Bubble extends Sprite {
         }
     }
 
+    /**
+     * Referens ska tas bort i bubbleHandlern
+     * @return boolean.. bubbla är förstörd
+     */
     public boolean isDestroyed() {//Visar om bubblan är förstörd denna status får bubblan när explosions animationen är klar.
         return destroyed;
     }
 
+    /**
+     * Förstör bubblans kropp.
+     */
     public void destroy(){//Raderar kropp från värld
         destroyed = true;
         world.destroyBody(bubbleBody);
     }
 
+    /**
+     * Förstör bubbla vid nästa update.
+     */
     public void destroyNextUpdate(){
         destroyNextUpdate = true;
         Filter spareDude = new Filter();// Bubblan ska inte kunna skada dude mer
@@ -450,10 +530,20 @@ public class Bubble extends Sprite {
         setToDestroy = true;
     }
 
+    /**
+     * För att bubblehandler ska hinna skapa nya bubblor
+     * @return boolean.. bubbla håller på att förstöras
+     */
     public boolean isSetToDestroy(){
         return setToDestroy;
     }
 
+    /**
+     * Hämtar explosions animation för rätt storlek av bubbla.
+     * @param size
+     * @param assetManager
+     * @return
+     */
     private Array<TextureRegion> getExplosionAnimation(BubbleState size, AssetManager assetManager){//Skapar animation för explosion
         String fileName;
         Array<TextureRegion> frames = new Array<>();//Array för animationer
@@ -545,6 +635,11 @@ public class Bubble extends Sprite {
         return frames;
     }
 
+    /**
+     * Startar explosions ljud för rätt storlek av bubbla.
+     * @param size
+     * @param assetManager
+     */
     private void setExplodeSound(BubbleState size, AssetManager assetManager){//Sätter igång explosions ljud för rätt storlek av bubbla
         switch(size){
             case XLARGE:
@@ -565,10 +660,18 @@ public class Bubble extends Sprite {
         }
     }
 
+    /**
+     *
+     * @return boolean.. Nya bubblor är skapade(När bubbla förstörs)
+     */
     public boolean isBubblesCreated(){//Spelet behöver veta om bubblan har förökat sig
         return newBubblesCreated;
     }
 
+    /**
+     *
+     * @return Doublebubble.. Två nya bubblor
+     */
     public DoubleBoubble createNewBubbles(){//Skapar två nya bubblor om bubblan inte är av minsta sorten XSMALL.
         DoubleBoubble myBoubbles;
         if(startSize!=minSize) {
@@ -592,21 +695,32 @@ public class Bubble extends Sprite {
         else{
             myBoubbles = null;
         }
-        newBubblesCreated = true;
+        newBubblesCreated = true;//Check så att det bara görs en gång
 
 
         return myBoubbles;
     }
 
+    /**
+     *
+     * @return int ... antal bubblor som kommer genereras (till fördelning av powerUps)
+     */
     public int getDestroyables(){
         int generations = minSize.ordinal()-startSize.ordinal()+1;
         return ((int)Math.pow(2,(generations))) - 1;//Hur många bubblor en bubbla kommer att resultera i.
     }
 
+    /**
+     *
+     * @return Vector2 .. aktuell position(För skapande av powerUp)
+     */
     public Vector2 getPosition(){
         return bubbleBody.getPosition();
     }
 
+    /**
+     * PowerUp stop Time är aktiverad
+     */
     public final void freezeBubble(){
         getCurrentVel = bubbleBody.getLinearVelocity();
         bubbleBody.setGravityScale(0f);
@@ -614,6 +728,9 @@ public class Bubble extends Sprite {
         isFrozen = true;
     }
 
+    /**
+     * Åsterställ bubbla från fruset läge.
+     */
     public void unFreezeBubble(){
         bubbleBody.setGravityScale(1);
         bubbleBody.setLinearVelocity(getCurrentVel);

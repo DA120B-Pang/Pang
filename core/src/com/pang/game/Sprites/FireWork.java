@@ -8,7 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
 
-
+/**
+ * Klass för att skapa fyrverkeri på GameCompleteScreen
+ */
 public class FireWork extends Sprite {
     private Random random;
     private Vector2 min;
@@ -18,6 +20,12 @@ public class FireWork extends Sprite {
     private Animation animation;
     private float randomWait;
 
+    /**
+     *
+     * @param animation fyrverkeri animation
+     * @param min minimum position
+     * @param max maximum position
+     */
     public FireWork(Animation animation, Vector2 min, Vector2 max) {
         this.animation = animation;
         this.min = min;
@@ -53,6 +61,10 @@ public class FireWork extends Sprite {
         super.draw(batch);
     }
 
+    /**
+     *
+     * @return Vector2 .. Ny random position mellan min - max position
+     */
     private final Vector2 getPosition(){
         int minY = Math.round(min.y);
         int minX = Math.round(min.x);

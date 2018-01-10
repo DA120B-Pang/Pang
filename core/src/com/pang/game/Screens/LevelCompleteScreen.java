@@ -102,6 +102,12 @@ public class LevelCompleteScreen implements Screen {
     public void show() {
 
     }
+
+    /**
+     * Returnerar aktuell prat animation frame
+     * @param dt
+     * @return TextureRegion för prat animation
+     */
     private TextureRegion getRegion(float dt){
         TextureRegion textureRegion = new TextureRegion();
         timer += dt;
@@ -111,7 +117,7 @@ public class LevelCompleteScreen implements Screen {
             if (animation.isAnimationFinished(timer)){
                 loopTalk++;
                 if(loopTalk>4){
-                    timer = -7;
+                    timer = -7;//Vänta 7 sekunder tills nästa pratstund.
                     isTalking = false;
                     loopTalk = 0;
                 }
@@ -125,15 +131,23 @@ public class LevelCompleteScreen implements Screen {
         return textureRegion;
     }
 
+    /**
+     * Startar musik.
+     */
     private void musicStart(){
         game.assetManager.get("audio/music/theEmpire.ogg",Music.class).setLooping(true);
         game.assetManager.get("audio/music/theEmpire.ogg",Music.class).setVolume(0.7f*game.musicVolume);
         game.assetManager.get("audio/music/theEmpire.ogg",Music.class).play();
 
     }
+
+    /**
+     * Stoppar musik.
+     */
     private void musicStop(){
         game.assetManager.get("audio/music/theEmpire.ogg",Music.class).stop();
     }
+
     public void handleInput(float dt){
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
             restartGame = true;
@@ -141,7 +155,7 @@ public class LevelCompleteScreen implements Screen {
     }
     public void update(float dt){
 
-        spriteDude.setRegion(getRegion(dt));
+        spriteDude.setRegion(getRegion(dt));//Läs in grafik till Dude ansikte.
         handleInput(dt);
 
     }
@@ -157,7 +171,7 @@ public class LevelCompleteScreen implements Screen {
         game.batch.begin();
         spriteDude.draw(game.batch);
         if(isTalking) {
-            spriteBubbleDude.draw(game.batch);
+            spriteBubbleDude.draw(game.batch);//PratBubbla
         }
         game.batch.end();
 

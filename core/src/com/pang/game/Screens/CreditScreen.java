@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Constants.Constants;
@@ -23,6 +24,9 @@ import com.pang.game.Pang;
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
+/**
+ * Klass för skärm som visar vilka som gjort spelet
+ */
 public class CreditScreen implements Screen {
 
     private Pang game;
@@ -43,9 +47,13 @@ public class CreditScreen implements Screen {
     private TextButton backButton;
 
 
+    /**
+     *
+     * @param game referens till Pang objektet
+     */
     public CreditScreen (Pang game) {
 
-        viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         this.game = game;
 
@@ -121,6 +129,9 @@ public class CreditScreen implements Screen {
         initButtons();
     }
 
+    /**
+     * Initierar TextButtons med grafik position etc
+     */
     private void initButtons() {
         backButton = new TextButton("BACK", skin, "default");
         backButton.setSize(90,40);

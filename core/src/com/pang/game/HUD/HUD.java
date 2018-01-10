@@ -66,6 +66,7 @@ public class HUD {
         fontGetReady = new BitmapFont(Gdx.files.internal("font/robot/size72getReady.fnt"));
         Color colorGetReady = new Color(Color.WHITE);
         getReadyLbl = new Label("Get ready", new Label.LabelStyle(fontGetReady,colorGetReady));
+        //Namn på levels
         levelNames = new String[]{  "Balloon Pooopern",
                                     "Die hard Balloon",
                                     "Full Balloon",
@@ -91,19 +92,19 @@ public class HUD {
         Table table = new Table();//Ny tabell
         table.bottom().left();//Tabell mot botten
         table.setFillParent(true);//Gör så att tabellen täcker hela skärmen
-        table.add(scoreLbl).uniformX().expandX().padLeft(10f).left();
-        table.add(levelNameLbl).uniformX().expandX();
+        table.add(scoreLbl).uniformX().expandX().padLeft(10f).left();//Aktuell poäng
+        table.add(levelNameLbl).uniformX().expandX();//Namn på bana
         Table tableSub = new Table();
 
-        tableSub.add(livesLbl).uniformX().expandX().left();
+        tableSub.add(livesLbl).uniformX().expandX().left();//Lives text framför livs ikoner.
         group = new Group();
         group.setHeight(36f);
-        groupAddLife(lives);
+        groupAddLife(lives);//Lägger till rätt antal livs ikoner i grupp.
         tableSub.add(group).left();
         table.add(tableSub).uniformX().expandX().left();
         table.row();
-        table.add(highScoreLbl).expandX().padBottom(10f).padLeft(10f).left();
-        table.add(levelLbl).expandX();
+        table.add(highScoreLbl).expandX().padBottom(10f).padLeft(10f).left();//Högsta highscore poäng
+        table.add(levelLbl).expandX();//Aktuell level nummer
         stage.addActor(table);
 
         Table tableCenter = new Table();
@@ -117,18 +118,21 @@ public class HUD {
         Table tableTop = new Table();
         tableTop.setFillParent(true);
         tableTop.top().right();
-        tableTop.add(timeLbl).padRight(20f).width(270f);
+        tableTop.add(timeLbl).padRight(20f).width(270f);//Nedräkning av tid.
         stage.addActor(tableTop);
-        //Lägg till powerUps här till varje bana
+        //Lägg till powerUps här till index 0 = bana 1, index 2 = bana 2-4, index 3 bana 5-resten.
         powerUps = new PowerUp[][]{{null},
                                     {SHEILD, BARBSHOT, STOPTIME},
                                     {LIFE,BARBSHOT,BARBSHOT,DOUBLESHOT,DOUBLESHOT,DOUBLESHOT,SHEILD,SHEILD,STOPTIME,STOPTIME}};
 
 
-        highScorelist = file.readFile();
+        highScorelist = file.readFile();//Läs in befintlig highscore. Finns ingen skapas ny fil.
 
     }
 
+    /**
+     * Återställer HUD för nytt spel.
+     */
     public final void resetHud(){
         score = 0;
         lives = 5;
@@ -142,6 +146,10 @@ public class HUD {
         actLevel = startLevel;
     }
 
+    /**
+     * Återställer HUD vid ny bana-
+     * @param timeLeft hur mkt tid spelaren ska få till att klara level.
+     */
     public final void newLevel(int timeLeft){
         timeElapsed = 0f;
         this.timeLeft = timeLeft;
@@ -155,6 +163,10 @@ public class HUD {
         levelNameLbl.setText(levelNames[actLevel-1]);
     }
 
+    /**
+     * Lägger till och tar bort livs ikoner från HUD
+     * @param lives antal liv spelare har.
+     */
     private final void groupAddLife(int lives){
 
         if(group.getChildren().size<(lives-1)){
@@ -171,24 +183,43 @@ public class HUD {
             group.getChildren().pop();
         }
     }
+
+    /**
+     * Startar nedräkning av tid.
+     */
     public void startTimer(){
         startTimer = true;
     }
+
+    /**
+     * Stoppar nedräkning av tid.
+     */
     public void stopTimer(){
         startTimer = false;
     }
 
+    /**
+     * Plussar på aktuell level med 1.
+     */
     public void levelComplete(){
         actLevel++;
     }
 
+    /**
+     * returnerar aktuell level.
+     * @return
+     */
     public int getLevel(){
         return actLevel;
     }
 
+    /**
+     * Startar först nedräkning 3 sekunder innan spel ska startas... sedan Startar nedräkning av speltid.
+     * @param dt
+     */
     public void setTimeLeft(float dt){
         if(startTimer) {
-            if (startUpDone) {
+            if (startUpDone) {//Om 3 sekunders nedräkning är klar ska Speltid räknas ner.
                 timeElapsed += dt;
                 if (timeElapsed > 1 && timeLeft > 0) {
                     timeLeft--;
@@ -201,35 +232,35 @@ public class HUD {
                 if (startUpTimer >= 0 && startUpTimer < 2) {
                     getReadyLbl.setFontScale(1.2f);
                     getReadyLbl.setText("Get ready");
-                } else if (startUpTimer >= 2 && startUpTimer < 3) {
+                } else if (startUpTimer >= 2 && startUpTimer < 3) {//Tidsfönster för ljud
                     getReadyLbl.setText("3");
-                    if(0 == (startUpSoundMask & 1)) {
+                    if(0 == (startUpSoundMask & 1)) {//Logisk and för att kolla om ljud är uppspelat.
                         assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f*game.soundVolume);
-                        startUpSoundMask |= 1;
+                        startUpSoundMask |= 1; // Checka av uppspelning
                     }
-                    scale = (3f - startUpTimer) * 1.5f;
+                    scale = (3f - startUpTimer) * 1.5f;//Siffra ska krympa ihop
                     if (scale < 0) {
                         scale = 0;
                     }
                     getReadyLbl.setFontScale(scale);
-                } else if (startUpTimer >= 3 && startUpTimer < 4) {
+                } else if (startUpTimer >= 3 && startUpTimer < 4) {//Tidsfönster för ljud
                     getReadyLbl.setText("2");
-                    if(0 == (startUpSoundMask & 2)) {
+                    if(0 == (startUpSoundMask & 2)) {//Logisk and för att kolla om ljud är uppspelat.
                         assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f*game.soundVolume);
-                        startUpSoundMask |= 2;
+                        startUpSoundMask |= 2;// Checka av uppspelning
                     }
-                    scale = (4f - startUpTimer) * 1.5f;
+                    scale = (4f - startUpTimer) * 1.5f;//Siffra ska krympa ihop
                     if (scale < 0) {
                         scale = 0;
                     }
                     getReadyLbl.setFontScale(scale);
-                } else if (startUpTimer >= 4 && startUpTimer < 5) {
+                } else if (startUpTimer >= 4 && startUpTimer < 5) {//Tidsfönster för ljud
                     getReadyLbl.setText("1");
-                    if(0 == (startUpSoundMask & 4)) {
+                    if(0 == (startUpSoundMask & 4)) {//Logisk and för att kolla om ljud är uppspelat.
                         assetManager.get("audio/sound/countDown.wav", Sound.class).setVolume(assetManager.get("audio/sound/countDown.wav", Sound.class).play(), 1.0f*game.soundVolume);
-                        startUpSoundMask |= 4;
+                        startUpSoundMask |= 4;// Checka av uppspelning
                     }
-                    scale = (5f - startUpTimer) * 1.5f;
+                    scale = (5f - startUpTimer) * 1.5f;//Siffra ska krympa ihop
                     if (scale < 0) {
                         scale = 0;
                     }
@@ -243,23 +274,41 @@ public class HUD {
         }
     }
 
+    /**
+     *
+     * @return Berättar om spel ska startas och Dude/bubblor låsas upp.
+     */
     public boolean startGame(){
         return startGame;
     }
 
+    /**
+     * Kommunikation att spel är startat
+     */
     public void gameIsStarted(){
         startGame = false;
     }
+
+    /**
+     *
+     * @return Antal liv kvar
+     */
     public int getLives(){
         return lives;
     }
 
+    /**
+     * Tar bort ett liv.
+     */
     public void takeLife(){
         if (lives>0) {
             lives--;
         }
     }
 
+    /**
+     * Ljud när extraliv plockas upp.
+     */
     public void addLife(){
         if (lives<5) {
             lives++;
@@ -270,28 +319,48 @@ public class HUD {
         }
     }
 
+    /**
+     * Metod för att lägga till poäng.
+     * @param score poäng att lägga till.
+     */
     public void addScore(int score){
         this.score += score;
     }
 
+    /**
+     *
+     * @return aktuell poäng.
+     */
     public int getScore(){
         return score;
     }
 
+    /**
+     *
+     * @return Highscore list.
+     */
     public ArrayList<HighScoreData> getHighScorelist(){
         return highScorelist;
     }
 
+    /**
+     *  Metod för att lägga till highscore
+     * @param name namn att lägga till i highscore
+     */
     public void addToHighScore(String name){
-        if (highScorelist.size()>=10){
+        if (highScorelist.size()>=10){//Max 10 platser
             highScorelist.remove(9);
         }
 
-        highScorelist.add(new HighScoreData(name, score));
-        highScorelist.sort(highScoreDataSort);
-        file.writeFile(highScorelist);
+        highScorelist.add(new HighScoreData(name, score));//Lägger till Highscore
+        highScorelist.sort(highScoreDataSort);// Soterar lista
+        file.writeFile(highScorelist);//Spara highscore
     }
 
+    /**
+     *
+     * @return om poäng räcker till highscore.
+     */
     public boolean isHighScore(){
         boolean retVal = false;
         if (highScorelist.size()<10){
@@ -303,20 +372,36 @@ public class HUD {
         return retVal;
     }
 
+    /**
+     * För tidsbonus.
+     * @return tid kvar på bana.
+     */
     public int getTimeLeft(){
         return timeLeft;
     }
 
+    /**
+     *
+     * @return tid har gått ut.
+     */
     public boolean isTimeOut(){
         return timeLeft == 0;
     }
 
+    /**
+     * Uppdatera HUD
+     * @param dt deltatid
+     */
     public void update(float dt){
         groupAddLife(lives);
         setTimeLeft(dt);
         scoreLbl.setText(String.format("Score: %06d", score));
     }
 
+    /**
+     *
+     * @return PowerUp array för aktuell level.
+     */
     public PowerUp[] getPowerUps(){
         PowerUp[] tmpPowerUp = null;
         if(actLevel<2){

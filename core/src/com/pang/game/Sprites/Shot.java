@@ -13,6 +13,9 @@ import static com.pang.game.Constants.Constants.*;
 import static com.pang.game.Sprites.Shot.ShotType.SHOT_BARB;
 import static com.pang.game.Sprites.Shot.ShotType.SHOT_STANDARD;
 
+/**
+ * Klass för skott objekten
+ */
 public class Shot extends Sprite {
 
     private Body shot;
@@ -34,10 +37,14 @@ public class Shot extends Sprite {
         SHOT_STANDARD, SHOT_BARB
     }
 
-
-
-
-
+    /**
+     *
+     * @param world referens till box2d värld
+     * @param position Position att skapas på
+     * @param assetManager ljud och grafik hanterarare
+     * @param shotType vilken typ av skott ska skapas
+     * @param shotHandler referens till shothandlern (för powerUp generering)
+     */
     public Shot(World world, Vector2 position, AssetManager assetManager, ShotType shotType, ShotHandler shotHandler){
         this.shotHandler = shotHandler;
         this.world = world;
@@ -103,18 +110,18 @@ public class Shot extends Sprite {
     public void update(float dt){
         setRegion(getAnimation(dt));
 
-        if(barbStop){
+        if(barbStop){//Räknar ner två sekunder förstör sedan skottet(fastnat i tak eller på hinder)
             barbTimer += dt;
             if(barbTimer>2 && !destroyShotNextUpdate){
                 destroyNextUpdate();
             }
         }
 
-        if (destroyShotNextUpdate) {
+        if (destroyShotNextUpdate) {//Förstör skott
             destroyShot();
         }
 
-        if(shotType == SHOT_STANDARD || shotType == SHOT_BARB){
+        if(shotType == SHOT_STANDARD || shotType == SHOT_BARB){//Positionera grafik
             setPosition(shot.getPosition().x - getWidth() / 2, shot.getPosition().y - getHeight() / 2);
         }
 
@@ -124,8 +131,10 @@ public class Shot extends Sprite {
         return shotType;
     }
 
-    /**Stoppar barb skottet vid kollision.
-     * Det ska ju stanna vid kollision med tak och oförstörbara hinder.*/
+    /**
+     * Stoppar barb skottet vid kollision.
+     * Det ska ju stanna vid kollision med tak och oförstörbara hinder.
+     */
     public void setBarbStop(){
         barbStop = true;
         shot.setLinearVelocity(0, 0f);
@@ -139,8 +148,10 @@ public class Shot extends Sprite {
         super.draw(batch);
     }
 
-    /**Sätter att skott ska tas bort vid nästa update.
-     * Filterdata återställs så att skott inte kan kollidera.*/
+    /**
+     * Sätter att skott ska tas bort vid nästa update.
+     * Filterdata återställs så att skott inte kan kollidera.
+     * */
     public void destroyNextUpdate(){
         destroyShotNextUpdate = true;
         Filter shutofShot = new Filter();
@@ -150,11 +161,17 @@ public class Shot extends Sprite {
 
     }
 
+    /**
+     *
+     * @return boolean .. skott är förstört ta bort referens
+     */
     public boolean isDestroyed(){
         return shotDestroyed;
     }
 
-    /**Tar bort skott från världen*/
+    /**
+     * Tar bort skott från världen
+     * */
     public void destroyShot() {
         shot.setActive(false);
         shot.setUserData(null);
@@ -164,6 +181,11 @@ public class Shot extends Sprite {
         shotDestroyed = true;
     }
 
+    /**
+     *
+     * @param dt
+     * @return TextureRegion .. grafik till skottet peroende på typ
+     */
     public TextureRegion getAnimation(float dt){
 
         TextureRegion region = null;
@@ -180,8 +202,10 @@ public class Shot extends Sprite {
         //returnera
         return region;
     }
-    /**Genererar en ny powerup om nästa object i poweruplistan är en powerup.
-     * Kallas på i Contact handlern*/
+    /**
+     * Genererar en ny powerup om nästa object i poweruplistan är en powerup.
+     * Kallas på i Contact handlern
+     */
     public void setPowerUp(Vector2 position){
         PowerUp powerUp =  shotHandler.getPowerUp();
         if(powerUp != null){

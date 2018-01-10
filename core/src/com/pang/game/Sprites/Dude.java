@@ -14,6 +14,9 @@ import com.pang.game.Pang;
 
 import static com.pang.game.Constants.Constants.*;
 
+/**
+ * Klass för att göra spelkaraktären Dude
+ */
 public class Dude extends Sprite {
     private World world;
     private ShotHandler shotHandler;
@@ -40,9 +43,16 @@ public class Dude extends Sprite {
     private Animation shotAnimation;
     private float shotBurstTimer;
     private float shotBurstFadeTimer;
-
     private Pang game;
 
+    /**
+     *
+     * @param world referens till box2d värld
+     * @param game referens till Pang Objekt
+     * @param startPos Position att skapas på
+     * @param destroyables för generering av powerUps i shothandlern
+     * @param bubbleHandler referens till bubblehandlern (för att frysa bubblor vid stopptime powerUp)
+     */
     public Dude(World world, Pang game, Vector2 startPos, int destroyables, BubbleHandler bubbleHandler){
         this.game = game;
         this.world = world;
@@ -88,7 +98,7 @@ public class Dude extends Sprite {
         //Position och storlek för (super)sprite när den ska ritas
         setBounds(0, 0, 32 / PPM, 32 / PPM);
 
-        shotBurst = new Sprite();
+        shotBurst = new Sprite();//För att visa en eldkvast när Dude skjuter
         shotBurst.setBounds(0,0,14/PPM,14/PPM);
         shotBurstTimer = 12f;
         shotBurstFadeTimer = 0;
@@ -151,14 +161,25 @@ public class Dude extends Sprite {
         }
     }
 
+    /**
+     * Avaktiverar Dudes kropp i box 2d
+     */
     public void setToSleep(){
         dudeBody.setActive(false);
     }
 
+    /**
+     * Aktiverar Dudes kropp i box 2d
+     */
     public void setToAwake(){
         dudeBody.setActive(true);
     }
 
+    /**
+     *
+     * @param dt
+     * @return TextureRegion.. med rätt bild på Dude för aktivt state
+     */
     public TextureRegion getAnimation(float dt){
         //Kolla vilket state dude har
         currentState = getState();
@@ -198,6 +219,11 @@ public class Dude extends Sprite {
         return region;
 
     }
+
+    /**
+     *
+     * @return State .. Vilket state Dude är i. (Springer, står.. etc)
+     */
     public State getState(){
         State state;
         if(booleanOfDeath){
@@ -217,19 +243,20 @@ public class Dude extends Sprite {
         }
         return state;
     }
+
     public void update(float dt) {
         handleInput(dt);
         float offset = 2/PPM; //Offset för att korrigera position av sprite vid gång
         //Sätter Texture region till sprite
         setRegion(getAnimation(dt));
-        if(shotBurstTimer<0.12f) {
+        if(shotBurstTimer<0.12f) {//Visar eldkvast när dude skjuter
             shotBurstTimer += dt;
             shotBurst.setRegion(((TextureRegion) shotAnimation.getKeyFrame(shotBurstTimer, false)));
             shotBurst.setPosition(dudeBody.getPosition().x - 11 / PPM, dudeBody.getPosition().y + getHeight() / 2.5f);
             shotBurst.setAlpha(1f);
         }
         else {
-            shotBurst.setAlpha(0f);
+            shotBurst.setAlpha(0f);//Gör eldkvast osynlig
         }
 
         if(currentState==State.RUNLEFT) {
@@ -244,10 +271,10 @@ public class Dude extends Sprite {
 
         shotHandler.update(dt);
 
-        if(resetSheild){
+        if(resetSheild){//Tar bort powerUp effekt från sheild då gubbe är grön.
             resetSheildtimer += dt;
             if(resetSheildtimer>0.1f){
-                dudeNormal();
+                dudeNormal();//Normal gubbe igen
             }
         }
     }
@@ -257,11 +284,19 @@ public class Dude extends Sprite {
         dudeStand.getTexture().dispose();
         dudeDie.getTexture().dispose();
     }
+
+    /**
+     * När dude dör startar denna metoden dödshoppet.
+     */
     public void jumpOfDeath(){
         dudeBody.setLinearVelocity((0f), 0);
         dudeBody.applyLinearImpulse(new Vector2(-0.5f,1.5f), dudeBody.getWorldCenter(), true);
     }
 
+    /**
+     *
+     * @return boolean .. Dude liv status
+     */
     public boolean isDudeDead(){
         return booleanOfDeath;
     }
@@ -275,9 +310,18 @@ public class Dude extends Sprite {
         jumpOfDeath();
     }
 
+    /**
+     * ShotHandlerns draw metod
+     * @param batch
+     */
     public void drawShot(Batch batch) {
         shotHandler.renderer(batch);
     }
+
+    /**
+     * Dudes draw metod
+     * @param batch
+     */
     @Override
     public void draw(Batch batch) {
 
@@ -286,6 +330,10 @@ public class Dude extends Sprite {
 
     }
 
+    /**
+     * Aktiverar powerUps
+     * @param powerUp
+     */
     public void setPowerUp(PowerUp powerUp){
         switch (powerUp){
             case BARBSHOT: case DOUBLESHOT:
@@ -304,6 +352,9 @@ public class Dude extends Sprite {
 
     }
 
+    /**
+     * Metod för att läsa in Dudes grafik utan sheild powerUp
+     */
     private final void dudeNormal(){
         Array<TextureRegion> frames = new Array<>();
 
@@ -341,6 +392,9 @@ public class Dude extends Sprite {
         resetSheild = false;
     }
 
+    /**
+     * Metod för att läsa in Dudes grafik med sheild powerUp
+     */
     private final void dudeShield(){
         Array<TextureRegion> frames = new Array<>();
 
@@ -375,10 +429,17 @@ public class Dude extends Sprite {
         isSheilded = true;
     }
 
+    /**
+     *
+     * @return boolean .. Dude har sheild powerUp
+     */
     public boolean isSheilded(){
         return isSheilded;
     }
 
+    /**
+     * Återställ sköld powerUp
+     */
     public void resetSheild(){
         resetSheild = true;
         resetSheildtimer = 0;

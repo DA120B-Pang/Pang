@@ -3,6 +3,9 @@ package com.pang.game.HUD;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+/**
+ * Klass för highscoreData
+ */
 public class HighScoreData implements Serializable {
     private int score;
     private String name;

@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pang.game.Pang;
@@ -19,6 +20,9 @@ import com.pang.game.Pang;
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
+/**
+ * Klass för skärm som innehåller settings... volym ljud/musik och vilken bana vi ska starta ifrån
+ */
 public class SettingsScreen implements Screen {
 
     private Pang game;
@@ -31,11 +35,15 @@ public class SettingsScreen implements Screen {
     private Skin skin;
     private TextButton backButton;
 
-public SettingsScreen(Pang game) {
+    /**
+     *
+     * @param game referens till Pang objekt
+     */
+    public SettingsScreen(Pang game) {
     this.skin = new Skin(Gdx.files.internal("ui/skin/neon-ui.json"));
     this.skin.remove("font", BitmapFont.class);
     this.skin.add("font", Gdx.files.internal("font/robot/size72dead.fnt"));
-    viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
+    viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
     stage = new Stage(viewport, game.batch);
     this.game = game;
 
@@ -48,7 +56,7 @@ public SettingsScreen(Pang game) {
     soundVolumeLbl = new Label(String.format("Sound Vol: %.0f%%", game.soundVolume*100), new Label.LabelStyle(instructionFont, instructionFontColor));
     soundVolumeLbl.setFontScale(0.3f);
 
-    Slider soundSlider = new Slider(0, 1, 0.05f, false, skin);
+    Slider soundSlider = new Slider(0, 1, 0.05f, false, skin);//Slider för ljudeffekt volym
     soundSlider.setValue(game.soundVolume);
     soundSlider.addListener(new ChangeListener() {
         @Override
@@ -60,7 +68,7 @@ public SettingsScreen(Pang game) {
     musicVolumeLbl = new Label(String.format("Music Vol: %.0f%%", game.musicVolume*100), new Label.LabelStyle(instructionFont, instructionFontColor));
     musicVolumeLbl.setFontScale(0.3f);
 
-    Slider musicSlider = new Slider(0, 1, 0.05f, false, skin);
+    Slider musicSlider = new Slider(0, 1, 0.05f, false, skin);//Slider för musik volym
     musicSlider.setValue(game.musicVolume);
     musicSlider.addListener(new ChangeListener() {
         @Override
@@ -73,7 +81,7 @@ public SettingsScreen(Pang game) {
     startLevelLbl = new Label(String.format("Start at level: %d", game.hud.startLevel), new Label.LabelStyle(instructionFont, instructionFontColor));
     startLevelLbl.setFontScale(0.3f);
 
-    Slider startLevelSlider = new Slider(1, 7, 1f, false, skin);
+    Slider startLevelSlider = new Slider(1, 7, 1f, false, skin);//Slider för bana att starta spel på
     startLevelSlider.setValue(game.hud.startLevel);
     startLevelSlider.addListener(new ChangeListener() {
         @Override
@@ -119,6 +127,9 @@ public SettingsScreen(Pang game) {
         initButtons();
     }
 
+    /**
+     * initiera knapp med text grafik etc
+     */
     private void initButtons() {
         backButton = new TextButton("BACK", skin, "default");
         backButton.setSize(90,40);

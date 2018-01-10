@@ -9,6 +9,9 @@ import com.pang.game.Sprites.DoubleBoubble;
 
 import java.util.ArrayList;
 
+/**
+ * Klass för att hantera bubblor
+ */
 public class BubbleHandler {
     private ArrayList<Bubble> myBubbles; //Här har vi bubblor som används i spelet
     private ArrayList<DoubleBoubble> myCreatedDoubles;//Här lagrar vi nyskapade bubblor
@@ -20,6 +23,10 @@ public class BubbleHandler {
     private int freezeSoundMask;
     private Pang game;
 
+    /**
+     *
+     * @param game referens till Pangobjekt
+     */
     public BubbleHandler(Pang game){
         this.game = game;
         myBubbles = new ArrayList<>();
@@ -32,10 +39,18 @@ public class BubbleHandler {
         freezeSoundMask = 0;
     }
 
+    /**
+     * Metod för att lägga till bubblor
+     * @param bubble
+     */
     public void addBubble(Bubble bubble){//Metod för att lägga till bubblor vid start av bana
         myBubbles.add(bubble);
     }
 
+    /**
+     *
+     * @return int .. så många bubblor det finns
+     */
     public int getBubbles(){//För att veta om det finns några bubblor kvar
         return myBubbles.size();
     }
@@ -47,18 +62,27 @@ public class BubbleHandler {
         }
     }
 
+    /**
+     * Avaktiverar alla bubblors kroppar
+     */
     public void setToSleep(){//Stoppar alla bubblor
         for (Bubble b:myBubbles){
             b.setToSleep();
         }
     }
 
+    /**
+     * Aktiverar alla bubblors kroppar
+     */
     public void setToAwake(){
         for (Bubble b:myBubbles){
             b.setToAwake();
         }
     }
 
+    /**
+     * Kolla hur många bubblor som kommer produceras på leveln(för powerUp generering)
+     */
     public int getDestroyables(){
         int destroyables = 0;
         for(Bubble b:myBubbles){
@@ -69,8 +93,6 @@ public class BubbleHandler {
 
     public void update(float dt, HUD hud) {//Kollar om bubblor ska skapas och förstöras
 
-
-
         for(Bubble b:myBubbles){
             b.update(dt);
             if (!b.isBubblesCreated() && b.isSetToDestroy()) {//Varje bubbla ska producera två nya bubblor om den inte har minsta storleken
@@ -78,7 +100,7 @@ public class BubbleHandler {
                 hud.addScore(b.getPoints());
             }
             if (b.isDestroyed()) {//Kollar vilka bubblor som ska bort
-                myBubblesToDestroy.add(b);
+                myBubblesToDestroy.add(b);//Lägg till i förstörda listan
             }
         }
         for(
@@ -95,22 +117,22 @@ public class BubbleHandler {
         }
         myBubblesToDestroy.clear();//Rensa bubblor att radera
 
-        if(bubblesFrozen){
+        if(bubblesFrozen){//StopTime powerUp är aktiv alla bubblor är stilla
             freezeTimer += dt;
-            if(freezeTimer>freezeTime){
+            if(freezeTimer>freezeTime){//Återställer bubblor när tid gått ut
                 unFreezeBubbles();
             }
-            if (freezeTimer>freezeTime-3){
+            if (freezeTimer>freezeTime-3){//Varna att bubblor snart börjar röra på sig Varning 1
                 if(0 == (freezeSoundMask & 1)){
                     game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).play(), 0.3f);
                     freezeSoundMask |= 1;
                 }
-                if (freezeTimer>freezeTime-2){
+                if (freezeTimer>freezeTime-2){//Varna att bubblor snart börjar röra på sig Varning 2
                     if(0 == (freezeSoundMask & 2)){
                         game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).play(), 0.3f);
                         freezeSoundMask |= 2;
                     }
-                    if (freezeTimer>freezeTime-1){
+                    if (freezeTimer>freezeTime-1){//Varna att bubblor snart börjar röra på sig Varning 3
                         if(0 == (freezeSoundMask & 4)){
                             game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).setVolume(game.assetManager.get("audio/sound/powerUpStopTimeDown.wav", Sound.class).play(), 0.3f);
                             freezeSoundMask |= 4;
@@ -121,20 +143,26 @@ public class BubbleHandler {
         }
 
         if(freezeBubblesNextUpdate){
-            freezeBubbles();
+            freezeBubbles();//Stoppar bubblor
         }
     }
 
+    /**
+     * Metod för att stoppa bubblor vid Stop time powerUp
+     */
     private void freezeBubbles(){
         freezeTimer = 0;
         freezeSoundMask = 0;
-        for(Bubble b:myBubbles) {
+        for(Bubble b:myBubbles) {//loopa igenom alla bubblor
             b.freezeBubble();
         }
         bubblesFrozen = true;
         freezeBubblesNextUpdate = false;
     }
 
+    /**
+     * Alla bubblor återgår till rörelse
+     */
     private void unFreezeBubbles(){
         for(Bubble b:myBubbles) {
             b.unFreezeBubble();
@@ -142,6 +170,9 @@ public class BubbleHandler {
         bubblesFrozen = false;
     }
 
+    /**
+     * Vid nästa update ska bubblorna stanna
+     */
     public void freezeBubblesNextUpdate(){
         freezeBubblesNextUpdate = true;
     }

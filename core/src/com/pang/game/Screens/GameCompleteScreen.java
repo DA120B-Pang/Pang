@@ -21,6 +21,9 @@ import com.pang.game.Sprites.FireWork;
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
+/**
+ * Klass för skärm som visas när Dude klarat alla nivåer
+ */
 public class GameCompleteScreen implements Screen {
     private Pang game;
     private boolean restartGame;
@@ -47,6 +50,11 @@ public class GameCompleteScreen implements Screen {
     private Vector2 min;
     private Vector2 max;
 
+
+    /**
+     *
+     * @param game referens till Pang objekt
+     */
     public GameCompleteScreen(Pang game){
 
         game.assetManager.load("audio/music/Royal_Entrance_Loop.ogg", Music.class);
@@ -62,6 +70,7 @@ public class GameCompleteScreen implements Screen {
         animation = new Animation(0.2f, frames);
         frames.clear();
 
+        //Läser in grafik för fyrverkeri nummer 1
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket1"), 0, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket1"), 192, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket1"), 384, 0, 192, 192));
@@ -94,6 +103,7 @@ public class GameCompleteScreen implements Screen {
 
         frames.clear();
 
+        //Läser in grafik för fyrverkeri nummer 2
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket2"), 0, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket2"), 192, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket2"), 384, 0, 192, 192));
@@ -123,6 +133,7 @@ public class GameCompleteScreen implements Screen {
 
         frames.clear();
 
+        //Läser in grafik för fyrverkeri nummer 3
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket3"), 0, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket3"), 192, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket3"), 384, 0, 192, 192));
@@ -163,6 +174,7 @@ public class GameCompleteScreen implements Screen {
 
         frames.clear();
 
+        //Läser in grafik för fyrverkeri nummer 4
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket4"), 0, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket4"), 192, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket4"), 384, 0, 192, 192));
@@ -203,6 +215,7 @@ public class GameCompleteScreen implements Screen {
 
         frames.clear();
 
+        //Läser in grafik för fyrverkeri nummer 5
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket5"), 0, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket5"), 192, 0, 192, 192));
         frames.add(new TextureRegion(game.assetManager.get("rockets/rockets.pack",TextureAtlas.class).findRegion("rocket5"), 384, 0, 192, 192));
@@ -290,12 +303,18 @@ public class GameCompleteScreen implements Screen {
         table.row();
         table.add(scoreTotal);
         stage.addActor(table);
-        musicStart();
+        musicStart();//Starta musik
     }
     @Override
     public void show() {
 
     }
+
+    /**
+     *
+     * @param dt
+     * @return TextureRegion .. animation på dude som tipsar om att trycka på space för att gå vidare
+     */
     private TextureRegion getRegion(float dt){
         TextureRegion textureRegion = new TextureRegion();
         timer += dt;
@@ -305,7 +324,7 @@ public class GameCompleteScreen implements Screen {
             if (animation.isAnimationFinished(timer)){
                 loopTalk++;
                 if(loopTalk>4){
-                    timer = -15;
+                    timer = -15;//Vänta 15 sekunder innan nästa påminnelse
                     isTalking = false;
                     loopTalk = 0;
                 }
@@ -319,12 +338,19 @@ public class GameCompleteScreen implements Screen {
         return textureRegion;
     }
 
+    /**
+     * Startar musik
+     */
     private void musicStart(){
         game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).setLooping(true);
         game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).setVolume(0.4f*game.musicVolume);
         game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).play();
 
     }
+
+    /**
+     * Stoppar musik
+     */
     private void musicStop(){
         game.assetManager.get("audio/music/Royal_Entrance_Loop.ogg",Music.class).stop();
     }
@@ -334,6 +360,7 @@ public class GameCompleteScreen implements Screen {
             restartGame = true;
         }
     }
+
     public void update(float dt){
 
         spriteDude.setRegion(getRegion(dt));
@@ -344,6 +371,7 @@ public class GameCompleteScreen implements Screen {
         fireWork4.update(dt);
         fireWork5.update(dt);
     }
+
     @Override
     public void render(float dt) {
         //Logix
@@ -362,16 +390,14 @@ public class GameCompleteScreen implements Screen {
         stage.draw();
         game.batch.begin();
         spriteDude.draw(game.batch);
-        if(isTalking) {
+        if(isTalking) {//Visa pratbubbla
             spriteBubbleDude.draw(game.batch);
         }
         game.batch.end();
 
-
-
-        if(restartGame){
+        if(restartGame){//Space har tryckts på
             musicStop();
-            if(game.hud.isHighScore()){
+            if(game.hud.isHighScore()){//Kolla om poäng är hög nog för highscore
                 game.setScreen(new HighScoreInputScreen(game));
             }
             else {

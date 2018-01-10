@@ -60,7 +60,7 @@ public class HighScoreInputScreen implements Screen {
                 }
                 else{
                     game.hud.addToHighScore(name);
-                    game.setScreen(new MainMenu(game));
+                    game.setScreen(new StartingScreen(game));
                     dispose();
                 }
             }
@@ -121,12 +121,12 @@ public class HighScoreInputScreen implements Screen {
     }
 
     public void update(float dt){
-        String tmp = getInput();
+        String tmp = getInput();//Kolla keyboard input.
         if (tmp != null){
-            if(tmp.equalsIgnoreCase("1")){
+            if(tmp.equalsIgnoreCase("1")){//Otillåtet tecken intryckt.
                 setMessageLbl(1, dt);
             }
-            else if(tmp.equalsIgnoreCase("99")){
+            else if(tmp.equalsIgnoreCase("99")){//Backspace
                 if (name.length()>1) {
                     name = name.substring(0, name.length() - 1);
                 }
@@ -134,11 +134,11 @@ public class HighScoreInputScreen implements Screen {
                     name = "";
                 }
             }
-            else if(name.length()>11){
+            else if(name.length()>11){//Max storlek uppnådd(max 12 tecken)
                 setMessageLbl(2, dt);
             }
             else {
-                name += tmp;
+                name += tmp;//Lägger till tecken.
             }
         }
         nameLbl.setText(name);
@@ -182,6 +182,11 @@ public class HighScoreInputScreen implements Screen {
     public void dispose() {
     }
 
+    /**
+     * Meddelande till användare.
+     * @param order vilket meddelande ska visas
+     * @param dt delta tid
+     */
     private void setMessageLbl(int order, float dt){
         if(messageTimer>0){
             messageTimer -= dt;
@@ -208,6 +213,10 @@ public class HighScoreInputScreen implements Screen {
         }
     }
 
+    /**
+     * Inläsning av keyboard input.
+     * @return String
+     */
     private String getInput(){
         String resultat = null;
         if(Gdx.input.isKeyJustPressed(Input.Keys.A))

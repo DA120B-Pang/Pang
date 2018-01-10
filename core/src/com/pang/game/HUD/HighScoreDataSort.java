@@ -2,6 +2,9 @@ package com.pang.game.HUD;
 
 import java.util.Comparator;
 
+/**
+ * Klass för att sortera highscorelista
+ */
 public class HighScoreDataSort implements Comparator<HighScoreData> {
 
     @Override

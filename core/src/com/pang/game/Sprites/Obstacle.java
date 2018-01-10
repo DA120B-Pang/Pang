@@ -12,6 +12,9 @@ import com.badlogic.gdx.math.Rectangle;
 
 import static com.pang.game.Constants.Constants.*;
 
+/**
+ * Klass för att skapa hinder som antingen kan förstöras eller inte.
+ */
 public class Obstacle extends Sprite{
     private BodyDef bodydef;
     private Body body;
@@ -29,6 +32,14 @@ public class Obstacle extends Sprite{
     private float timerAnimation;
     private Pang game;
 
+    /**
+     *
+     * @param game referens till Pang objektet
+     * @param rectangle för att veta vart hindret ska skapas och vilken dimension(från Tiled map)
+     * @param world referens till box2d värld
+     * @param colorYellow om sann är hindret gult annars rosa
+     * @param isBreakable om sann går hindret att skjuta isönder
+     */
     public Obstacle( Pang game, Rectangle rectangle, World world, boolean colorYellow, boolean isBreakable){
         this.game = game;
         assetManager = game.assetManager;
@@ -105,6 +116,10 @@ public class Obstacle extends Sprite{
         }
     }
 
+    /**
+     *
+     * @return boolean .. hindret går att skjuta isönder
+     */
     public boolean isBreakable(){
         return isBreakable;
     }
@@ -112,12 +127,12 @@ public class Obstacle extends Sprite{
     public void update(float dt){
         if(!isDestroyed) {
             setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-            if (destroyNextUpdate && isBreakable) {
+            if (destroyNextUpdate && isBreakable) {//Hindret ska förstöras
                 if (!filterDataSet) {
                     Filter[] filter = new Filter[3];
-                    for (int i = 0; i <3 ; i++) {
+                    for (int i = 0; i <3 ; i++) {//En kropp och två sensorer
                         filter[i] = body.getFixtureList().get(i).getFilterData();
-                        filter[i].maskBits = FREEFALL;
+                        filter[i].maskBits = FREEFALL;//Ska inte kollidera med något efter träff
                         body.getFixtureList().get(i).setFilterData(filter[i]);
                     }
                     filterDataSet = true;
@@ -125,11 +140,11 @@ public class Obstacle extends Sprite{
                 }
                 timerAnimation += dt;
                 setRegion((TextureRegion) animation.getKeyFrame(timerAnimation, false));
-                if(!destroySoundStarted) {
+                if(!destroySoundStarted) {//Startar ljud för isönderskjutning
                     assetManager.get("audio/sound/boomLarge.wav", Sound.class).setVolume(assetManager.get("audio/sound/tileBreak.wav", Sound.class).play(), 1.0f*game.soundVolume);
                     destroySoundStarted = true;
                 }
-                if (animation.isAnimationFinished(timerAnimation)) {
+                if (animation.isAnimationFinished(timerAnimation)) {//När animation är klar tar vi bort kroppen
                     world.destroyBody(body);
                     isDestroyed = true;
                 }
@@ -137,14 +152,26 @@ public class Obstacle extends Sprite{
         }
     }
 
+    /**
+     *
+     * @return Vector2 .. position används för powerUp generering
+     */
     public Vector2 getPosition(){
         return body.getPosition();
     }
 
+    /**
+     *
+     * @return boolean .. Hinder är förstört
+     */
     public boolean isDestroyed(){
         return isDestroyed;
     }
 
+    /**
+     *
+     * @return int .. antal förstörbara hinder (för powerUp generering)
+     */
     public int getDestroyables() {
         if(isBreakable){
             return 1;

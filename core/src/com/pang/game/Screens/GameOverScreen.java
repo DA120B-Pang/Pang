@@ -20,6 +20,9 @@ import java.io.IOException;
 import static com.pang.game.Constants.Constants.WORLD_HEIGHT;
 import static com.pang.game.Constants.Constants.WORLD_WIDTH;
 
+/**
+ * Klass för skärm som visas när Dude dör och inte har några liv kvar
+ */
 public class GameOverScreen implements Screen {
     private Sprite sprite;
     private Pang game;
@@ -27,6 +30,10 @@ public class GameOverScreen implements Screen {
     private boolean restartGame;
     private Viewport viewPort;
 
+    /**
+     *
+     * @param game referens till Pang objekt
+     */
     public GameOverScreen(Pang game) {
         this.game = game;
         restartGame = false;
@@ -68,8 +75,8 @@ public class GameOverScreen implements Screen {
         game.batch.begin();
         sprite.draw(game.batch);
         game.batch.end();
-        if (restartGame) {
-            if(game.hud.isHighScore()){
+        if (restartGame) {//Space har tryckts på
+            if(game.hud.isHighScore()){//kolla om poäng räcker till highscore
                 game.setScreen(new HighScoreInputScreen(game));
             }
             else {

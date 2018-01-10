@@ -24,7 +24,9 @@ import static com.badlogic.gdx.Gdx.app;
 
 
 public class   MainMenu implements Screen {
-
+    /*
+    Det ligger en pdf i core/assets som beskriver vart vi lånat grafik.
+     */
     private Pang game;
 
     private Stage stage;

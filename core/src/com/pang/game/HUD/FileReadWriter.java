@@ -4,8 +4,15 @@ package com.pang.game.HUD;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * Klass för att spara och ladda highscore till/från fil
+ */
 public class FileReadWriter {
-    //****************Läs in sparade highscore********************
+
+    /**
+     * Läser in highscore fil
+     * @return HighScore Arraylist
+     */
     public ArrayList<HighScoreData> readFile(){
         String fileName = "highscore";
         ArrayList<HighScoreData> read = new ArrayList<>();
@@ -29,6 +36,7 @@ public class FileReadWriter {
         }
         if(createNewFile) {//Skapa ny fil vid fel
             try {
+                System.out.println("Skapar ny highscore fil.");
                 PrintWriter writer = new PrintWriter(fileName,"UTF-8");//skapa tom fil
                 writer.close();
             } catch (UnsupportedEncodingException ee) {
@@ -39,7 +47,11 @@ public class FileReadWriter {
         }
         return read;
     }
-    //*****************Spara highscore till fil*******************
+
+    /**
+     * Skriver highscore till fil
+     * @param write fil att spara
+     */
     public void writeFile( ArrayList<HighScoreData> write){
         String fileName = "highscore";
         try {
