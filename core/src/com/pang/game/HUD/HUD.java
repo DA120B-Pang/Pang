@@ -206,8 +206,8 @@ public class HUD {
     }
 
     /**
-     * returnerar aktuell level.
-     * @return
+     *
+     * @return int .. returnerar aktuell level.
      */
     public int getLevel(){
         return actLevel;
@@ -215,7 +215,7 @@ public class HUD {
 
     /**
      * Startar först nedräkning 3 sekunder innan spel ska startas... sedan Startar nedräkning av speltid.
-     * @param dt
+     * @param dt float .. delta time
      */
     public void setTimeLeft(float dt){
         if(startTimer) {

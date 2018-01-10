@@ -177,7 +177,7 @@ public class Dude extends Sprite {
 
     /**
      *
-     * @param dt
+     * @param dt float .. delta time
      * @return TextureRegion.. med rätt bild på Dude för aktivt state
      */
     public TextureRegion getAnimation(float dt){
@@ -312,7 +312,7 @@ public class Dude extends Sprite {
 
     /**
      * ShotHandlerns draw metod
-     * @param batch
+     * @param batch för sprite draw
      */
     public void drawShot(Batch batch) {
         shotHandler.renderer(batch);
@@ -320,7 +320,7 @@ public class Dude extends Sprite {
 
     /**
      * Dudes draw metod
-     * @param batch
+     * @param batch för sprite draw
      */
     @Override
     public void draw(Batch batch) {
@@ -332,7 +332,7 @@ public class Dude extends Sprite {
 
     /**
      * Aktiverar powerUps
-     * @param powerUp
+     * @param powerUp powerup typ
      */
     public void setPowerUp(PowerUp powerUp){
         switch (powerUp){

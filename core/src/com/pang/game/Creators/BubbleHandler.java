@@ -41,7 +41,7 @@ public class BubbleHandler {
 
     /**
      * Metod för att lägga till bubblor
-     * @param bubble
+     * @param bubble bubbla att lägga till
      */
     public void addBubble(Bubble bubble){//Metod för att lägga till bubblor vid start av bana
         myBubbles.add(bubble);
@@ -80,8 +80,10 @@ public class BubbleHandler {
         }
     }
 
+
     /**
-     * Kolla hur många bubblor som kommer produceras på leveln(för powerUp generering)
+     *
+     * @return int .. hur många bubblor som kommer produceras på leveln(för powerUp generering)
      */
     public int getDestroyables(){
         int destroyables = 0;

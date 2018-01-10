@@ -16,8 +16,9 @@ import static com.pang.game.Constants.Constants.PPM;
 import static com.pang.game.Creators.ShotHandler.ShotTypeHandler.*;
 import static com.pang.game.Sprites.Shot.ShotType.*;
 
+
 /**
- * Hanterar skott & powerups i världen
+ * Hanterar skott och powerups i spelet.
  */
 public class ShotHandler {
 
@@ -61,7 +62,8 @@ public class ShotHandler {
 
     /*************************** Shots ***************************/
     /**
-     * Lägger till skott i världen
+     *
+     * @param position position där skott ska skapas
      */
     public void addShot(Vector2 position){
         position.x -= 4/PPM;
@@ -71,6 +73,7 @@ public class ShotHandler {
     /*************************** Shots ***************************/
     /**
      * Kollar om powerup är för skott. Ändras isf skott typ
+     * @param powerUp powerUp typ
      */
     public void setPowerUp(PowerUp powerUp){
         switch (powerUp){
@@ -88,6 +91,7 @@ public class ShotHandler {
     /*************************** Shots ***************************/
     /**
      * Kollar om skott kan avfyras det finns två begränsningar, singelskott eller dubbel (Används i dude)
+     * @return boolean
      */
     public boolean isReadyForShot(){
         boolean ready = false;
@@ -152,6 +156,8 @@ public class ShotHandler {
     /**
      * Portionerar ut powerup som är definierade för bana slumpmässigt i lista. Varje object som går att skjuta isönder har en plats i listan.
      * Varje gång något skjuts tas första objectet från listan.
+     * @param powerUps vilka powerUps som kan genereras
+     * @param destroyables hur många object som går att skjuta isönder
      */
     public void loadPowerUps(PowerUp[] powerUps, int destroyables){
         Random myRandom = new Random();
@@ -184,6 +190,8 @@ public class ShotHandler {
     /*************************** PowerUps ***************************/
     /**
      * Genererar en ny powerup i världen
+     * @param position position för powerUp
+     * @param powerUp vilken typ av powerUp
      */
     public void generatePowerUp(Vector2 position, PowerUp powerUp){
         nextPowerUp = powerUp;
@@ -194,6 +202,7 @@ public class ShotHandler {
     /**
      * Kollar vad nästa object i powerup listan är en powerup.
      * Raderar sedan platsen i listan
+     * @return PowerUp
      */
     public PowerUp getPowerUp(){
         PowerUp powerUp = null;

@@ -126,7 +126,11 @@ public class Shot extends Sprite {
         }
 
     }
-    /**Tar bort skott från världen*/
+
+    /**
+     *
+     * @return ShotType vilken typ av skott används
+     */
     public ShotType getShotType(){
         return shotType;
     }
@@ -183,7 +187,7 @@ public class Shot extends Sprite {
 
     /**
      *
-     * @param dt
+     * @param dt float deltatime
      * @return TextureRegion .. grafik till skottet peroende på typ
      */
     public TextureRegion getAnimation(float dt){
@@ -202,9 +206,10 @@ public class Shot extends Sprite {
         //returnera
         return region;
     }
+
     /**
      * Genererar en ny powerup om nästa object i poweruplistan är en powerup.
-     * Kallas på i Contact handlern
+     * @param position position för powerUp
      */
     public void setPowerUp(Vector2 position){
         PowerUp powerUp =  shotHandler.getPowerUp();
