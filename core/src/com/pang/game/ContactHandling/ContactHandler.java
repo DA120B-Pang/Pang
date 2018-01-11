@@ -73,7 +73,7 @@ public class ContactHandler implements ContactListener {
                 //Userdata i dudes body är referensen till dude därför kan vi kalla på metoder via den
                 if(((Dude)main.getBody().getUserData()).isSheilded()){
                     ((Dude) main.getBody().getUserData()).resetSheild();
-                    ((Bubble) other.getBody().getUserData()).setBumpObstacaleTopNextUpdate();
+                    ((Bubble) other.getBody().getUserData()).setBumpSheildNextUpdate();
                 }
                 else {
                     ((Dude) main.getBody().getUserData()).dudeDie();//Sätt att dude ska dö

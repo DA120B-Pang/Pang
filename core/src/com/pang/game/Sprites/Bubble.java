@@ -42,6 +42,7 @@ public class Bubble extends Sprite {
     private boolean bumpFloorNextUpdate;
     private boolean bumpLeftWallNextUpdate;
     private boolean bumpRightWallNextUpdate;
+    private boolean bumpSheildNextUpdate;
     private boolean upOnBirth;
     private Vector2 getCurrentVel;
     private Pang game;
@@ -81,6 +82,7 @@ public class Bubble extends Sprite {
         bumpFloorNextUpdate = false;
         bumpLeftWallNextUpdate = false;
         bumpRightWallNextUpdate = false;
+        bumpSheildNextUpdate = false;
         this.upOnBirth = upOnBirth;
         getCurrentVel = new Vector2();
         if (minSize.ordinal()<startSize.ordinal()){
@@ -393,6 +395,34 @@ public class Bubble extends Sprite {
         bumpObstacaleTopNextUpdate = false;
     }
 
+    /**
+     * Nästa update då ska bubbla köra bumpSheild().
+     */
+    public void setBumpSheildNextUpdate(){
+        bumpSheildNextUpdate = true;
+    }
+
+    public final void bumpSheild() {
+        bubbleBounceForceCalc.y = scaleForce();
+        bubbleBody.setLinearVelocity(0f, 0f);//Boll måste först stanna(för att vi alltid ska uppnå samma höjd)
+        bubbleBody.applyLinearImpulse(bubbleBounceForceCalc, bubbleBody.getWorldCenter(), true);
+        if(getPosition().y>0.9f) {
+            if (goingRight) {//kolla vilket håll bollen färdades på och fortsätt på samma håll
+                bumpLeftWall();
+            } else {
+                bumpRightWall();
+            }
+        }
+        else{
+            if (goingRight) {//kolla vilket håll bollen färdades på och fortsätt på samma håll
+                bumpRightWall();
+            } else {
+                bumpLeftWall();
+            }
+        }
+        bumpSheildNextUpdate = false;
+    }
+
 
     public void update(float dt) {
         checkSpd();
@@ -404,6 +434,9 @@ public class Bubble extends Sprite {
             }
             if(bumpObstacaleTopNextUpdate){
                 bumpObstacaleTop();
+            }
+            if(bumpSheildNextUpdate){
+                bumpSheild();
             }
             if(bumpFloorNextUpdate){
                 bumpFloor();

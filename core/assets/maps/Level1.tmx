@@ -13,7 +13,7 @@
   <object id="5" name="left" x="0.749833" y="0.5" width="6.66667" height="206.333"/>
  </objectgroup>
  <objectgroup name="Balls">
-  <object id="6" name="G,XL,M,R," x="299.5" y="41.5"/>
+  <object id="6" name="G,S,S,R," x="299.5" y="41.5"/>
   <object id="7" name="R,XL,M,L," x="79.5" y="44.5"/>
  </objectgroup>
  <objectgroup name="Obstacle"/>

@@ -77,10 +77,9 @@ public class DeadScreen implements Screen {
             }
     }
     public void update(float dt){
-
+        stage.act(dt);
 
         handleInput(dt);
-
         timer += dt;
         if(timer >= 0) {//Texten ska blinka med 2 sekunders intervall
 
@@ -111,7 +110,7 @@ public class DeadScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
